@@ -69,6 +69,17 @@
   .tag-green { background: #e6f4ea; color: #188038; }
   .tag-gray { background: #e8eaed; color: #5f6368; }
 
+  .project-stretch { position: relative; }
+  .project-stretch .project-main {
+    display: block; text-decoration: none; color: inherit;
+  }
+  .project-stretch .project-main::after {
+    content: ''; position: absolute; inset: 0; z-index: 1;
+  }
+  .project-stretch .project-meta { position: relative; z-index: 2; }
+  a.tag { text-decoration: none; }
+  a.tag:hover { filter: brightness(0.95); }
+
   footer {
     margin-top: 60px;
     padding-top: 24px;
@@ -99,15 +110,17 @@
   </div>
 </a>
 
-<a href="parallel-financing-flow/" class="project">
-  <div class="project-title">Parallel Financing &amp; CarAudit Payment</div>
-  <div class="project-desc">Mockup návrhu změn v objednávkovém procesu — umožnit zákazníkovi zaplatit CarAudit i během schvalování financování. Obrazovky 01–04 a tři varianty post-payment stavu (čeká, schváleno, zamítnuto).</div>
+<div class="project project-stretch">
+  <a href="parallel-financing-flow/" class="project-main">
+    <div class="project-title">Parallel Financing &amp; CarAudit Payment</div>
+    <div class="project-desc">Mockup návrhu změn v objednávkovém procesu — umožnit zákazníkovi zaplatit CarAudit i během schvalování financování. Obrazovky 01–04 a tři varianty post-payment stavu (čeká, schváleno, zamítnuto).</div>
+  </a>
   <div class="project-meta">
     <span>📅 March 2026</span>
     <span class="tag tag-orange">In Review</span>
-    <span class="tag tag-gray">CAR-15924</span>
+    <a href="https://carvago.atlassian.net/browse/CAR-15924" target="_blank" rel="noopener" class="tag tag-gray">CAR-15924 ↗</a>
   </div>
-</a>
+</div>
 
 <footer>
   <p>Source: <a href="https://github.com/littlemeat/work-pages" target="_blank">github.com/littlemeat/work-pages</a></p>
