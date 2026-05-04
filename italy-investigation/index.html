@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 36'><rect x='1' y='4' width='10' height='28' rx='2' fill='%23009246'/><rect x='11' y='4' width='14' height='28' fill='%23fff'/><rect x='25' y='4' width='10' height='28' rx='2' fill='%23CE2B37'/></svg>">
+<title>Italy Conversion Investigation — Opportunity → Paid CarAudit</title>
+<style>
+  :root {
+    --blue: #1a3a5c;
+    --blue-light: #e8f0fe;
+    --red: #d93025;
+    --red-light: #fce8e6;
+    --green: #188038;
+    --green-light: #e6f4ea;
+    --orange: #e37400;
+    --orange-light: #fef7e0;
+    --gray: #5f6368;
+    --gray-light: #f8f9fa;
+    --border: #dadce0;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    color: #202124; line-height: 1.6;
+    max-width: 960px; margin: 0 auto; padding: 40px 24px; background: #fff;
+  }
+  h1 { font-size: 28px; color: var(--blue); margin-bottom: 8px; }
+  h2 { font-size: 20px; color: var(--blue); margin: 48px 0 16px; padding-bottom: 8px; border-bottom: 2px solid var(--blue); }
+  h3 { font-size: 16px; color: #202124; margin: 28px 0 12px; }
+  h4 { font-size: 14px; color: var(--blue); margin: 20px 0 8px; }
+  p, li { font-size: 14px; color: #3c4043; }
+  p { margin-bottom: 12px; }
+  ul, ol { margin: 0 0 16px 24px; }
+  li { margin-bottom: 6px; }
+  .meta { color: var(--gray); font-size: 13px; margin-bottom: 32px; }
+  .meta span { margin-right: 16px; }
+
+  .callout { padding: 16px 20px; border-radius: 8px; margin: 20px 0; font-size: 14px; }
+  .callout-red { background: var(--red-light); border-left: 4px solid var(--red); }
+  .callout-green { background: var(--green-light); border-left: 4px solid var(--green); }
+  .callout-orange { background: var(--orange-light); border-left: 4px solid var(--orange); }
+  .callout-blue { background: var(--blue-light); border-left: 4px solid var(--blue); }
+  .callout strong { display: block; margin-bottom: 4px; }
+
+  table { width: 100%; border-collapse: collapse; margin: 16px 0 24px; font-size: 13px; }
+  th { background: var(--blue); color: #fff; padding: 10px 12px; text-align: left; font-weight: 600; }
+  td { padding: 8px 12px; border-bottom: 1px solid var(--border); }
+  tr:nth-child(even) { background: var(--gray-light); }
+  .num { text-align: right; font-variant-numeric: tabular-nums; }
+  .bad { color: var(--red); font-weight: 600; }
+  .good { color: var(--green); font-weight: 600; }
+  .neutral { color: var(--gray); }
+
+  .bar { height: 18px; border-radius: 3px; min-width: 2px; display: inline-block; vertical-align: middle; }
+
+  .tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; margin-right: 4px; }
+  .tag-red { background: var(--red-light); color: var(--red); }
+  .tag-green { background: var(--green-light); color: var(--green); }
+  .tag-orange { background: var(--orange-light); color: var(--orange); }
+  .tag-blue { background: var(--blue-light); color: var(--blue); }
+
+  .img-container { margin: 20px 0; text-align: center; }
+  .img-container img {
+    max-width: 100%;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  }
+  .img-row {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 20px 0;
+  }
+  .img-row img {
+    width: 100%;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  }
+  .img-caption { font-size: 12px; color: var(--gray); text-align: center; margin-top: 6px; }
+
+  .survey-q {
+    background: var(--gray-light); border: 1px solid var(--border);
+    border-radius: 8px; padding: 16px; margin: 12px 0;
+  }
+  .survey-q .q-label { font-size: 11px; text-transform: uppercase; color: var(--gray); letter-spacing: 0.5px; margin-bottom: 6px; }
+  .survey-q .q-text { font-size: 15px; font-weight: 600; color: #202124; margin-bottom: 10px; }
+  .survey-q .q-text em { font-weight: 400; color: var(--gray); }
+  .survey-q ol { margin: 0 0 0 20px; }
+  .survey-q li { font-size: 13px; margin-bottom: 4px; }
+  .survey-q li em { color: var(--gray); }
+
+  .timeline { border-left: 3px solid var(--blue); margin: 16px 0 16px 8px; padding-left: 20px; }
+  .timeline-item { margin-bottom: 16px; position: relative; }
+  .timeline-item::before { content: ''; position: absolute; left: -26px; top: 4px; width: 10px; height: 10px; border-radius: 50%; background: var(--blue); }
+  .timeline-item .tl-label { font-size: 12px; color: var(--gray); font-weight: 600; }
+  .timeline-item .tl-text { font-size: 14px; }
+
+  hr { border: none; border-top: 1px solid var(--border); margin: 32px 0; }
+  .footer { font-size: 12px; color: var(--gray); margin-top: 40px; padding-top: 16px; border-top: 1px solid var(--border); }
+
+  .lang-toggle {
+    float: right;
+    display: flex; align-items: center; gap: 8px;
+    font-size: 13px; color: var(--gray);
+    margin-bottom: 8px;
+  }
+  .lang-toggle button {
+    padding: 5px 14px; border-radius: 20px; border: 1px solid var(--border);
+    background: #fff; color: var(--gray); cursor: pointer; font-size: 13px; font-weight: 500;
+    transition: all 0.15s;
+  }
+  .lang-toggle button.active {
+    background: var(--blue); color: #fff; border-color: var(--blue);
+  }
+  .lang-toggle button:hover:not(.active) { background: var(--gray-light); }
+</style>
+</head>
+<body>
+
+<div class="lang-toggle">
+  <span>Language:</span>
+  <button class="active" onclick="setLang('en')">English</button>
+  <button onclick="setLang('it')">Italiano</button>
+</div>
+
+<h1 data-i18n="title">Italy Conversion Investigation</h1>
+<p style="font-size:18px; color:var(--gray); margin-bottom: 4px;" data-i18n="subtitle">Opportunity &rarr; Paid CarAudit Drop-off Analysis</p>
+<div class="meta">
+  <span data-i18n="author">Author: Marie Michalova</span>
+  <span data-i18n="date">Date: 8 April 2026</span>
+  <span>Status: <span class="tag tag-orange" data-i18n="status">In Progress</span></span>
+</div>
+
+<nav style="background:var(--gray-light); border-radius:8px; padding:20px 24px; margin-bottom:32px;">
+  <strong style="font-size:14px; color:var(--blue);" data-i18n="toc_title">Table of Contents</strong>
+  <ol style="margin:10px 0 0 20px; font-size:13px; line-height:2;">
+    <li><a href="#s1" style="color:var(--blue); text-decoration:none;" data-i18n="toc_1">KPI Data: Conversion Trend</a></li>
+    <li><a href="#s2" style="color:var(--blue); text-decoration:none;" data-i18n="toc_2">Lost Reason Analysis (Salesforce)</a></li>
+    <li><a href="#s3" style="color:var(--blue); text-decoration:none;" data-i18n="toc_3">GA Funnel: Where Users Drop Off</a></li>
+    <li><a href="#s4" style="color:var(--blue); text-decoration:none;" data-i18n="toc_4">UX Review: The Car-Selection Page</a></li>
+    <li><a href="#s5" style="color:var(--blue); text-decoration:none;" data-i18n="toc_5">Prior Survey Data: "Why Not Carvago"</a></li>
+    <li><a href="#s6" style="color:var(--blue); text-decoration:none;" data-i18n="toc_6">Hypotheses</a></li>
+    <li><a href="#s7" style="color:var(--blue); text-decoration:none;" data-i18n="toc_7">Proposed Approach: Two Tracks</a></li>
+    <li><a href="#s8" style="color:var(--blue); text-decoration:none;" data-i18n="toc_8">Future Considerations</a></li>
+    <li><a href="#s9" style="color:var(--blue); text-decoration:none;" data-i18n="toc_9">Broader Context: Continuous Survey Tool</a></li>
+    <li><a href="#s10" style="color:var(--blue); text-decoration:none;" data-i18n="toc_10">Next Steps</a></li>
+    <li><a href="#s11" style="color:var(--blue); text-decoration:none;" data-i18n="toc_11">Methodology &amp; Data Sources</a></li>
+  </ol>
+</nav>
+
+<div class="callout callout-red" data-i18n-html="problem_statement">
+  <strong>Problem Statement</strong>
+  Conversion from New Opportunity to Paid CarAudit (unique per customer) in Italy has dropped from ~11&ndash;13% (mid-2025) to ~2&ndash;3% (Q1 2026).
+  This needs urgent investigation.
+</div>
+
+<!-- ==================== SECTION 1 ==================== -->
+<h2 id="s1" data-i18n="h_s1">1. KPI Data: Conversion Trend</h2>
+
+<p data-i18n-html="s1_source">Data source: <strong>[PROD] KPI sheet</strong>, country = IT.
+Conversion = Paid Unique Per Customer / New Opportunities.</p>
+
+<h3 data-i18n="s1_h3">Italy: Monthly Funnel</h3>
+
+<table>
+  <thead>
+    <tr><th>Month</th><th class="num">New Registrations</th><th class="num">New Opps</th><th class="num">Paid Unique /Customer</th><th class="num">CA Delivered /Customer</th><th class="num">Contracts Paid</th><th class="num">Paid/New Opp %</th><th>Trend</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Apr 2026 <span class="neutral">(partial)</span></td><td class="num">157</td><td class="num">142</td><td class="num">5</td><td class="num">5</td><td class="num">4</td><td class="num bad">2.11%</td>
+      <td><div class="bar" style="width:11px; background:var(--red);"></div></td></tr>
+    <tr><td>Mar 2026</td><td class="num">1,120</td><td class="num">872</td><td class="num">26</td><td class="num">20</td><td class="num">11</td><td class="num bad">2.64%</td>
+      <td><div class="bar" style="width:13px; background:var(--red);"></div></td></tr>
+    <tr><td>Feb 2026</td><td class="num">838</td><td class="num">660</td><td class="num">23</td><td class="num">16</td><td class="num">4</td><td class="num bad">3.48%</td>
+      <td><div class="bar" style="width:17px; background:var(--red);"></div></td></tr>
+    <tr><td>Jan 2026</td><td class="num">552</td><td class="num">473</td><td class="num">19</td><td class="num">8</td><td class="num">4</td><td class="num bad">4.02%</td>
+      <td><div class="bar" style="width:20px; background:var(--red);"></div></td></tr>
+    <tr><td>Dec 2025</td><td class="num">490</td><td class="num">483</td><td class="num">24</td><td class="num">19</td><td class="num">6</td><td class="num">4.76%</td>
+      <td><div class="bar" style="width:24px; background:var(--orange);"></div></td></tr>
+    <tr><td>Nov 2025</td><td class="num">596</td><td class="num">581</td><td class="num">31</td><td class="num">16</td><td class="num">9</td><td class="num">5.16%</td>
+      <td><div class="bar" style="width:26px; background:var(--orange);"></div></td></tr>
+    <tr><td>Oct 2025</td><td class="num">496</td><td class="num">333</td><td class="num">28</td><td class="num">11</td><td class="num">3</td><td class="num">9.61%</td>
+      <td><div class="bar" style="width:48px; background:var(--orange);"></div></td></tr>
+    <tr><td>Sep 2025</td><td class="num">438</td><td class="num">207</td><td class="num">19</td><td class="num">8</td><td class="num">1</td><td class="num">8.70%</td>
+      <td><div class="bar" style="width:44px; background:var(--orange);"></div></td></tr>
+    <tr><td>Aug 2025</td><td class="num">370</td><td class="num">159</td><td class="num">20</td><td class="num">10</td><td class="num">5</td><td class="num">9.43%</td>
+      <td><div class="bar" style="width:47px; background:var(--orange);"></div></td></tr>
+    <tr><td>Jul 2025</td><td class="num">400</td><td class="num">199</td><td class="num">27</td><td class="num">28</td><td class="num">13</td><td class="num good">13.57%</td>
+      <td><div class="bar" style="width:68px; background:var(--green);"></div></td></tr>
+    <tr><td>Jun 2025</td><td class="num">685</td><td class="num">360</td><td class="num">42</td><td class="num">18</td><td class="num">8</td><td class="num good">10.28%</td>
+      <td><div class="bar" style="width:51px; background:var(--green);"></div></td></tr>
+    <tr><td>May 2025</td><td class="num">595</td><td class="num">299</td><td class="num">37</td><td class="num">23</td><td class="num">20</td><td class="num good">11.04%</td>
+      <td><div class="bar" style="width:55px; background:var(--green);"></div></td></tr>
+  </tbody>
+</table>
+
+<div class="callout callout-red">
+  <strong>Conversion dropped from ~11% to ~2% in 10 months</strong>
+  The decline started around Oct 2025 and has been accelerating. Meanwhile, the number of new opportunities has been <em>growing</em> (299 in May 2025 &rarr; 872 in Mar 2026), suggesting increasing traffic but decreasing quality or increasing friction.
+</div>
+
+<!-- ==================== SECTION 2 ==================== -->
+<h2 id="s2">2. Lost Reason Analysis (Salesforce)</h2>
+
+<div class="callout callout-orange">
+  <strong>Caveat:</strong> Auto-closing of opportunities was rolled out in two phases:
+  <ul style="margin:8px 0 0 20px;">
+    <li><strong>July 2025:</strong> Opportunities in "New" stage without customer interaction are auto-closed after 30 days</li>
+    <li><strong>March 2026:</strong> Opportunities in "Financing" stage without sales interaction are auto-closed after 30 days</li>
+  </ul>
+  <br>Data before July 2025 may include manually closed opportunities with different reason codes. The "auto-closed in Financing" reason only appears from March 2026 onwards.
+</div>
+
+<p>Lost Opportunity reason codes for Italy, Jan&ndash;Apr 2026 (1,447 lost):</p>
+
+<table>
+  <thead>
+    <tr><th>Reason Code</th><th class="num">Count</th><th class="num">Share</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><strong>Auto-closed after 30 days in "New"</strong></td><td class="num">1,128</td><td class="num bad">78.0%</td></tr>
+    <tr><td>(empty / unknown)</td><td class="num">180</td><td class="num">12.4%</td></tr>
+    <tr><td>Auto-closed after 30 days in "Financing"</td><td class="num">139</td><td class="num">9.6%</td></tr>
+  </tbody>
+</table>
+
+<p><strong>Conclusion:</strong> The vast majority of Italian opportunities never progress beyond the initial stage.
+The GA funnel confirms the drop happens between car-selection and caraudit-form &mdash; specifically at the purchase-method step, where IT users convert significantly worse than CZ. This needs deeper investigation.</p>
+
+<!-- ==================== SECTION 3 ==================== -->
+<h2 id="s3">3. GA Funnel: Where Users Drop Off</h2>
+
+<p>Data source: <a href="https://lookerstudio.google.com/u/0/reporting/171bb951-df2a-415e-a76c-fc3921031329/page/5oysF" target="_blank">Transaction Funnel Carvago (Looker Studio)</a>, 1&ndash;7 Apr 2026.
+<br><strong>Important:</strong> Percentages are <strong>step-to-step</strong> (from previous step), not from top of funnel. No cohort filtering &mdash; users can revisit steps, causing &gt;100% values.</p>
+
+<h3>Full Funnel (all payment methods)</h3>
+
+<div class="img-container">
+  <img src="img/funnel-it-no-financing.png" alt="IT funnel without financing, 1-7 Apr 2026" style="max-width:500px;">
+</div>
+<p class="img-caption">Italy &mdash; Without Financing (1&ndash;7 Apr 2026)</p>
+
+<table>
+  <thead>
+    <tr><th>Step</th><th class="num">IT (% from prev)</th><th class="num">CZ (% from prev)</th><th>Assessment</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>car-selection</td><td class="num">100%</td><td class="num">100%</td><td><span class="tag tag-blue">Baseline</span></td></tr>
+    <tr><td><strong>purchase-method</strong></td><td class="num bad">48.65%</td><td class="num">62.84%</td><td><span class="tag tag-red">-14pp gap</span></td></tr>
+    <tr><td><strong>caraudit-form</strong></td><td class="num bad">31.11%</td><td class="num">59.14%</td><td><span class="tag tag-red">-28pp &mdash; biggest drop</span></td></tr>
+    <tr><td>car-check</td><td class="num">46.43%</td><td class="num">121.35%*</td><td class="neutral">*revisits</td></tr>
+    <tr><td>delivery</td><td class="num">30.77%</td><td class="num">14.35%</td><td></td></tr>
+    <tr><td>services</td><td class="num">125%*</td><td class="num">93.55%</td><td class="neutral">*revisits</td></tr>
+    <tr><td>warranty</td><td class="num">80%</td><td class="num">96.55%</td><td></td></tr>
+    <tr><td>order-confirmation</td><td class="num">100%</td><td class="num">164.29%*</td><td class="neutral">*revisits</td></tr>
+  </tbody>
+</table>
+
+<h3>Financing Path (subset with additional detail)</h3>
+
+<p>The financing path is a subset of the funnel above, showing the additional steps between purchase-method and caraudit-form for users who choose financing.
+<strong>Cash-paying users skip these steps and go directly: purchase-method &rarr; caraudit-form.</strong></p>
+
+<div class="img-container">
+  <img src="img/funnel-it-financing.png" alt="IT financing funnel, 1-7 Apr 2026" style="max-width:500px;">
+</div>
+<p class="img-caption">Italy &mdash; Financing Path (1&ndash;7 Apr 2026)</p>
+
+<table>
+  <thead>
+    <tr><th>Step</th><th class="num">IT (% from prev)</th><th class="num">CZ (% from prev)</th><th>Note</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>car-selection</td><td class="num">100%</td><td class="num">100%</td><td></td></tr>
+    <tr><td>purchase-method</td><td class="num bad">48.65%</td><td class="num">62.84%</td><td><span class="tag tag-red">Same first drop</span></td></tr>
+    <tr><td>financing-options</td><td class="num good">92.22%</td><td class="num">68.11%</td><td><span class="tag tag-green">IT better</span></td></tr>
+    <tr><td>financing-form</td><td class="num">62.65%</td><td class="num">60.98%</td><td><span class="tag tag-blue">&asymp; same</span></td></tr>
+    <tr><td>financing-status</td><td class="num good">59.62%</td><td class="num">36%</td><td><span class="tag tag-green">IT better</span> (shorter IT form)</td></tr>
+    <tr><td>caraudit-form</td><td class="num">90.32%</td><td class="num">395.56%*</td><td class="neutral">*CZ revisits</td></tr>
+  </tbody>
+</table>
+
+<div class="callout callout-green">
+  <strong>The financing path is NOT the problem</strong>
+  Once Italian users choose financing, they convert as well or better than CZ through the financing steps.
+  The IT financing form is shorter than CZ, which explains the better retention at financing-status (59.62% vs 36%).
+</div>
+
+<h3>Engagement time per page: IT vs CZ (GA4, Mar 26 &ndash; Apr 8, 2026)</h3>
+
+<table>
+  <thead>
+    <tr><th>Page</th><th class="num">IT Active Users</th><th class="num">IT Avg Time</th><th class="num">CZ Active Users</th><th class="num">CZ Avg Time</th><th class="num">IT vs CZ</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><strong>car-selection</strong></td><td class="num">392</td><td class="num">8s</td><td class="num">830</td><td class="num">9s</td><td class="num neutral">&asymp; same</td></tr>
+    <tr><td>purchase-method</td><td class="num">214</td><td class="num">42s</td><td class="num">505</td><td class="num">54s</td><td class="num bad">-12s</td></tr>
+    <tr><td>financing-options</td><td class="num">195</td><td class="num">36s</td><td class="num">362</td><td class="num">39s</td><td class="num neutral">&asymp; same</td></tr>
+    <tr><td>financing-form</td><td class="num">113</td><td class="num">1m 03s</td><td class="num">220</td><td class="num">1m 01s</td><td class="num neutral">&asymp; same</td></tr>
+    <tr><td>financing-status</td><td class="num">69</td><td class="num">41s</td><td class="num">70</td><td class="num">43s</td><td class="num neutral">&asymp; same</td></tr>
+    <tr><td>caraudit-form</td><td class="num">68</td><td class="num">37s</td><td class="num">296</td><td class="num">48s</td><td class="num bad">-11s</td></tr>
+    <tr><td>car-check</td><td class="num">22</td><td class="num">2m 30s</td><td class="num">310</td><td class="num">1m 49s</td><td class="num good">+41s</td></tr>
+  </tbody>
+</table>
+
+<div class="callout callout-orange">
+  <strong>8&ndash;9 seconds on car-selection is normal &mdash; CZ shows the same pattern</strong>
+  CZ users also spend only 9s on car-selection, yet they convert 3&ndash;6x better downstream. The car-selection page is essentially a "confirmation screen" &mdash; users glance at their selected car and either click Next or leave. <strong>The IT-specific problem is not on this page &mdash; it emerges at purchase-method and beyond.</strong>
+</div>
+
+<div class="callout callout-red">
+  <strong>The two critical drop-off points:</strong>
+  <ol style="margin-top:8px;">
+    <li><strong>car-selection &rarr; purchase-method (48.65% IT vs 62.84% CZ)</strong> &mdash; Half of users who enter the wizard leave before choosing any payment method</li>
+    <li><strong>purchase-method &rarr; caraudit-form (31.11% IT vs 59.14% CZ)</strong> &mdash; Of those who reach purchase-method, only a third proceed to the CarAudit form (this includes all payment methods)</li>
+  </ol>
+</div>
+
+<!-- ==================== SECTION 4 ==================== -->
+<h2 id="s4">4. UX Review: The Car-Selection Page</h2>
+
+<div class="img-container">
+  <img src="img/cart-car-selection.png" alt="Full screenshot of IT car-selection page (orderWizard step 1)">
+</div>
+<p class="img-caption">The car-selection page (step 1) &mdash; this is where 51% of IT users drop off</p>
+
+<h3>User flow before the wizard</h3>
+<p>The user sees a price payslip on the car detail page <strong>before</strong> entering the wizard.
+They can already choose a financing option or cash on the car detail page, then click "Conferma e Procedi" to enter the wizard. Once the car is in the cart, the button changes to "Continua a ordinare".</p>
+
+<div class="img-row">
+  <div>
+    <div class="img-container">
+      <img src="img/payslip-car-detail.png" alt="Car detail payslip with financing options and Conferma e Procedi">
+    </div>
+    <p class="img-caption">Car detail &mdash; first visit, with financing options</p>
+  </div>
+  <div>
+    <div class="img-container">
+      <img src="img/payslip-car-detail-in-cart.png" alt="Car detail payslip when car is already in cart - Continua a ordinare">
+    </div>
+    <p class="img-caption">Car detail &mdash; car already in cart, "Continua a ordinare"</p>
+  </div>
+</div>
+
+<div class="img-row">
+  <div>
+    <div class="img-container">
+      <img src="img/payslip-cart-sidebar.png" alt="Cart sidebar payslip on car-selection page - expanded view with all line items">
+    </div>
+    <p class="img-caption">Cart sidebar (step 1) &mdash; current expanded payslip</p>
+  </div>
+  <div style="display:flex; align-items:center;">
+    <div>
+      <h4>Key observations</h4>
+      <ul style="font-size:13px;">
+        <li><strong>Price is already visible before the wizard</strong> &mdash; "sticker shock" at step 1 is unlikely</li>
+        <li><strong>CZ has similar fees</strong> &mdash; IT-specific taxes are not unique friction</li>
+        <li>5-step wizard may feel like a commitment for exploratory users</li>
+        <li>Explanatory text at top is dense</li>
+        <li>Cross-border origin ("Germania, importazione") visible on most IT cars</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<h3>Data gap</h3>
+<p><strong>Cash vs financing split is not currently tracked in Salesforce.</strong> Implementation is in progress.
+Note: the GA "Full Funnel" view includes both cash and financing users. The 31.11% purchase-method &rarr; caraudit-form rate is across all payment methods. Once the SF split is available, we can determine if one path is significantly worse.</p>
+
+<!-- ==================== SECTION 5 ==================== -->
+<h2 id="s5">5. Prior Survey Data: "Why Not Carvago"</h2>
+
+<p>A previous Hotjar survey ran across all Carvago markets (6,082 responses total: 4,137 Proposition survey + 1,945 "Why not Carvago"). Duration: 2 weeks, all countries, mobile &amp; desktop.
+<br><a href="https://docs.google.com/presentation/d/1sLIqAbxJOtvBDqCOnUmh1FKSBRFFmIyVWPwDugZzvQ0/edit?slide=id.g35f227666f8_0_0#slide=id.g35f227666f8_0_0" target="_blank">Full results (Google Slides) &rarr;</a></p>
+
+<h3>"Why not Carvago" — Italy vs other markets</h3>
+
+<p>The "Why not Carvago" survey asked: <em>"If you haven't decided to buy a car through Carvago yet, what's the main reason?"</em> (multi-select). Italy-specific findings:</p>
+
+<table>
+  <thead>
+    <tr><th>Barrier</th><th class="num">IT</th><th class="num">AVG</th><th>IT vs others</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Car price too high</td><td class="num">~39%</td><td class="num">42%</td><td>Close to average</td></tr>
+    <tr><td><strong>No trust in online car purchase</strong></td><td class="num bad">~19%</td><td class="num">13.5%</td><td><span class="tag tag-red">IT is HIGHEST</span></td></tr>
+    <tr><td><strong>Don't understand how purchase works</strong></td><td class="num bad">~15%</td><td class="num">8%</td><td><span class="tag tag-red">IT nearly 2x average</span></td></tr>
+    <tr><td>Looking for other financing</td><td class="num">~10%</td><td class="num">10.9%</td><td>Average</td></tr>
+    <tr><td>Insufficient info in listings</td><td class="num">~7%</td><td class="num">9%</td><td>Below average</td></tr>
+    <tr><td>Long delivery time</td><td class="num">~8%</td><td class="num">5.2%</td><td>Slightly above</td></tr>
+    <tr><td>CarAudit price</td><td class="num good">~5%</td><td class="num">3.7%</td><td><span class="tag tag-green">Not a major barrier</span></td></tr>
+    <tr><td>Don't trust Carvago brand</td><td class="num good">~2%</td><td class="num">3.8%</td><td><span class="tag tag-green">Below average</span></td></tr>
+  </tbody>
+</table>
+
+<div class="callout callout-red">
+  <strong>Italy's #1 unique barrier: distrust of online car purchasing (19% &mdash; highest of all markets)</strong>
+  Combined with "don't understand how purchase works" (15%), <strong>34% of Italian non-buyers cite trust or process confusion</strong> as their reason. This is significantly above the cross-market average.
+  <br><br>
+  Notably, they don't distrust <em>Carvago</em> specifically (only 2%) &mdash; they distrust <em>buying a car online in general</em>.
+</div>
+
+<h3>Proposition survey — Italy awareness gaps</h3>
+
+<p>The Proposition survey tested if users know about key Carvago benefits (Yes/No). Italy scores well overall, but two areas stand out:</p>
+
+<table>
+  <thead>
+    <tr><th>Statement</th><th class="num">IT "Yes"</th><th class="num">AVG</th><th>Gap</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>I know I can buy a car fully online</td><td class="num good">~85%</td><td class="num">85.5%</td><td>OK</td></tr>
+    <tr><td>I know Carvago checks every car before purchase</td><td class="num good">~86%</td><td class="num">85.9%</td><td>OK</td></tr>
+    <tr><td>I know I can return the car within 14 days</td><td class="num">~78%</td><td class="num">79%</td><td>OK</td></tr>
+    <tr><td>I know each car comes with free warranty</td><td class="num">~75%</td><td class="num">74.6%</td><td>OK</td></tr>
+    <tr><td><strong>Online purchase on Carvago is the safest way to buy</strong></td><td class="num bad">~57%</td><td class="num">65%</td><td><span class="tag tag-red">IT lowest</span></td></tr>
+    <tr><td>Carvago handles everything (financing, registration, delivery)</td><td class="num">~78%</td><td class="num">74.7%</td><td>OK</td></tr>
+    <tr><td><strong>I buy directly from Carvago and they guarantee the car</strong></td><td class="num bad">~70%</td><td class="num">80.9%</td><td><span class="tag tag-red">-11pp below avg</span></td></tr>
+  </tbody>
+</table>
+
+<div class="callout callout-orange">
+  <strong>Italian users don't believe Carvago is the safest way to buy a car (57% vs 65% avg)</strong>, and fewer understand they buy directly from Carvago with a guarantee (70% vs 81% avg). This reinforces the trust hypothesis.
+</div>
+
+<h3>What this means for our new survey</h3>
+
+<p>The prior survey already answered some of our questions at a general level. Our new Hotjar survey should go <strong>deeper and more specific</strong> to the wizard context:</p>
+<ul>
+  <li><strong>We already know</strong> trust &amp; process confusion are the top IT barriers &mdash; no need to re-validate this broadly</li>
+  <li><strong>We need to learn</strong> what specifically about the wizard/cart triggers distrust or confusion</li>
+  <li><strong>We need to distinguish</strong> "just browsing" (traffic quality) from "interested but blocked" (UX/trust issue)</li>
+  <li><strong>CarAudit price is NOT a major barrier</strong> (only 5%) &mdash; we can safely exclude it from survey options</li>
+</ul>
+
+<hr>
+
+<!-- ==================== SECTION 6 ==================== -->
+<h2 id="s6">6. Hypotheses</h2>
+
+<p>Combining the GA funnel, KPI data, SF lost reasons, and prior survey results:</p>
+
+<table>
+  <thead>
+    <tr><th>#</th><th>Hypothesis</th><th>Evidence</th><th>How to test</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>H1</td>
+      <td><strong>"Just browsing" &mdash; low purchase intent</strong><br>IT traffic has many window shoppers who enter the wizard to explore</td>
+      <td>78% auto-close in "New"; 51% drop at step 1; growing opp volume but declining conversion</td>
+      <td><span class="tag tag-blue">Hotjar Survey</span></td>
+    </tr>
+    <tr>
+      <td>H2</td>
+      <td><strong>Trust gap &mdash; cross-border purchase anxiety</strong><br>Italian users don't trust buying a car from Germany through an online platform</td>
+      <td>Most IT cars are imported; Italian market is newer for Carvago</td>
+      <td><span class="tag tag-blue">Hotjar Survey</span></td>
+    </tr>
+    <tr>
+      <td>H3</td>
+      <td><strong>Process unclear &mdash; "what happens next?"</strong><br>Users don't understand the wizard steps or the CarAudit concept</td>
+      <td>Drop at step 1 before any action is required</td>
+      <td><span class="tag tag-blue">Hotjar Survey</span></td>
+    </tr>
+    <tr>
+      <td>H4</td>
+      <td><strong>Commitment shock &mdash; wizard feels too heavy</strong><br>5-step wizard creates a "serious purchase" feeling that doesn't match exploratory mindset</td>
+      <td>Drop happens before any form filling</td>
+      <td><span class="tag tag-blue">Hotjar Survey</span></td>
+    </tr>
+    <tr>
+      <td>H5</td>
+      <td><strong>Comparison shopping</strong><br>Users compare Carvago with local Italian dealers</td>
+      <td>Needs return visitor analysis (GA)</td>
+      <td><span class="tag tag-blue">Hotjar Survey</span> + GA</td>
+    </tr>
+    <tr>
+      <td>H6</td>
+      <td><strong>Information overload &mdash; expanded payslip overwhelms</strong><br>Sidebar payslip shows too many line items at once, causing decision paralysis</td>
+      <td>UX review: all services, taxes, total visible simultaneously</td>
+      <td><span class="tag tag-green">A/B test: collapsed payslip</span></td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- ==================== SECTION 7 ==================== -->
+<h2 id="s7">7. Proposed Approach: Two Tracks</h2>
+
+<div class="callout callout-orange">
+  <strong>Why we changed the plan:</strong> The original idea was an exit-intent survey on <code>car-selection</code>. But with only 8 seconds average engagement, users bounce too fast to meaningfully engage with a survey popup. We need to catch users <strong>before</strong> they enter the wizard (car detail page) and <strong>after</strong> the initial bounce (purchase-method page, where engaged users spend 42s).
+</div>
+
+<h3>Track 1: Qualitative — Hotjar Surveys</h3>
+
+<div class="callout callout-orange">
+  <strong>Sequencing:</strong> We start with Survey B only (purchase-method page) to avoid showing two surveys to the same user. Survey A (car detail page) can be launched later if needed.
+</div>
+
+<h4>Survey A: Car Detail Page (pre-wizard) <span class="tag tag-blue">DEFERRED</span></h4>
+
+<div class="callout callout-blue" style="opacity: 0.7;">
+  <strong>Goal:</strong> Understand what stops users from entering the order wizard<br>
+  <strong>Page:</strong> Car detail page, IT locale only<br>
+  <strong>Trigger:</strong> User spent 30s+ on the page but did not click "Conferma e Procedi"<br>
+  <strong>Why here:</strong> Users are still engaged (browsing the car), more likely to respond than in the 8s wizard bounce<br>
+  <strong>Status:</strong> Deferred &mdash; will launch after Survey B concludes, to avoid showing two surveys to the same user
+</div>
+
+<div class="survey-q" style="opacity: 0.7;">
+  <div class="q-label">Question 1 &mdash; Single choice</div>
+  <div class="q-text">
+    Cosa ti aiuterebbe a fare il prossimo passo?
+    <em>(What would help you take the next step?)</em>
+  </div>
+  <ol>
+    <li>Vorrei vedere l'auto di persona prima di decidere <em>(Want to see the car in person before deciding)</em></li>
+    <li>Ho bisogno di capire meglio come funziona il processo <em>(Need to better understand how the process works)</em></li>
+    <li>Vorrei parlare con qualcuno prima di procedere <em>(Want to talk to someone before proceeding)</em></li>
+    <li>Sto solo confrontando i prezzi con altri siti <em>(Just comparing prices with other sites)</em></li>
+    <li>Non sono ancora pronto ad acquistare <em>(Not ready to buy yet)</em></li>
+    <li>Altro <em>(Other &mdash; free text)</em></li>
+  </ol>
+</div>
+
+<div class="survey-q" style="opacity: 0.7;">
+  <div class="q-label">Question 2 &mdash; Free text, optional</div>
+  <div class="q-text">
+    C'&egrave; qualcosa che ti preoccupa riguardo all'acquisto online?
+    <em>(Is there anything that worries you about buying online?)</em>
+  </div>
+</div>
+
+<h4>Survey B: Purchase-Method Page (in-wizard) <span class="tag tag-green">FIRST</span></h4>
+
+<div class="callout callout-blue">
+  <strong>Goal:</strong> Understand the purchase-method &rarr; caraudit-form drop (31.11% IT vs 59.14% CZ)<br>
+  <strong>Page:</strong> <code>orderWizard:purchase-method</code>, IT locale only<br>
+  <strong>Trigger:</strong> Exit intent (users here spend avg 42s &mdash; enough time for a survey)<br>
+  <strong>Why here:</strong> These users already passed the 8s bounce &mdash; they're more committed but something specific stops them at the payment choice
+</div>
+
+<div class="survey-q">
+  <div class="q-label">Question 1 &mdash; Single choice</div>
+  <div class="q-text">
+    Cosa ti impedisce di procedere?
+    <em>(What's stopping you from proceeding?)</em>
+  </div>
+  <ol>
+    <li>Non sono sicuro di quale metodo di pagamento scegliere <em>(Not sure which payment method to choose)</em></li>
+    <li>Voglio capire meglio cosa include il CarAudit <em>(Want to better understand what CarAudit includes)</em></li>
+    <li>Preferisco non impegnarmi ancora <em>(Prefer not to commit yet)</em></li>
+    <li>Ho bisogno di pi&ugrave; tempo per decidere <em>(Need more time to decide)</em></li>
+    <li>Altro <em>(Other &mdash; free text)</em></li>
+  </ol>
+</div>
+
+<div class="survey-q">
+  <div class="q-label">Question 2 &mdash; Free text, optional (shown only after Q1)</div>
+  <div class="q-text">
+    Cosa ti aiuterebbe a procedere con l'ordine?
+    <em>(What would help you proceed with the order?)</em>
+  </div>
+</div>
+
+<h3>Track 2: Quantitative — A/B Tests via GrowthBook</h3>
+
+<p>Run in parallel with the surveys. Prioritized based on the CZ benchmark data &mdash; since CZ has the same 9s car-selection behavior but converts well, the problem is likely downstream.</p>
+
+<table>
+  <thead>
+    <tr><th>Priority</th><th>Test</th><th>What changes</th><th>Hypothesis</th><th>Primary metric</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><span class="tag tag-red">P1</span></td>
+      <td><strong>Collapsed payslip</strong></td>
+      <td>Collapse service line items behind "Totale servizi &blacktriangledown;" on purchase-method/car-selection</td>
+      <td>H6: Information overload on sidebar</td>
+      <td>car-selection &rarr; purchase-method rate</td>
+    </tr>
+    <tr>
+      <td><span class="tag tag-orange">P2</span></td>
+      <td><strong>Softer CTA</strong></td>
+      <td>"Conferma e Procedi" &rarr; softer wording</td>
+      <td>H4: CTA creates commitment shock</td>
+      <td>Click-through rate on car detail</td>
+    </tr>
+    <tr>
+      <td><span class="tag tag-blue">P3</span></td>
+      <td><strong>Simplified wizard header</strong></td>
+      <td>Remove or simplify the 5-step progress bar</td>
+      <td>H4: Seeing 5 steps triggers "too much"</td>
+      <td>car-selection &rarr; purchase-method rate</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="callout callout-orange">
+  <strong>Note:</strong> CZ has the same 9s car-selection engagement and the same 5-step wizard, yet converts well. This suggests P2 and P3 are less likely to be the root cause. <strong>Survey B on the purchase-method page is the highest priority &mdash; we need to understand what specifically blocks IT users at the payment choice.</strong>
+</div>
+
+<div class="callout callout-green">
+  <strong>Decision point after 2&ndash;3 weeks:</strong> If survey results + A/B tests show that targeted fixes improve the 8s bounce and step-to-step rates, we iterate. If not &mdash; and the problem is fundamental (e.g. 70%+ say "just browsing" or "don't trust online purchase") &mdash; then we consider a bigger cart/wizard rework with proper UX research.
+</div>
+
+<!-- ==================== SECTION 8 ==================== -->
+<h2 id="s8">8. Future Considerations</h2>
+
+<table>
+  <thead>
+    <tr><th>Item</th><th>Details</th><th>When</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Cart/wizard rework</strong></td>
+      <td>Full redesign of the order entry experience if targeted fixes don't move the needle. Would require UX research, prototyping, and significant dev effort.</td>
+      <td>Only if Track 1+2 results indicate fundamental issues</td>
+    </tr>
+    <tr>
+      <td><strong>Post-bounce email survey</strong></td>
+      <td>Follow-up for 7+ day old opportunities still in "New"</td>
+      <td>Can complement in-context surveys</td>
+    </tr>
+    <tr>
+      <td><strong>Post-purchase NPS adjustment</strong></td>
+      <td>Add IT-specific questions about buying experience</td>
+      <td>Low effort &mdash; can run in parallel</td>
+    </tr>
+    <tr>
+      <td><strong>Cash/financing split in SF</strong></td>
+      <td>Will unlock deeper analysis of which payment path has worse conversion</td>
+      <td>Implementation in progress</td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- ==================== SECTION 9 ==================== -->
+<h2 id="s9">9. Broader Context: Continuous Survey Tool</h2>
+
+<div class="callout callout-blue">
+  <strong>Project: Continuous Surveys Tool with Dashboards</strong><br>
+  Goal: User-friendly feedback gathering tool with reporting and dashboards<br>
+  Business impact: Cheap customer data collecting
+</div>
+
+<ul>
+  <li>Post-purchase NPS already exists (email-based)</li>
+  <li>Hotjar is active on IT domain</li>
+  <li>PMs create surveys; evaluation/dashboarding to be co-defined</li>
+  <li><strong>Open:</strong> Build vs buy, dashboard location, SF integration</li>
+</ul>
+
+<!-- ==================== SECTION 10 ==================== -->
+<h2 id="s10">10. Next Steps</h2>
+
+<div class="timeline">
+  <div class="timeline-item">
+    <div class="tl-label">This week</div>
+    <div class="tl-text"><strong>Track 1:</strong> Set up Hotjar Survey B (purchase-method page) for IT locale. Survey A (car detail page) deferred to avoid double-surveying users.</div>
+  </div>
+  <div class="timeline-item">
+    <div class="tl-label">This week</div>
+    <div class="tl-text"><strong>Track 2:</strong> Set up first A/B test in GrowthBook (softer CTA or simplified wizard header)</div>
+  </div>
+  <div class="timeline-item">
+    <div class="tl-label">Week 2&ndash;3</div>
+    <div class="tl-text">Collect survey responses (target: 100&ndash;200 per survey) and A/B test data</div>
+  </div>
+  <div class="timeline-item">
+    <div class="tl-label">Week 3</div>
+    <div class="tl-text">Analyze results. Categorize free-text. Review A/B test significance</div>
+  </div>
+  <div class="timeline-item">
+    <div class="tl-label">Week 4</div>
+    <div class="tl-text"><strong>Decision point:</strong> targeted fixes sufficient, or cart/wizard rework needed?</div>
+  </div>
+  <div class="timeline-item">
+    <div class="tl-label">Ongoing</div>
+    <div class="tl-text">Cash/financing split implementation in SF</div>
+  </div>
+</div>
+
+<!-- ==================== SECTION 11 ==================== -->
+<h2 id="s11">11. Methodology &amp; Data Sources</h2>
+
+<table>
+  <thead>
+    <tr><th>Source</th><th>What</th><th>How</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>[PROD] KPI sheet</strong></td>
+      <td>New Registrations, New Opportunities, Paid Unique Per Customer, CA Delivered, Contracts Paid, conversion rates</td>
+      <td>Google Sheets, country = IT, monthly data. <strong>This is the source of truth for conversion numbers.</strong></td>
+    </tr>
+    <tr>
+      <td>Salesforce (Order)</td>
+      <td>Order status distribution (ord-lost, ord-completed, etc.)</td>
+      <td><code>sf data query</code> on <code>Order</code> object, filtered by <code>Customer_Country_Origin__c</code></td>
+    </tr>
+    <tr>
+      <td>Salesforce (Opportunity)</td>
+      <td>Lost reason codes</td>
+      <td>SOQL on <code>Opportunity</code>, field <code>Opportunity_Reason_Code__c</code>. Note: auto-closing only recently implemented</td>
+    </tr>
+    <tr>
+      <td>Google Analytics</td>
+      <td>Transaction funnel step-to-step rates</td>
+      <td><a href="https://lookerstudio.google.com/u/0/reporting/171bb951-df2a-415e-a76c-fc3921031329/page/5oysF" target="_blank">Looker Studio funnel</a>, 1&ndash;7 Apr 2026, Market: IT and CZ. No cohort filtering.</td>
+    </tr>
+    <tr>
+      <td>Prior Hotjar Survey</td>
+      <td>"Why not Carvago" barriers by market, Proposition awareness by market</td>
+      <td>Hotjar pop-up survey, all Carvago markets, 2 weeks, 6,082 total responses. See <code>Hotjar Survey Final.pdf</code></td>
+    </tr>
+    <tr>
+      <td>UX Review</td>
+      <td>Car-selection page, payslip design, car detail page</td>
+      <td>Visual inspection of live IT order wizard</td>
+    </tr>
+  </tbody>
+</table>
+
+<hr>
+
+<div class="footer">
+  <p>Generated 8 April 2026 &mdash; Marie Michalova</p>
+  <p>Jira ticket: <em>to be created</em> &nbsp;|&nbsp; Hotjar survey ID: <em>to be set up</em></p>
+</div>
+
+<script>
+const T = {
+  // Title & meta
+  "Italy Conversion Investigation": "Indagine sulla Conversione in Italia",
+  "Opportunity → Paid CarAudit Drop-off Analysis": "Analisi del calo di conversione: Opportunity → CarAudit Pagato",
+  "Author: Marie Michalova": "Autore: Marie Michalova",
+  "Date: 8 April 2026": "Data: 8 aprile 2026",
+  "In Progress": "In Corso",
+
+  // TOC
+  "Table of Contents": "Indice",
+  "KPI Data: Conversion Trend": "Dati KPI: Trend di Conversione",
+  "Lost Reason Analysis (Salesforce)": "Analisi dei Motivi di Perdita (Salesforce)",
+  "GA Funnel: Where Users Drop Off": "Funnel GA: Dove gli Utenti Abbandonano",
+  "UX Review: The Car-Selection Page": "Analisi UX: La Pagina di Selezione Auto",
+  "Prior Survey Data: \"Why Not Carvago\"": "Dati del Sondaggio Precedente: \"Perché Non Carvago\"",
+  "Hypotheses": "Ipotesi",
+  "Quick Win: A/B Test — Collapsed Payslip": "Quick Win: A/B Test — Riepilogo Pagamento Compresso",
+  "Proposed Approach: Two Tracks": "Approccio Proposto: Due Percorsi",
+  "Future Considerations": "Considerazioni Future",
+  "Broader Context: Continuous Survey Tool": "Contesto Più Ampio: Strumento di Sondaggi Continui",
+  "Next Steps": "Prossimi Passi",
+  "Methodology & Data Sources": "Metodologia e Fonti Dati",
+
+  // Section headings (with numbers)
+  "1. KPI Data: Conversion Trend": "1. Dati KPI: Trend di Conversione",
+  "2. Lost Reason Analysis (Salesforce)": "2. Analisi dei Motivi di Perdita (Salesforce)",
+  "3. GA Funnel: Where Users Drop Off": "3. Funnel GA: Dove gli Utenti Abbandonano",
+  "4. UX Review: The Car-Selection Page": "4. Analisi UX: La Pagina di Selezione Auto",
+  "5. Prior Survey Data: \"Why Not Carvago\"": "5. Dati del Sondaggio Precedente: \"Perché Non Carvago\"",
+  "6. Hypotheses": "6. Ipotesi",
+  "7. Proposed Approach: Two Tracks": "7. Approccio Proposto: Due Percorsi",
+  "8. Future Considerations": "8. Considerazioni Future",
+  "9. Broader Context: Continuous Survey Tool": "9. Contesto Più Ampio: Strumento di Sondaggi Continui",
+  "10. Next Steps": "10. Prossimi Passi",
+  "11. Methodology & Data Sources": "11. Metodologia e Fonti Dati",
+
+  // Sub-headings
+  "Italy: Monthly Funnel": "Italia: Funnel Mensile",
+  "Full Funnel (all payment methods)": "Funnel Completo (tutti i metodi di pagamento)",
+  "Financing Path (subset with additional detail)": "Percorso Finanziamento (sottoinsieme con dettaglio aggiuntivo)",
+  "User flow before the wizard": "Flusso utente prima del wizard",
+  "Data gap": "Dati mancanti",
+  "Key observations": "Osservazioni chiave",
+  "\"Why not Carvago\" — Italy vs other markets": "\"Perché non Carvago\" — Italia vs altri mercati",
+  "Proposition survey — Italy awareness gaps": "Sondaggio Proposition — Gap di consapevolezza in Italia",
+  "What this means for our new survey": "Cosa significa per il nostro nuovo sondaggio",
+  "Design rationale": "Logica di progettazione",
+
+  // Problem statement
+  "Problem Statement": "Dichiarazione del Problema",
+
+  // Callout blocks — using innerHTML approach
+  "Conversion dropped from ~11% to ~2% in 10 months": "La conversione è scesa da ~11% a ~2% in 10 mesi",
+  "Caveat:": "Avvertenza:",
+  "Conclusion:": "Conclusione:",
+  "The financing path is NOT the problem": "Il percorso di finanziamento NON è il problema",
+  "The two critical drop-off points:": "I due punti critici di abbandono:",
+  "Italy's #1 unique barrier: distrust of online car purchasing (19% — highest of all markets)": "La barriera unica #1 dell'Italia: sfiducia nell'acquisto online di auto (19% — la più alta di tutti i mercati)",
+  "This can run in parallel with the Hotjar survey": "Questo può essere eseguito in parallelo con il sondaggio Hotjar",
+  "Project: Continuous Surveys Tool with Dashboards": "Progetto: Strumento di Sondaggi Continui con Dashboard",
+
+  // Table headers
+  "Month": "Mese",
+  "New Registrations": "Nuove Registrazioni",
+  "New Opps": "Nuove Opp.",
+  "Paid Unique /Customer": "Pagati Unici /Cliente",
+  "CA Delivered /Customer": "CA Consegnati /Cliente",
+  "Contracts Paid": "Contratti Pagati",
+  "Paid/New Opp %": "Pagati/Nuova Opp %",
+  "Trend": "Trend",
+  "Reason Code": "Codice Motivo",
+  "Count": "Conteggio",
+  "Share": "Quota",
+  "Step": "Passo",
+  "IT (% from prev)": "IT (% dal prec.)",
+  "CZ (% from prev)": "CZ (% dal prec.)",
+  "Assessment": "Valutazione",
+  "Note": "Nota",
+  "Barrier": "Barriera",
+  "IT": "IT",
+  "AVG": "MEDIA",
+  "IT vs others": "IT vs altri",
+  "Statement": "Affermazione",
+  "IT \"Yes\"": "IT \"Sì\"",
+  "Gap": "Divario",
+  "Hypothesis": "Ipotesi",
+  "Evidence": "Evidenza",
+  "How to test": "Come testare",
+  "Aspect": "Aspetto",
+  "Details": "Dettagli",
+  "Decision": "Decisione",
+  "Why": "Perché",
+  "Survey": "Sondaggio",
+  "Trigger": "Attivazione",
+  "When": "Quando",
+  "Source": "Fonte",
+  "What": "Cosa",
+  "How": "Come",
+
+  // Table content — reason codes
+  "Auto-closed after 30 days in \"New\"": "Chiusa automaticamente dopo 30 giorni in \"Nuovo\"",
+  "(empty / unknown)": "(vuoto / sconosciuto)",
+  "Auto-closed after 30 days in \"Financing\"": "Chiusa automaticamente dopo 30 giorni in \"Finanziamento\"",
+
+  // Funnel steps
+  "Baseline": "Base",
+  "-14pp gap": "-14pp divario",
+  "-28pp — biggest drop": "-28pp — calo maggiore",
+  "*revisits": "*rivisitazioni",
+  "*CZ revisits": "*rivisitazioni CZ",
+  "Same first drop": "Stesso primo calo",
+  "IT better": "IT migliore",
+  "≈ same": "≈ uguale",
+
+  // Why not Carvago table
+  "Car price too high": "Prezzo auto troppo alto",
+  "Close to average": "Vicino alla media",
+  "No trust in online car purchase": "Nessuna fiducia nell'acquisto online di auto",
+  "IT is HIGHEST": "IT è il PIÙ ALTO",
+  "Don't understand how purchase works": "Non capisco come funziona l'acquisto",
+  "IT nearly 2x average": "IT quasi 2x la media",
+  "Looking for other financing": "Cerco altre opzioni di finanziamento",
+  "Average": "Media",
+  "Insufficient info in listings": "Informazioni insufficienti negli annunci",
+  "Below average": "Sotto la media",
+  "Long delivery time": "Tempi di consegna lunghi",
+  "Slightly above": "Leggermente sopra",
+  "CarAudit price": "Prezzo CarAudit",
+  "Not a major barrier": "Non una barriera importante",
+  "Don't trust Carvago brand": "Non mi fido del marchio Carvago",
+
+  // Proposition survey
+  "I know I can buy a car fully online": "So che posso comprare un'auto completamente online",
+  "I know Carvago checks every car before purchase": "So che Carvago controlla ogni auto prima dell'acquisto",
+  "I know I can return the car within 14 days": "So che posso restituire l'auto entro 14 giorni",
+  "I know each car comes with free warranty": "So che ogni auto include una garanzia gratuita",
+  "Online purchase on Carvago is the safest way to buy": "L'acquisto online su Carvago è il modo più sicuro per comprare",
+  "IT lowest": "IT il più basso",
+  "Carvago handles everything (financing, registration, delivery)": "Carvago gestisce tutto (finanziamento, registrazione, consegna)",
+  "OK": "OK",
+  "I buy directly from Carvago and they guarantee the car": "Compro direttamente da Carvago e loro garantiscono l'auto",
+  "-11pp below avg": "-11pp sotto la media",
+
+  // Hypotheses table
+  "\"Just browsing\" — low purchase intent": "\"Solo un'occhiata\" — bassa intenzione di acquisto",
+  "IT traffic has many window shoppers who enter the wizard to explore": "Il traffico IT ha molti visitatori curiosi che entrano nel wizard per esplorare",
+  "78% auto-close in \"New\"; 51% drop at step 1; growing opp volume but declining conversion": "78% chiuse automaticamente in \"Nuovo\"; 51% abbandono al passo 1; volume opp in crescita ma conversione in calo",
+  "Trust gap — cross-border purchase anxiety": "Divario di fiducia — ansia per l'acquisto transfrontaliero",
+  "Italian users don't trust buying a car from Germany through an online platform": "Gli utenti italiani non si fidano di comprare un'auto dalla Germania tramite una piattaforma online",
+  "Most IT cars are imported; Italian market is newer for Carvago": "La maggior parte delle auto IT sono importate; il mercato italiano è più nuovo per Carvago",
+  "Process unclear — \"what happens next?\"": "Processo poco chiaro — \"cosa succede dopo?\"",
+  "Users don't understand the wizard steps or the CarAudit concept": "Gli utenti non capiscono i passi del wizard o il concetto di CarAudit",
+  "Drop at step 1 before any action is required": "Abbandono al passo 1 prima che sia richiesta qualsiasi azione",
+  "Commitment shock — wizard feels too heavy": "Shock da impegno — il wizard sembra troppo pesante",
+  "5-step wizard creates a \"serious purchase\" feeling that doesn't match exploratory mindset": "Il wizard a 5 passi crea una sensazione di \"acquisto serio\" che non corrisponde alla mentalità esplorativa",
+  "Drop happens before any form filling": "L'abbandono avviene prima di qualsiasi compilazione",
+  "Comparison shopping": "Confronto prezzi",
+  "Users compare Carvago with local Italian dealers": "Gli utenti confrontano Carvago con i concessionari italiani locali",
+  "Needs return visitor analysis (GA)": "Necessaria analisi visitatori di ritorno (GA)",
+  "Information overload — expanded payslip overwhelms": "Sovraccarico informativo — il riepilogo espanso confonde",
+  "Sidebar payslip shows too many line items at once, causing decision paralysis": "Il riepilogo nella barra laterale mostra troppi dettagli contemporaneamente, causando paralisi decisionale",
+  "UX review: all services, taxes, total visible simultaneously": "Analisi UX: tutti i servizi, tasse, totale visibili contemporaneamente",
+  "A/B test: collapsed payslip": "A/B test: riepilogo compresso",
+  "Hotjar Survey": "Sondaggio Hotjar",
+
+  // A/B test section
+  "What changes": "Cosa cambia",
+  "Scope": "Ambito",
+  "Primary metric": "Metrica primaria",
+  "Secondary metric": "Metrica secondaria",
+  "Duration": "Durata",
+  "Risk": "Rischio",
+
+  // Survey section
+  "Goal:": "Obiettivo:",
+  "Tool:": "Strumento:",
+  "Trigger:": "Attivazione:",
+  "Expected sample:": "Campione atteso:",
+  "Question 1 — Single choice": "Domanda 1 — Scelta singola",
+  "Question 2 — Free text, optional (shown only after Q1)": "Domanda 2 — Testo libero, opzionale (mostrata solo dopo D1)",
+  "Only 2 questions": "Solo 2 domande",
+  "Exit-intent = user is leaving; maximize response rate": "Exit-intent = l'utente sta uscendo; massimizzare il tasso di risposta",
+  "No price-specific questions": "Nessuna domanda specifica sul prezzo",
+  "Users already saw the price on SRP before entering the wizard": "Gli utenti hanno già visto il prezzo sulla SRP prima di entrare nel wizard",
+  "Focus on trust, clarity, readiness": "Focus su fiducia, chiarezza, prontezza",
+  "These are the unknowns not visible in quantitative data": "Questi sono gli sconosciuti non visibili nei dati quantitativi",
+  "\"Just exploring\" option": "Opzione \"Sto solo esplorando\"",
+  "If 70%+ say this, the problem is traffic quality, not UX": "Se il 70%+ sceglie questa, il problema è la qualità del traffico, non la UX",
+  "Free text Q2": "Testo libero D2",
+  "Lets us discover problems we didn't hypothesize": "Ci permette di scoprire problemi che non avevamo ipotizzato",
+  "IT locale only": "Solo locale IT",
+  "Focused investigation; CZ is the healthy control": "Indagine mirata; CZ è il controllo sano",
+
+  // Future surveys
+  "Purchase-method exit survey": "Sondaggio di uscita dal metodo di pagamento",
+  "Why users don't proceed to CarAudit after choosing cash": "Perché gli utenti non procedono al CarAudit dopo aver scelto il contante",
+  "After cash/financing split is in SF": "Dopo che lo split contanti/finanziamento è in SF",
+  "Post-bounce email survey": "Sondaggio email post-abbandono",
+  "Follow-up for 7+ day old opportunities still in \"New\"": "Follow-up per opportunity con 7+ giorni ancora in \"Nuovo\"",
+  "CRM/email trigger": "Attivazione CRM/email",
+  "Complements in-context survey": "Complementa il sondaggio in-contesto",
+  "Post-purchase NPS adjustment": "Adeguamento NPS post-acquisto",
+  "Add IT-specific questions about buying experience": "Aggiungere domande specifiche IT sull'esperienza di acquisto",
+  "Existing post-purchase email": "Email post-acquisto esistente",
+  "Low effort — can run in parallel": "Basso sforzo — può essere eseguito in parallelo",
+
+  // Broader context
+  "Goal: User-friendly feedback gathering tool with reporting and dashboards": "Obiettivo: Strumento di raccolta feedback intuitivo con reportistica e dashboard",
+  "Business impact: Cheap customer data collecting": "Impatto aziendale: Raccolta dati clienti economica",
+
+  // Timeline
+  "This week": "Questa settimana",
+  "This week (parallel)": "Questa settimana (in parallelo)",
+  "Week 2–3": "Settimana 2–3",
+  "Week 3": "Settimana 3",
+  "Week 4": "Settimana 4",
+  "Ongoing": "In corso",
+};
+
+// Store original English content
+const originals = new Map();
+let currentLang = 'en';
+
+function setLang(lang) {
+  currentLang = lang;
+  document.querySelectorAll('.lang-toggle button').forEach(b => b.classList.remove('active'));
+  document.querySelector(`.lang-toggle button[onclick="setLang('${lang}')"]`).classList.add('active');
+
+  if (lang === 'it') {
+    // Translate all text nodes that match dictionary keys
+    const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
+    while (walker.nextNode()) {
+      const node = walker.currentNode;
+      const trimmed = node.textContent.trim();
+      if (trimmed && T[trimmed]) {
+        if (!originals.has(node)) originals.set(node, node.textContent);
+        node.textContent = node.textContent.replace(trimmed, T[trimmed]);
+      }
+    }
+    // Also handle elements with data-i18n-html (innerHTML replacement)
+    document.querySelectorAll('[data-i18n-html]').forEach(el => {
+      const key = el.getAttribute('data-i18n-html');
+      if (!originals.has(el)) originals.set(el, el.innerHTML);
+      if (key === 'problem_statement') {
+        el.innerHTML = '<strong>Dichiarazione del Problema</strong>La conversione da Nuova Opportunity a CarAudit Pagato (unico per cliente) in Italia è scesa da ~11–13% (metà 2025) a ~2–3% (Q1 2026). È necessaria un\'indagine urgente.';
+      }
+    });
+  } else {
+    // Restore English
+    originals.forEach((original, node) => {
+      if (node.nodeType === Node.TEXT_NODE) {
+        node.textContent = original;
+      } else {
+        node.innerHTML = original;
+      }
+    });
+  }
+}
+</script>
+
+</body>
+</html>
