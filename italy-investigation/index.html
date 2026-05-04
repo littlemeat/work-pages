@@ -199,6 +199,26 @@ Conversion = Paid Unique Per Customer / New Opportunities.</p>
   The decline started around Oct 2025 and has been accelerating. Meanwhile, the number of new opportunities has been <em>growing</em> (299 in May 2025 &rarr; 872 in Mar 2026), suggesting increasing traffic but decreasing quality or increasing friction.
 </div>
 
+<h3>Possible trigger: new transaction flow (August 2025)</h3>
+
+<div class="callout callout-orange">
+  <strong>Hypothesis: decision paralysis from the new multi-car flow?</strong>
+  In <strong>August 2025</strong> we deployed a major change to the order wizard. Two big behavioral changes for customers:
+  <ul style="margin:8px 0 0 20px;">
+    <li><strong>Multi-car cart:</strong> customers can now add up to 3 cars to their cart before paying for CarAudit (previously: one car at a time)</li>
+    <li><strong>Single active opportunity:</strong> a customer can have only one active opportunity / pay for only one CarAudit at a time (previously: multiple in parallel)</li>
+  </ul>
+  <br>
+  This timing aligns suspiciously well with the conversion decline (started ~Oct 2025, accelerating since). Possible mechanism:
+  <ul style="margin:8px 0 0 20px;">
+    <li><strong>Decision paralysis:</strong> "Should I add 3 cars or just continue with this one?" &mdash; users hesitate because they fear missing the option to compare</li>
+    <li><strong>Commitment friction:</strong> the new "only one active opportunity" rule increases the perceived weight of each choice</li>
+    <li><strong>Sunk-cost loops:</strong> users start adding cars but get stuck deciding whether to remove/replace</li>
+  </ul>
+  <br>
+  This needs investigation &mdash; it's the most plausible explanation for a drop that's correlated in time and not specific to a single funnel step. Worth testing in the upcoming Hotjar survey.
+</div>
+
 <!-- ==================== SECTION 2 ==================== -->
 <h2 id="s2">2. Lost Reason Analysis (Salesforce)</h2>
 
@@ -230,90 +250,134 @@ The GA funnel confirms the drop happens between car-selection and caraudit-form 
 <!-- ==================== SECTION 3 ==================== -->
 <h2 id="s3">3. GA Funnel: Where Users Drop Off</h2>
 
-<p>Data source: <a href="https://lookerstudio.google.com/u/0/reporting/171bb951-df2a-415e-a76c-fc3921031329/page/5oysF" target="_blank">Transaction Funnel Carvago (Looker Studio)</a>, 1&ndash;7 Apr 2026.
-<br><strong>Important:</strong> Percentages are <strong>step-to-step</strong> (from previous step), not from top of funnel. No cohort filtering &mdash; users can revisit steps, causing &gt;100% values.</p>
+<p>Data sources:
+<br>&bull; Funnel percentages: <a href="https://lookerstudio.google.com/u/0/reporting/171bb951-df2a-415e-a76c-fc3921031329/page/5oysF" target="_blank">Transaction Funnel Carvago (Looker Studio)</a>
+<br>&bull; Engagement time &amp; user counts: <a href="https://analytics.google.com/analytics/web/?hl=en&pli=1#/a137399399p261961962/reports/explorer?params=_u..nav%3Dmaui%26_r.explorerCard..startRow%3D0%26_r.explorerCard..seldim%3D%5B%22customDimensionsGroup2Slot24%22%5D%26_r.explorerCard..filterTerm%3Dorderwizard%26_r..dataFilters%3D%5B%7B%22type%22:1,%22fieldName%22:%22country%22,%22evaluationType%22:1,%22expressionList%22:%5B%22Italy%22%5D,%22complement%22:false,%22isCaseSensitive%22:true,%22expression%22:%22%22%7D%5D%26_u.comparisonOption%3Ddisabled%26_u.date00%3D20260401%26_u.date01%3D20260430%26_r.explorerCard..rowsPerPage%3D25%26_r.explorerCard..sortKey%3DactiveUsers%26_r.explorerCard..selmet%3D%5B%22activeUsers%22,%22screenPageViews%22%5D%26_r.copa-filter-builder..filter-to-edit%3D%5B%7B%22type%22:1,%22fieldName%22:%22country%22,%22evaluationType%22:1,%22expressionList%22:%5B%22Italy%22%5D,%22complement%22:false,%22isCaseSensitive%22:true,%22expression%22:%22%22%7D%5D" target="_blank">GA4 Pages and screens</a>
+<br>Reporting period: <strong>1&ndash;30 April 2026</strong>.
+<br><strong>Important:</strong> Funnel percentages are <strong>step-to-step</strong> (from previous step), not from top of funnel. No cohort filtering &mdash; users can revisit steps, causing &gt;100% values.</p>
 
 <h3>Full Funnel (all payment methods)</h3>
 
-<div class="img-container">
-  <img src="img/funnel-it-no-financing.png" alt="IT funnel without financing, 1-7 Apr 2026" style="max-width:500px;">
+<div class="img-row">
+  <div>
+    <div class="img-container">
+      <img src="img/funnel-it-no-financing.png" alt="IT funnel without financing, 1-30 Apr 2026">
+    </div>
+    <p class="img-caption">Italy &mdash; Without Financing (1&ndash;30 Apr 2026)</p>
+  </div>
+  <div>
+    <div class="img-container">
+      <img src="img/funnel-cz-no-financing.png" alt="CZ funnel without financing, 1-30 Apr 2026">
+    </div>
+    <p class="img-caption">Czech Republic &mdash; Without Financing (1&ndash;30 Apr 2026)</p>
+  </div>
 </div>
-<p class="img-caption">Italy &mdash; Without Financing (1&ndash;7 Apr 2026)</p>
 
 <table>
   <thead>
-    <tr><th>Step</th><th class="num">IT (% from prev)</th><th class="num">CZ (% from prev)</th><th>Assessment</th></tr>
+    <tr><th>Step</th><th class="num">IT (% from prev)</th><th class="num">CZ (% from prev)</th><th class="num">Gap (IT vs CZ)</th><th>Assessment</th></tr>
   </thead>
   <tbody>
-    <tr><td>car-selection</td><td class="num">100%</td><td class="num">100%</td><td><span class="tag tag-blue">Baseline</span></td></tr>
-    <tr><td><strong>purchase-method</strong></td><td class="num bad">48.65%</td><td class="num">62.84%</td><td><span class="tag tag-red">-14pp gap</span></td></tr>
-    <tr><td><strong>caraudit-form</strong></td><td class="num bad">31.11%</td><td class="num">59.14%</td><td><span class="tag tag-red">-28pp &mdash; biggest drop</span></td></tr>
-    <tr><td>car-check</td><td class="num">46.43%</td><td class="num">121.35%*</td><td class="neutral">*revisits</td></tr>
-    <tr><td>delivery</td><td class="num">30.77%</td><td class="num">14.35%</td><td></td></tr>
-    <tr><td>services</td><td class="num">125%*</td><td class="num">93.55%</td><td class="neutral">*revisits</td></tr>
-    <tr><td>warranty</td><td class="num">80%</td><td class="num">96.55%</td><td></td></tr>
-    <tr><td>order-confirmation</td><td class="num">100%</td><td class="num">164.29%*</td><td class="neutral">*revisits</td></tr>
+    <tr><td>car-selection</td><td class="num">100%</td><td class="num">100%</td><td class="num">&mdash;</td><td><span class="tag tag-blue">Baseline</span></td></tr>
+    <tr><td><strong>purchase-method</strong></td><td class="num">62.03%</td><td class="num">64.07%</td><td class="num neutral">-2pp</td><td><span class="tag tag-green">IT now matches CZ</span></td></tr>
+    <tr><td><strong>caraudit-form</strong></td><td class="num bad">27.63%</td><td class="num">58.57%</td><td class="num bad">-31pp</td><td><span class="tag tag-red">Biggest IT-specific drop</span></td></tr>
+    <tr><td>car-check</td><td class="num">22.73%</td><td class="num">82.97%</td><td class="num bad">-60pp</td><td><span class="tag tag-red">Big gap downstream</span></td></tr>
+    <tr><td>delivery</td><td class="num">32.5%</td><td class="num">25.33%</td><td class="num good">+7pp</td><td></td></tr>
+    <tr><td>services</td><td class="num">107.69%*</td><td class="num">91.5%</td><td class="num neutral">&mdash;</td><td class="neutral">*revisits</td></tr>
+    <tr><td>warranty</td><td class="num">85.71%</td><td class="num">100%</td><td class="num">-14pp</td><td></td></tr>
+    <tr><td>order-confirmation</td><td class="num">100%</td><td class="num">162.14%*</td><td class="num neutral">&mdash;</td><td class="neutral">*CZ revisits</td></tr>
+    <tr><td>orderTracking</td><td class="num">258.33%*</td><td class="num">233.04%*</td><td class="num neutral">&mdash;</td><td class="neutral">*revisits both</td></tr>
   </tbody>
 </table>
+
+<div class="callout callout-orange">
+  <strong>First drop has improved, but second drop is still the killer</strong>
+  With full April data, the IT car-selection &rarr; purchase-method rate is now 62.03% &mdash; nearly identical to CZ's 64.07%. The IT-specific friction at the wizard entry has largely disappeared.
+  <br><br>
+  <strong>The dominant problem is now purchase-method &rarr; caraudit-form: 27.63% IT vs 58.57% CZ (-31pp gap).</strong> Only ~1 in 4 Italian users who reach the payment-method choice proceeds to the CarAudit form &mdash; less than half the CZ rate.
+  <br><br>
+  Note also <strong>car-check: 22.73% IT vs 82.97% CZ (-60pp)</strong> &mdash; the few IT users who pay for CarAudit don't return for the result much. This is suspicious and worth checking (it could be reporting timing, not a true behavioral gap).
+</div>
 
 <h3>Financing Path (subset with additional detail)</h3>
 
 <p>The financing path is a subset of the funnel above, showing the additional steps between purchase-method and caraudit-form for users who choose financing.
 <strong>Cash-paying users skip these steps and go directly: purchase-method &rarr; caraudit-form.</strong></p>
 
-<div class="img-container">
-  <img src="img/funnel-it-financing.png" alt="IT financing funnel, 1-7 Apr 2026" style="max-width:500px;">
+<div class="img-row">
+  <div>
+    <div class="img-container">
+      <img src="img/funnel-it-financing.png" alt="IT financing funnel, 1-30 Apr 2026">
+    </div>
+    <p class="img-caption">Italy &mdash; Financing Path (1&ndash;30 Apr 2026)</p>
+  </div>
+  <div>
+    <div class="img-container">
+      <img src="img/funnel-cz-financing.png" alt="CZ financing funnel, 1-30 Apr 2026">
+    </div>
+    <p class="img-caption">Czech Republic &mdash; Financing Path (1&ndash;30 Apr 2026)</p>
+  </div>
 </div>
-<p class="img-caption">Italy &mdash; Financing Path (1&ndash;7 Apr 2026)</p>
 
 <table>
   <thead>
-    <tr><th>Step</th><th class="num">IT (% from prev)</th><th class="num">CZ (% from prev)</th><th>Note</th></tr>
+    <tr><th>Step</th><th class="num">IT (% from prev)</th><th class="num">CZ (% from prev)</th><th class="num">Gap (IT vs CZ)</th><th>Note</th></tr>
   </thead>
   <tbody>
-    <tr><td>car-selection</td><td class="num">100%</td><td class="num">100%</td><td></td></tr>
-    <tr><td>purchase-method</td><td class="num bad">48.65%</td><td class="num">62.84%</td><td><span class="tag tag-red">Same first drop</span></td></tr>
-    <tr><td>financing-options</td><td class="num good">92.22%</td><td class="num">68.11%</td><td><span class="tag tag-green">IT better</span></td></tr>
-    <tr><td>financing-form</td><td class="num">62.65%</td><td class="num">60.98%</td><td><span class="tag tag-blue">&asymp; same</span></td></tr>
-    <tr><td>financing-status</td><td class="num good">59.62%</td><td class="num">36%</td><td><span class="tag tag-green">IT better</span> (shorter IT form)</td></tr>
-    <tr><td>caraudit-form</td><td class="num">90.32%</td><td class="num">395.56%*</td><td class="neutral">*CZ revisits</td></tr>
+    <tr><td>car-selection</td><td class="num">100%</td><td class="num">100%</td><td class="num">&mdash;</td><td></td></tr>
+    <tr><td>purchase-method</td><td class="num">62.03%</td><td class="num">64.07%</td><td class="num neutral">-2pp</td><td><span class="tag tag-green">Same as CZ</span></td></tr>
+    <tr><td>financing-options</td><td class="num good">86.19%</td><td class="num">72.81%</td><td class="num good">+13pp</td><td><span class="tag tag-green">IT better</span></td></tr>
+    <tr><td>financing-form</td><td class="num">60.47%</td><td class="num">60.55%</td><td class="num neutral">&asymp; 0</td><td><span class="tag tag-blue">Same</span></td></tr>
+    <tr><td>financing-status</td><td class="num good">62.35%</td><td class="num">29.74%</td><td class="num good">+33pp</td><td><span class="tag tag-green">IT much better</span> (shorter IT form)</td></tr>
+    <tr><td>caraudit-form</td><td class="num">85.02%</td><td class="num">446.63%*</td><td class="num neutral">&mdash;</td><td class="neutral">*CZ revisits heavily</td></tr>
   </tbody>
 </table>
 
 <div class="callout callout-green">
-  <strong>The financing path is NOT the problem</strong>
-  Once Italian users choose financing, they convert as well or better than CZ through the financing steps.
-  The IT financing form is shorter than CZ, which explains the better retention at financing-status (59.62% vs 36%).
+  <strong>The financing path is NOT the problem &mdash; IT is actually better than CZ</strong>
+  At every financing step, IT either matches or beats CZ's retention. Notably:
+  <ul style="margin:8px 0 0 20px;">
+    <li><strong>financing-options:</strong> IT 86.19% vs CZ 72.81% (+13pp)</li>
+    <li><strong>financing-status:</strong> IT 62.35% vs CZ 29.74% (+33pp) &mdash; IT financing form is shorter</li>
+    <li><strong>caraudit-form:</strong> IT 85.02% &mdash; users who complete financing do proceed to CarAudit</li>
+  </ul>
+  <br>
+  This confirms the problem is concentrated on the <strong>cash path</strong> (purchase-method &rarr; caraudit-form directly), not financing.
 </div>
 
-<h3>Engagement time per page: IT vs CZ (GA4, Mar 26 &ndash; Apr 8, 2026)</h3>
+<h3>Engagement time per page: IT vs CZ (1&ndash;30 April 2026)</h3>
 
 <table>
   <thead>
     <tr><th>Page</th><th class="num">IT Active Users</th><th class="num">IT Avg Time</th><th class="num">CZ Active Users</th><th class="num">CZ Avg Time</th><th class="num">IT vs CZ</th></tr>
   </thead>
   <tbody>
-    <tr><td><strong>car-selection</strong></td><td class="num">392</td><td class="num">8s</td><td class="num">830</td><td class="num">9s</td><td class="num neutral">&asymp; same</td></tr>
-    <tr><td>purchase-method</td><td class="num">214</td><td class="num">42s</td><td class="num">505</td><td class="num">54s</td><td class="num bad">-12s</td></tr>
-    <tr><td>financing-options</td><td class="num">195</td><td class="num">36s</td><td class="num">362</td><td class="num">39s</td><td class="num neutral">&asymp; same</td></tr>
-    <tr><td>financing-form</td><td class="num">113</td><td class="num">1m 03s</td><td class="num">220</td><td class="num">1m 01s</td><td class="num neutral">&asymp; same</td></tr>
-    <tr><td>financing-status</td><td class="num">69</td><td class="num">41s</td><td class="num">70</td><td class="num">43s</td><td class="num neutral">&asymp; same</td></tr>
-    <tr><td>caraudit-form</td><td class="num">68</td><td class="num">37s</td><td class="num">296</td><td class="num">48s</td><td class="num bad">-11s</td></tr>
-    <tr><td>car-check</td><td class="num">22</td><td class="num">2m 30s</td><td class="num">310</td><td class="num">1m 49s</td><td class="num good">+41s</td></tr>
+    <tr><td><strong>car-selection</strong></td><td class="num">990</td><td class="num">7s</td><td class="num">1,835</td><td class="num">9s</td><td class="num neutral">&asymp; same</td></tr>
+    <tr><td>purchase-method</td><td class="num">614</td><td class="num">35s</td><td class="num">1,170</td><td class="num">51s</td><td class="num bad">-16s</td></tr>
+    <tr><td>financing-options</td><td class="num">527</td><td class="num">37s</td><td class="num">853</td><td class="num">45s</td><td class="num bad">-8s</td></tr>
+    <tr><td>financing-form</td><td class="num">318</td><td class="num">56s</td><td class="num">524</td><td class="num">1m 07s</td><td class="num bad">-11s</td></tr>
+    <tr><td>financing-status</td><td class="num">196</td><td class="num">26s</td><td class="num">155</td><td class="num">1m 06s</td><td class="num bad">-40s</td></tr>
+    <tr><td>caraudit-form</td><td class="num">169</td><td class="num">31s</td><td class="num">690</td><td class="num">53s</td><td class="num bad">-22s</td></tr>
+    <tr><td>car-check</td><td class="num">43</td><td class="num">4m 02s</td><td class="num">595</td><td class="num">2m 58s</td><td class="num good">+1m 04s</td></tr>
   </tbody>
 </table>
 
+<p style="font-size:12px; color:var(--gray);">Source: <a href="https://analytics.google.com/analytics/web/?hl=en&pli=1#/a137399399p261961962/reports/explorer?params=_u..nav%3Dmaui%26_r.explorerCard..startRow%3D0%26_r.explorerCard..seldim%3D%5B%22customDimensionsGroup2Slot24%22%5D%26_r.explorerCard..filterTerm%3Dorderwizard%26_r..dataFilters%3D%5B%7B%22type%22:1,%22fieldName%22:%22country%22,%22evaluationType%22:1,%22expressionList%22:%5B%22Italy%22%5D,%22complement%22:false,%22isCaseSensitive%22:true,%22expression%22:%22%22%7D%5D%26_u.comparisonOption%3Ddisabled%26_u.date00%3D20260401%26_u.date01%3D20260430%26_r.explorerCard..rowsPerPage%3D25%26_r.explorerCard..sortKey%3DactiveUsers%26_r.explorerCard..selmet%3D%5B%22activeUsers%22,%22screenPageViews%22%5D%26_r.copa-filter-builder..filter-to-edit%3D%5B%7B%22type%22:1,%22fieldName%22:%22country%22,%22evaluationType%22:1,%22expressionList%22:%5B%22Italy%22%5D,%22complement%22:false,%22isCaseSensitive%22:true,%22expression%22:%22%22%7D%5D" target="_blank">GA4 &rarr; Engagement &rarr; Pages and screens</a> (filtered to country, page_type contains "orderwizard")</p>
+
 <div class="callout callout-orange">
-  <strong>8&ndash;9 seconds on car-selection is normal &mdash; CZ shows the same pattern</strong>
-  CZ users also spend only 9s on car-selection, yet they convert 3&ndash;6x better downstream. The car-selection page is essentially a "confirmation screen" &mdash; users glance at their selected car and either click Next or leave. <strong>The IT-specific problem is not on this page &mdash; it emerges at purchase-method and beyond.</strong>
+  <strong>IT users spend significantly less time at every wizard step</strong>
+  With full April data, the gap is now visible across nearly every step:
+  <ul style="margin:8px 0 0 20px;">
+    <li><strong>purchase-method:</strong> -16s (35s vs 51s)</li>
+    <li><strong>caraudit-form:</strong> -22s (31s vs 53s)</li>
+    <li><strong>financing-status:</strong> -40s (26s vs 1m 06s) &mdash; biggest gap</li>
+  </ul>
+  Italian users are not engaging deeply with any step. The exception is <strong>car-check</strong> (+1m 04s) where the few who get there spend a lot of time &mdash; suggesting a small but very engaged segment.
 </div>
 
 <div class="callout callout-red">
-  <strong>The two critical drop-off points:</strong>
-  <ol style="margin-top:8px;">
-    <li><strong>car-selection &rarr; purchase-method (48.65% IT vs 62.84% CZ)</strong> &mdash; Half of users who enter the wizard leave before choosing any payment method</li>
-    <li><strong>purchase-method &rarr; caraudit-form (31.11% IT vs 59.14% CZ)</strong> &mdash; Of those who reach purchase-method, only a third proceed to the CarAudit form (this includes all payment methods)</li>
-  </ol>
+  <strong>The critical drop-off point (with refreshed data):</strong>
+  <strong>purchase-method &rarr; caraudit-form: 27.63% IT vs ~59% CZ</strong> &mdash; only ~1 in 4 IT users who reach the payment-method choice proceeds to the CarAudit form. This is now the dominant friction point.
 </div>
 
 <!-- ==================== SECTION 4 ==================== -->
