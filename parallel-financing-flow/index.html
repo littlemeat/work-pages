@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Carvago — Návrh změn v objednávkovém procesu v9</title>
+<style data-emotion="css-global 1mg7k6x">:host,:root,[data-theme]{--chakra-ring-inset:var(--chakra-empty,/*!*/ /*!*/);--chakra-ring-offset-width:0px;--chakra-ring-offset-color:#fff;--chakra-ring-color:rgba(66, 153, 225, 0.6);--chakra-ring-offset-shadow:0 0 #0000;--chakra-ring-shadow:0 0 #0000;--chakra-space-x-reverse:0;--chakra-space-y-reverse:0;--chakra-colors-transparent:transparent;--chakra-colors-current:currentColor;--chakra-colors-black:#080c1f;--chakra-colors-white:#ffffff;--chakra-colors-whiteAlpha-50:rgba(255, 255, 255, 0.04);--chakra-colors-whiteAlpha-100:rgba(255, 255, 255, 0.06);--chakra-colors-whiteAlpha-200:rgba(255, 255, 255, 0.08);--chakra-colors-whiteAlpha-300:rgba(255, 255, 255, 0.16);--chakra-colors-whiteAlpha-400:rgba(255, 255, 255, 0.24);--chakra-colors-whiteAlpha-500:rgba(255, 255, 255, 0.36);--chakra-colors-whiteAlpha-600:rgba(255, 255, 255, 0.48);--chakra-colors-whiteAlpha-700:rgba(255, 255, 255, 0.64);--chakra-colors-whiteAlpha-800:rgba(255, 255, 255, 0.80);--chakra-colors-whiteAlpha-900:rgba(255, 255, 255, 0.92);--chakra-colors-blackAlpha-50:rgba(0, 0, 0, 0.04);--chakra-colors-blackAlpha-100:rgba(0, 0, 0, 0.06);--chakra-colors-blackAlpha-200:rgba(0, 0, 0, 0.08);--chakra-colors-blackAlpha-300:rgba(0, 0, 0, 0.16);--chakra-colors-blackAlpha-400:rgba(0, 0, 0, 0.24);--chakra-colors-blackAlpha-500:rgba(0, 0, 0, 0.36);--chakra-colors-blackAlpha-600:rgba(0, 0, 0, 0.48);--chakra-colors-blackAlpha-700:rgba(0, 0, 0, 0.64);--chakra-colors-blackAlpha-800:rgba(0, 0, 0, 0.80);--chakra-colors-blackAlpha-900:rgba(0, 0, 0, 0.92);--chakra-colors-gray-50:#f5f7fb;--chakra-colors-gray-100:#edf1f8;--chakra-colors-gray-200:#d7e1ef;--chakra-colors-gray-300:#b3c3de;--chakra-colors-gray-400:#8e9fc3;--chakra-colors-gray-500:#63749b;--chakra-colors-gray-600:#485885;--chakra-colors-gray-700:#31406f;--chakra-colors-gray-800:#1f2b59;--chakra-colors-gray-900:#131c4a;--chakra-colors-gray-black:#080c1f;--chakra-colors-gray-transparent100-P48:rgba(237, 241, 248, 0.48);--chakra-colors-gray-transparent800:rgba(31, 43, 89, 0.5);--chakra-colors-gray-transparent900-P56:rgba(19, 28, 74, 0.56);--chakra-colors-red-50:#ffeeee;--chakra-colors-red-100:#ffe0e0;--chakra-colors-red-200:#fec0c0;--chakra-colors-red-300:#fd9696;--chakra-colors-red-400:#fd6c6c;--chakra-colors-red-500:#fc2d2d;--chakra-colors-red-600:#d82030;--chakra-colors-red-700:#b51632;--chakra-colors-red-800:#920e30;--chakra-colors-red-900:#78082f;--chakra-colors-orange-50:#FFFAF0;--chakra-colors-orange-100:#ffeecc;--chakra-colors-orange-200:#ffd799;--chakra-colors-orange-300:#ffbb66;--chakra-colors-orange-400:#ff9800;--chakra-colors-orange-500:#ff7300;--chakra-colors-orange-600:#db5600;--chakra-colors-orange-700:#b73e00;--chakra-colors-orange-800:#932a00;--chakra-colors-orange-900:#7a1c00;--chakra-colors-yellow-50:#FFFFF0;--chakra-colors-yellow-100:#fff6d6;--chakra-colors-yellow-200:#ffecae;--chakra-colors-yellow-300:#ffde85;--chakra-colors-yellow-400:#ffd167;--chakra-colors-yellow-500:#ffbb35;--chakra-colors-yellow-600:#db9826;--chakra-colors-yellow-700:#b7771a;--chakra-colors-yellow-800:#935a10;--chakra-colors-yellow-900:#7a450a;--chakra-colors-green-50:#edf7e6;--chakra-colors-green-100:#e8f4dd;--chakra-colors-green-200:#d2eeb7;--chakra-colors-green-300:#b1e090;--chakra-colors-green-400:#95d55c;--chakra-colors-green-500:#67b92e;--chakra-colors-green-600:#4d9f21;--chakra-colors-green-700:#378517;--chakra-colors-green-800:#246b0e;--chakra-colors-green-900:#175808;--chakra-colors-teal-50:#E6FFFA;--chakra-colors-teal-100:#eefef7;--chakra-colors-teal-200:#ddfef0;--chakra-colors-teal-300:#c7ffe9;--chakra-colors-teal-400:#a7f8db;--chakra-colors-teal-500:#95e7ce;--chakra-colors-teal-600:#7ad5bd;--chakra-colors-teal-700:#54b2a3;--chakra-colors-teal-800:#358f8a;--chakra-colors-teal-900:#207377;--chakra-colors-blue-50:#ebedfe;--chakra-colors-blue-100:#d8dbfd;--chakra-colors-blue-200:#b3b8fb;--chakra-colors-blue-300:#8b92f4;--chakra-colors-blue-400:#6c73ea;--chakra-colors-blue-500:#3e47dd;--chakra-colors-blue-600:#3e27c4;--chakra-colors-blue-700:#262a98;--chakra-colors-blue-800:#1d2176;--chakra-colors-blue-900:#131762;--chakra-colors-blue-transparent500-P24:rgba(62, 71, 221, 0.24);--chakra-colors-cyan-50:#e5fbff;--chakra-colors-cyan-100:#ccf8ff;--chakra-colors-cyan-200:#99ecff;--chakra-colors-cyan-300:#66d9ff;--chakra-colors-cyan-400:#3fc4ff;--chakra-colors-cyan-500:#00a1ff;--chakra-colors-cyan-600:#007cdb;--chakra-colors-cyan-700:#005db7;--chakra-colors-cyan-800:#004293;--chakra-colors-cyan-900:#002f7a;--chakra-colors-purple-50:#FAF5FF;--chakra-colors-purple-100:#E9D8FD;--chakra-colors-purple-200:#D6BCFA;--chakra-colors-purple-300:#B794F4;--chakra-colors-purple-400:#9F7AEA;--chakra-colors-purple-500:#805AD5;--chakra-colors-purple-600:#6B46C1;--chakra-colors-purple-700:#553C9A;--chakra-colors-purple-800:#44337A;--chakra-colors-purple-900:#322659;--chakra-colors-pink-50:#FFF5F7;--chakra-colors-pink-100:#FED7E2;--chakra-colors-pink-200:#FBB6CE;--chakra-colors-pink-300:#F687B3;--chakra-colors-pink-400:#ED64A6;--chakra-colors-pink-500:#D53F8C;--chakra-colors-pink-600:#B83280;--chakra-colors-pink-700:#97266D;--chakra-colors-pink-800:#702459;--chakra-colors-pink-900:#521B41;--chakra-colors-linkedin-50:#E8F4F9;--chakra-colors-linkedin-100:#CFEDFB;--chakra-colors-linkedin-200:#9BDAF3;--chakra-colors-linkedin-300:#68C7EC;--chakra-colors-linkedin-400:#34B3E4;--chakra-colors-linkedin-500:#00A0DC;--chakra-colors-linkedin-600:#008CC9;--chakra-colors-linkedin-700:#0077B5;--chakra-colors-linkedin-800:#005E93;--chakra-colors-linkedin-900:#004471;--chakra-colors-facebook-50:#E8F4F9;--chakra-colors-facebook-100:#D9DEE9;--chakra-colors-facebook-200:#B7C2DA;--chakra-colors-facebook-300:#6482C0;--chakra-colors-facebook-400:#4267B2;--chakra-colors-facebook-500:#385898;--chakra-colors-facebook-600:#314E89;--chakra-colors-facebook-700:#29487D;--chakra-colors-facebook-800:#223B67;--chakra-colors-facebook-900:#1E355B;--chakra-colors-messenger-50:#D0E6FF;--chakra-colors-messenger-100:#B9DAFF;--chakra-colors-messenger-200:#A2CDFF;--chakra-colors-messenger-300:#7AB8FF;--chakra-colors-messenger-400:#2E90FF;--chakra-colors-messenger-500:#0078FF;--chakra-colors-messenger-600:#0063D1;--chakra-colors-messenger-700:#0052AC;--chakra-colors-messenger-800:#003C7E;--chakra-colors-messenger-900:#002C5C;--chakra-colors-whatsapp-50:#dffeec;--chakra-colors-whatsapp-100:#b9f5d0;--chakra-colors-whatsapp-200:#90edb3;--chakra-colors-whatsapp-300:#65e495;--chakra-colors-whatsapp-400:#3cdd78;--chakra-colors-whatsapp-500:#22c35e;--chakra-colors-whatsapp-600:#179848;--chakra-colors-whatsapp-700:#0c6c33;--chakra-colors-whatsapp-800:#01421c;--chakra-colors-whatsapp-900:#001803;--chakra-colors-twitter-50:#E5F4FD;--chakra-colors-twitter-100:#C8E9FB;--chakra-colors-twitter-200:#A8DCFA;--chakra-colors-twitter-300:#83CDF7;--chakra-colors-twitter-400:#57BBF5;--chakra-colors-twitter-500:#1DA1F2;--chakra-colors-twitter-600:#1A94DA;--chakra-colors-twitter-700:#1681BF;--chakra-colors-twitter-800:#136B9E;--chakra-colors-twitter-900:#0D4D71;--chakra-colors-telegram-50:#E3F2F9;--chakra-colors-telegram-100:#C5E4F3;--chakra-colors-telegram-200:#A2D4EC;--chakra-colors-telegram-300:#7AC1E4;--chakra-colors-telegram-400:#47A9DA;--chakra-colors-telegram-500:#0088CC;--chakra-colors-telegram-600:#007AB8;--chakra-colors-telegram-700:#006BA1;--chakra-colors-telegram-800:#005885;--chakra-colors-telegram-900:#003F5E;--chakra-colors-none:rgba(0,0,0,0);--chakra-colors-gradient-blue-to-right:linear-gradient(90deg, #3e47dd 0%, #262a98 100%);--chakra-colors-gradient-blue-to-bottom:linear-gradient(180deg, #3e47dd 0%, #262a98 100%);--chakra-colors-gradient-blue-to-left:linear-gradient(-90deg, #3e47dd 0%, #262a98 100%);--chakra-colors-gradient-blue-to-top:linear-gradient(0deg, #3e47dd 0%, #262a98 100%);--chakra-colors-gradient-orange-to-right:linear-gradient(270deg, #ff7300 0%, #ff9800 100%);--chakra-colors-gradient-gray-to-bottom:linear-gradient(180deg, #b3c3de 0%, #edf1f8 100%);--chakra-colors-gradient-white-to-gray-to-bottom:linear-gradient(180deg, #ffffff 0%, #edf1f8 100%);--chakra-colors-gradient-cyan-to-bottom:linear-gradient(180deg, #66d9ff 0%, #ccf8ff 100%);--chakra-borders-none:0;--chakra-borders-1px:1px solid;--chakra-borders-2px:2px solid;--chakra-borders-4px:4px solid;--chakra-borders-8px:8px solid;--chakra-fonts-heading:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";--chakra-fonts-body:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";--chakra-fonts-mono:SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;--chakra-fontSizes-25:0.985rem;--chakra-fontSizes-50:1.126760563rem;--chakra-fontSizes-75:1.267605634rem;--chakra-fontSizes-100:1.408450704rem;--chakra-fontSizes-200:1.549295775rem;--chakra-fontSizes-300:1.690140845rem;--chakra-fontSizes-400:1.971830986rem;--chakra-fontSizes-500:2.253521127rem;--chakra-fontSizes-600:2.535211268rem;--chakra-fontSizes-700:2.816901408rem;--chakra-fontSizes-800:3.23943662rem;--chakra-fontSizes-900:3.661971831rem;--chakra-fontSizes-1000:3.943661972rem;--chakra-fontSizes-1100:4.507042254rem;--chakra-fontSizes-1200:5.211267606rem;--chakra-fontSizes-1300:5.774647887rem;--chakra-fontSizes-3xs:0.45rem;--chakra-fontSizes-2xs:0.625rem;--chakra-fontSizes-xs:1.2rem;--chakra-fontSizes-sm:1.4rem;--chakra-fontSizes-md:1.6rem;--chakra-fontSizes-lg:1.8rem;--chakra-fontSizes-xl:2.0rem;--chakra-fontSizes-2xl:2.4rem;--chakra-fontSizes-3xl:2.8rem;--chakra-fontSizes-4xl:3.2rem;--chakra-fontSizes-5xl:3.6rem;--chakra-fontSizes-6xl:4.4rem;--chakra-fontSizes-7xl:4.5rem;--chakra-fontSizes-8xl:6rem;--chakra-fontSizes-9xl:8rem;--chakra-fontWeights-hairline:100;--chakra-fontWeights-thin:200;--chakra-fontWeights-light:300;--chakra-fontWeights-normal:400;--chakra-fontWeights-medium:500;--chakra-fontWeights-semibold:600;--chakra-fontWeights-bold:700;--chakra-fontWeights-extrabold:800;--chakra-fontWeights-black:900;--chakra-letterSpacings-tighter:-0.05em;--chakra-letterSpacings-tight:-0.025em;--chakra-letterSpacings-normal:0;--chakra-letterSpacings-wide:0.025em;--chakra-letterSpacings-wider:0.05em;--chakra-letterSpacings-widest:0.1em;--chakra-lineHeights-3:.75rem;--chakra-lineHeights-4:1rem;--chakra-lineHeights-5:1.25rem;--chakra-lineHeights-6:1.5rem;--chakra-lineHeights-7:1.75rem;--chakra-lineHeights-8:2rem;--chakra-lineHeights-9:2.25rem;--chakra-lineHeights-10:2.5rem;--chakra-lineHeights-normal:normal;--chakra-lineHeights-none:1;--chakra-lineHeights-shorter:1.25;--chakra-lineHeights-short:1.375;--chakra-lineHeights-base:1.5;--chakra-lineHeights-tall:1.625;--chakra-lineHeights-taller:2;--chakra-radii-none:0;--chakra-radii-sm:0.2rem;--chakra-radii-base:0.4rem;--chakra-radii-md:0.6rem;--chakra-radii-lg:0.8rem;--chakra-radii-xl:1.2rem;--chakra-radii-2xl:1.6rem;--chakra-radii-3xl:2.4rem;--chakra-radii-full:9999px;--chakra-space-0:0rem;--chakra-space-1:0.4rem;--chakra-space-2:0.8rem;--chakra-space-3:1.2rem;--chakra-space-4:1.6rem;--chakra-space-5:2rem;--chakra-space-6:2.4rem;--chakra-space-7:2.8rem;--chakra-space-8:3.2rem;--chakra-space-9:3.6rem;--chakra-space-10:4rem;--chakra-space-12:4.8rem;--chakra-space-14:5.6rem;--chakra-space-16:6.4rem;--chakra-space-20:8rem;--chakra-space-24:9.6rem;--chakra-space-28:11.2rem;--chakra-space-32:12.8rem;--chakra-space-36:14.4rem;--chakra-space-40:16rem;--chakra-space-44:17.6rem;--chakra-space-48:19.2rem;--chakra-space-52:20.8rem;--chakra-space-56:22.6rem;--chakra-space-60:24rem;--chakra-space-64:25.6rem;--chakra-space-72:28.8rem;--chakra-space-80:32rem;--chakra-space-96:38.4rem;--chakra-space-px:1px;--chakra-space-0-5:0.2rem;--chakra-space-1-5:0.6rem;--chakra-space-2-5:1rem;--chakra-space-3-5:1.4rem;--chakra-shadows-xs:0 0 0 1px rgba(0, 0, 0, 0.05);--chakra-shadows-sm:0 1px 2px 0 rgba(0, 0, 0, 0.05);--chakra-shadows-base:0 1px 3px 0 rgba(0, 0, 0, 0.1),0 1px 2px 0 rgba(0, 0, 0, 0.06);--chakra-shadows-md:0 4px 6px -1px rgba(0, 0, 0, 0.1),0 2px 4px -1px rgba(0, 0, 0, 0.06);--chakra-shadows-lg:0 10px 15px -3px rgba(0, 0, 0, 0.1),0 4px 6px -2px rgba(0, 0, 0, 0.05);--chakra-shadows-xl:0 20px 25px -5px rgba(0, 0, 0, 0.1),0 10px 10px -5px rgba(0, 0, 0, 0.04);--chakra-shadows-2xl:0 25px 50px -12px rgba(0, 0, 0, 0.25);--chakra-shadows-outline:0 0 0 3px rgba(66, 153, 225, 0.6);--chakra-shadows-inner:inset 0 2px 4px 0 rgba(0,0,0,0.06);--chakra-shadows-none:none;--chakra-shadows-dark-lg:rgba(0, 0, 0, 0.1) 0px 0px 0px 1px,rgba(0, 0, 0, 0.2) 0px 5px 10px,rgba(0, 0, 0, 0.4) 0px 15px 40px;--chakra-shadows-bottom-controls:0px 1px 2px 0px rgba(49, 64, 111, 0.06),0px 1px 3px 0px rgba(49, 64, 111, 0.10);--chakra-shadows-bottom-sm:0px 4px 8px 0px rgba(49, 64, 111, 0.06),0px 2px 4px 0px rgba(49, 64, 111, 0.02);--chakra-shadows-bottom-md:0px 12px 16px 0px rgba(49, 64, 111, 0.06),0px 4px 6px 0px rgba(49, 64, 111, 0.02);--chakra-shadows-bottom-lg:0px 20px 24px 0px rgba(49, 64, 111, 0.06),0px 8px 8px 0px rgba(49, 64, 111, 0.02);--chakra-shadows-bottom-xl:0px 24px 48px 0px rgba(49, 64, 111, 0.15);--chakra-shadows-top-controls:0px -1px 2px 0px rgba(49, 64, 111, 0.06),0px -1px 3px 0px rgba(49, 64, 111, 0.10);--chakra-shadows-top-sm:0px -4px 8px 0px rgba(49, 64, 111, 0.06),0px -2px 4px 0px rgba(49, 64, 111, 0.02);--chakra-shadows-top-md:0px -12px 16px 0px rgba(49, 64, 111, 0.06),0px -4px 6px 0px rgba(49, 64, 111, 0.02);--chakra-shadows-top-lg:0px -20px 24px 0px rgba(49, 64, 111, 0.06),0px -8px 8px 0px rgba(49, 64, 111, 0.02);--chakra-shadows-top-xl:0px -24px 48px 0px rgba(49, 64, 111, 0.15);--chakra-shadows-accent-bottom-controls:0px 1px 2px 0px rgba(62, 71, 221, 0.16),0px 1px 3px 0px rgba(62, 71, 221, 0.20);--chakra-shadows-accent-bottom-sm:0px 4px 8px 0px rgba(62, 71, 221, 0.16),0px 2px 4px 0px rgba(62, 71, 221, 0.12);--chakra-shadows-accent-bottom-md:0px 12px 16px 0px rgba(62, 71, 221, 0.14),0px 4px 6px 0px rgba(62, 71, 221, 0.08);--chakra-shadows-accent-bottom-lg:0px 20px 24px 0px rgba(62, 71, 221, 0.14),0px 8px 8px 0px rgba(62, 71, 221, 0.08);--chakra-shadows-accent-bottom-xl:0px 24px 48px 0px rgba(62, 71, 221, 0.24);--chakra-sizes-0:0rem;--chakra-sizes-1:0.4rem;--chakra-sizes-2:0.8rem;--chakra-sizes-3:1.2rem;--chakra-sizes-4:1.6rem;--chakra-sizes-5:2rem;--chakra-sizes-6:2.4rem;--chakra-sizes-7:2.8rem;--chakra-sizes-8:3.2rem;--chakra-sizes-9:3.6rem;--chakra-sizes-10:4rem;--chakra-sizes-12:4.8rem;--chakra-sizes-14:5.6rem;--chakra-sizes-16:6.4rem;--chakra-sizes-20:8rem;--chakra-sizes-24:9.6rem;--chakra-sizes-28:11.2rem;--chakra-sizes-32:12.8rem;--chakra-sizes-36:14.4rem;--chakra-sizes-40:16rem;--chakra-sizes-44:17.6rem;--chakra-sizes-48:19.2rem;--chakra-sizes-52:20.8rem;--chakra-sizes-56:22.6rem;--chakra-sizes-60:24rem;--chakra-sizes-64:25.6rem;--chakra-sizes-72:28.8rem;--chakra-sizes-80:32rem;--chakra-sizes-96:38.4rem;--chakra-sizes-px:1px;--chakra-sizes-0-5:0.2rem;--chakra-sizes-1-5:0.6rem;--chakra-sizes-2-5:1rem;--chakra-sizes-3-5:1.4rem;--chakra-sizes-max:max-content;--chakra-sizes-min:min-content;--chakra-sizes-full:100%;--chakra-sizes-3xs:22.4rem;--chakra-sizes-2xs:25.6rem;--chakra-sizes-xs:32rem;--chakra-sizes-sm:38.4rem;--chakra-sizes-md:44.8rem;--chakra-sizes-lg:51.2rem;--chakra-sizes-xl:57.6rem;--chakra-sizes-2xl:67.2rem;--chakra-sizes-3xl:76.8rem;--chakra-sizes-4xl:89.6rem;--chakra-sizes-5xl:102.4rem;--chakra-sizes-6xl:115.2rem;--chakra-sizes-7xl:80rem;--chakra-sizes-8xl:90rem;--chakra-sizes-prose:60ch;--chakra-sizes-container-sm:640px;--chakra-sizes-container-md:768px;--chakra-sizes-container-lg:1024px;--chakra-sizes-container-xl:1216px;--chakra-sizes-container-2xl:1584px;--chakra-zIndices-hide:-1;--chakra-zIndices-auto:auto;--chakra-zIndices-base:0;--chakra-zIndices-docked:10;--chakra-zIndices-dropdown:1000;--chakra-zIndices-sticky:1100;--chakra-zIndices-banner:1200;--chakra-zIndices-overlay:1300;--chakra-zIndices-modal:1400;--chakra-zIndices-popover:1500;--chakra-zIndices-skipLink:1600;--chakra-zIndices-toast:382;--chakra-zIndices-tooltip:1800;--chakra-zIndices-backdrop:369;--chakra-zIndices-bottomSlider:350;--chakra-zIndices-dialog:370;--chakra-zIndices-dialogContent:371;--chakra-zIndices-siteHeader:105;--chakra-zIndices-input-rightElement:1;--chakra-zIndices-pageSearch-activeFilters-saveButton:104;--chakra-zIndices-pageSearch-activeFilters-tagsWrapper:100;--chakra-zIndices-videoBlock-container:1;--chakra-zIndices-videoBlock-content:8;--chakra-zIndices-videoBlock-videoControls:2;--chakra-zIndices-viewModeInlay:368;--chakra-transition-property-common:background-color,border-color,color,fill,stroke,opacity,box-shadow,transform;--chakra-transition-property-colors:background-color,border-color,color,fill,stroke;--chakra-transition-property-dimensions:width,height;--chakra-transition-property-position:left,right,top,bottom;--chakra-transition-property-background:background-color,background-image,background-position;--chakra-transition-easing-ease-in:cubic-bezier(0.4, 0, 1, 1);--chakra-transition-easing-ease-out:cubic-bezier(0, 0, 0.2, 1);--chakra-transition-easing-ease-in-out:cubic-bezier(0.4, 0, 0.2, 1);--chakra-transition-duration-ultra-fast:50ms;--chakra-transition-duration-faster:100ms;--chakra-transition-duration-fast:150ms;--chakra-transition-duration-normal:200ms;--chakra-transition-duration-slow:300ms;--chakra-transition-duration-slower:400ms;--chakra-transition-duration-ultra-slow:500ms;--chakra-blur-none:0;--chakra-blur-sm:4px;--chakra-blur-base:8px;--chakra-blur-md:12px;--chakra-blur-lg:16px;--chakra-blur-xl:24px;--chakra-blur-2xl:40px;--chakra-blur-3xl:64px;--chakra-breakpoints-base:0em;--chakra-breakpoints-sm:421px;--chakra-breakpoints-md:768px;--chakra-breakpoints-lg:992px;--chakra-breakpoints-xl:1200px;--chakra-breakpoints-2xl:1400px;--chakra-breakpoints-3xl:1900px;--chakra-breakpoints-4xl:2400px;--chakra-breakpoints-SM:640px;--chakra-breakpoints-MD:768px;--chakra-breakpoints-LG:1024px;--chakra-breakpoints-XL:1280px;--chakra-breakpoints-2XL:1536px;--chakra-breakpoints-3XL:1920px;}.chakra-ui-light :host:not([data-theme]),.chakra-ui-light :root:not([data-theme]),.chakra-ui-light [data-theme]:not([data-theme]),[data-theme=light] :host:not([data-theme]),[data-theme=light] :root:not([data-theme]),[data-theme=light] [data-theme]:not([data-theme]),:host[data-theme=light],:root[data-theme=light],[data-theme][data-theme=light]{--chakra-colors-chakra-body-text:var(--chakra-colors-gray-800);--chakra-colors-chakra-body-bg:var(--chakra-colors-white);--chakra-colors-chakra-border-color:var(--chakra-colors-gray-200);--chakra-colors-chakra-inverse-text:var(--chakra-colors-white);--chakra-colors-chakra-subtle-bg:var(--chakra-colors-gray-100);--chakra-colors-chakra-subtle-text:var(--chakra-colors-gray-600);--chakra-colors-chakra-placeholder-color:var(--chakra-colors-gray-500);}.chakra-ui-dark :host:not([data-theme]),.chakra-ui-dark :root:not([data-theme]),.chakra-ui-dark [data-theme]:not([data-theme]),[data-theme=dark] :host:not([data-theme]),[data-theme=dark] :root:not([data-theme]),[data-theme=dark] [data-theme]:not([data-theme]),:host[data-theme=dark],:root[data-theme=dark],[data-theme][data-theme=dark]{--chakra-colors-chakra-body-text:var(--chakra-colors-whiteAlpha-900);--chakra-colors-chakra-body-bg:var(--chakra-colors-gray-800);--chakra-colors-chakra-border-color:var(--chakra-colors-whiteAlpha-300);--chakra-colors-chakra-inverse-text:var(--chakra-colors-gray-800);--chakra-colors-chakra-subtle-bg:var(--chakra-colors-gray-700);--chakra-colors-chakra-subtle-text:var(--chakra-colors-gray-400);--chakra-colors-chakra-placeholder-color:var(--chakra-colors-whiteAlpha-400);}</style>
+<style>
+  html { font-size: 10px; }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+    background: var(--chakra-colors-gray-50);
+    color: var(--chakra-colors-gray-800);
+    font-size: 1.4rem; line-height: 1.6;
+  }
+  a { color: var(--chakra-colors-blue-500); text-decoration: none; }
+
+  /* ===== HEADER ===== */
+  .hdr {
+    display: flex; align-items: center; gap: 2rem;
+    background: var(--chakra-colors-white);
+    border-bottom: 1px solid var(--chakra-colors-gray-200);
+    box-shadow: var(--chakra-shadows-bottom-sm);
+    height: 6.4rem; padding: 0 2.4rem;
+    position: static; z-index: auto;
+  }
+  .hdr-logo { font-size: 2.2rem; font-weight: 800; color: var(--chakra-colors-blue-500); letter-spacing: -0.08rem; }
+  .hdr-back { font-size: 1.3rem; color: var(--chakra-colors-gray-500); cursor: pointer; }
+  .hdr-right { margin-left: auto; display: flex; align-items: center; gap: 2rem; }
+  .hdr-phone { font-size: 1.3rem; color: var(--chakra-colors-gray-700); }
+  .hdr-phone b { font-weight: 700; }
+
+  /* ===== BREADCRUMB ===== */
+  .bc {
+    display: flex; align-items: center; gap: 0.6rem;
+    padding: 1.6rem 2.4rem;
+    background: var(--chakra-colors-white);
+    border-bottom: 1px solid var(--chakra-colors-gray-200);
+    overflow-x: auto; flex-wrap: nowrap;
+  }
+  .bc-step {
+    display: flex; align-items: center; gap: 0.6rem;
+    font-size: 1.3rem; font-weight: 600; white-space: nowrap;
+    color: var(--chakra-colors-gray-400);
+  }
+  .bc-step.done { color: var(--chakra-colors-green-500); }
+  .bc-step.active { color: var(--chakra-colors-blue-500); }
+  .bc-num {
+    width: 2.4rem; height: 2.4rem; border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 1.1rem; font-weight: 700;
+    background: var(--chakra-colors-gray-100); color: var(--chakra-colors-gray-400);
+  }
+  .bc-step.done .bc-num { background: var(--chakra-colors-green-50); color: var(--chakra-colors-green-500); }
+  .bc-step.active .bc-num { background: var(--chakra-colors-blue-50); color: var(--chakra-colors-blue-500); }
+  .bc-arrow { color: var(--chakra-colors-gray-300); font-size: 1.2rem; }
+
+  /* ===== MAIN LAYOUT ===== */
+  .main { max-width: 116rem; margin: 0 auto; padding: 2.4rem; }
+  .two-col { display: grid; grid-template-columns: 1fr 34rem; gap: 2.4rem; align-items: start; }
+  @media(max-width:960px) { .two-col { grid-template-columns: 1fr; } }
+
+  /* ===== CARDS ===== */
+  .card {
+    background: var(--chakra-colors-white);
+    border-radius: var(--chakra-radii-xl);
+    padding: 2.4rem; margin-bottom: 1.6rem;
+    box-shadow: var(--chakra-shadows-bottom-controls);
+  }
+  .card-title { font-size: 2rem; font-weight: 700; margin-bottom: 1.2rem; }
+  .card-sub { font-size: 1.3rem; color: var(--chakra-colors-gray-500); margin-bottom: 1.6rem; }
+
+  /* ===== CHECKMARKS ===== */
+  .checks { display: flex; gap: 2.4rem; margin: 1.6rem 0; }
+  .check { display: flex; align-items: center; gap: 0.8rem; font-size: 1.4rem; font-weight: 600; }
+  .check-icon { color: var(--chakra-colors-blue-500); font-size: 1.8rem; }
+
+  /* ===== CAR CARD ===== */
+  .car-card {
+    display: flex; gap: 1.2rem; align-items: center;
+    padding: 1.2rem; border-radius: var(--chakra-radii-lg);
+    border: 2px solid var(--chakra-colors-blue-500);
+    background: var(--chakra-colors-white); margin-bottom: 1.2rem;
+    position: relative;
+  }
+  .car-card img { width: 10rem; height: 6.5rem; border-radius: var(--chakra-radii-md); object-fit: cover; background: var(--chakra-colors-gray-200); }
+  .car-card .name { font-size: 1.4rem; font-weight: 700; }
+  .car-card .specs { font-size: 1.2rem; color: var(--chakra-colors-gray-500); }
+  .car-badge {
+    position: absolute; top: -0.8rem; left: 1.2rem;
+    background: var(--chakra-colors-orange-500); color: white;
+    font-size: 1rem; font-weight: 700; padding: 0.2rem 0.8rem;
+    border-radius: var(--chakra-radii-sm);
+  }
+
+  /* ===== FORM ===== */
+  .form-section { margin-top: 2.4rem; }
+  .form-title { font-size: 1.8rem; font-weight: 700; margin-bottom: 1.6rem; }
+  .form-row { display: flex; gap: 1.6rem; margin-bottom: 1.6rem; flex-wrap: wrap; }
+  .form-group { flex: 1; min-width: 16rem; }
+  .form-label { font-size: 1.1rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08rem; color: var(--chakra-colors-gray-600); margin-bottom: 0.4rem; }
+  .form-input {
+    width: 100%; padding: 1rem 1.2rem; border: 1px solid var(--chakra-colors-gray-200);
+    border-radius: var(--chakra-radii-lg); font-size: 1.4rem; background: var(--chakra-colors-white);
+    color: var(--chakra-colors-gray-800);
+  }
+  .form-tabs { display: flex; margin-bottom: 2rem; }
+  .form-tab {
+    flex: 1; padding: 1rem; text-align: center; font-weight: 700; font-size: 1.4rem;
+    border: 2px solid var(--chakra-colors-blue-500); cursor: default;
+  }
+  .form-tab:first-child { border-radius: var(--chakra-radii-lg) 0 0 var(--chakra-radii-lg); background: var(--chakra-colors-blue-500); color: white; }
+  .form-tab:last-child { border-radius: 0 var(--chakra-radii-lg) var(--chakra-radii-lg) 0; color: var(--chakra-colors-blue-500); }
+
+  /* ===== PAYMENT ===== */
+  .payment-box {
+    border: 2px solid var(--chakra-colors-blue-500); border-radius: var(--chakra-radii-xl);
+    padding: 1.6rem; margin: 1.2rem 0;
+  }
+  .payment-title { font-weight: 700; font-size: 1.4rem; }
+  .payment-sub { font-size: 1.2rem; color: var(--chakra-colors-gray-500); }
+  .payment-price { font-weight: 700; margin-top: 0.4rem; }
+  .payment-icons { display: flex; gap: 0.8rem; margin-top: 1rem; }
+  .payment-icon {
+    padding: 0.4rem 0.8rem; border: 1px solid var(--chakra-colors-gray-200);
+    border-radius: var(--chakra-radii-sm); font-size: 1.1rem; font-weight: 700;
+    color: var(--chakra-colors-gray-600);
+  }
+
+  /* ===== SIDEBAR RECEIPT ===== */
+  .sidebar { position: sticky; top: 8rem; }
+  .receipt { padding: 2rem; }
+  .receipt-heading { font-size: 1.6rem; font-weight: 700; margin-bottom: 1.2rem; }
+  .receipt-row { display: flex; justify-content: space-between; padding: 0.3rem 0; font-size: 1.3rem; }
+  .receipt-row.total { font-weight: 700; font-size: 1.5rem; border-top: 1px solid var(--chakra-colors-gray-200); padding-top: 0.8rem; margin-top: 0.4rem; }
+  .receipt-row .strike { text-decoration: line-through; color: var(--chakra-colors-gray-400); margin-right: 0.6rem; }
+  .receipt-row .discount { background: var(--chakra-colors-red-500); color: white; font-size: 1rem; font-weight: 700; padding: 0.1rem 0.6rem; border-radius: var(--chakra-radii-sm); }
+  .receipt-divider { height: 1px; background: var(--chakra-colors-gray-200); margin: 1.2rem 0; }
+
+  .price-badge {
+    background: var(--chakra-colors-green-500); color: white;
+    font-size: 1.1rem; font-weight: 700; padding: 0.4rem 1.2rem;
+    border-radius: var(--chakra-radii-full); display: inline-flex; align-items: center; gap: 0.4rem;
+    margin-bottom: 1.2rem;
+  }
+  .price-dots { display: flex; gap: 0.3rem; }
+  .price-dot { width: 0.8rem; height: 0.8rem; border-radius: 50%; background: rgba(255,255,255,0.5); }
+  .price-dot.filled { background: white; }
+
+  .svc-row { display: flex; justify-content: space-between; padding: 0.2rem 0; font-size: 1.2rem; color: var(--chakra-colors-gray-500); }
+  .svc-row .free { background: var(--chakra-colors-green-50); color: var(--chakra-colors-green-500); font-size: 1rem; font-weight: 700; padding: 0.1rem 0.6rem; border-radius: var(--chakra-radii-sm); }
+
+  .fin-section { margin-top: 1.2rem; padding-top: 1.2rem; border-top: 1px solid var(--chakra-colors-gray-200); }
+
+  /* ===== BOTTOM CTA BAR ===== */
+  .cta-bar {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 1.6rem 2.4rem;
+    background: var(--chakra-colors-white);
+    border-top: 1px solid var(--chakra-colors-gray-200);
+    box-shadow: var(--chakra-shadows-top-sm);
+    position: sticky; bottom: 0; z-index: 100;
+  }
+  .btn {
+    display: inline-flex; align-items: center; gap: 0.8rem;
+    padding: 1.2rem 2.4rem; border-radius: var(--chakra-radii-lg);
+    font-weight: 700; font-size: 1.5rem; cursor: default; border: none;
+  }
+  .btn-primary { background: var(--chakra-colors-blue-500); color: white; }
+  .btn-ghost { background: transparent; color: var(--chakra-colors-gray-700); border: 1px solid var(--chakra-colors-gray-200); }
+
+  /* ===== STATUS BOXES ===== */
+  .status {
+    display: flex; gap: 1.2rem; padding: 1.6rem;
+    border-radius: var(--chakra-radii-lg); margin: 1.2rem 0;
+    border-left: 4px solid var(--chakra-colors-gray-300);
+    background: var(--chakra-colors-gray-50);
+  }
+  .status.pending { border-color: var(--chakra-colors-orange-400); background: var(--chakra-colors-orange-50); }
+  .status.approved { border-color: var(--chakra-colors-green-500); background: var(--chakra-colors-green-50); }
+  .status.info { border-color: var(--chakra-colors-blue-500); background: var(--chakra-colors-blue-50); }
+  .status .icon { font-size: 2rem; flex-shrink: 0; }
+  .status strong { display: block; font-size: 1.4rem; margin-bottom: 0.4rem; }
+  .status .sub { font-size: 1.3rem; color: var(--chakra-colors-gray-500); }
+
+  /* ===== CHANGE MARKERS ===== */
+  .marker {
+    display: inline-block; font-size: 1rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.1rem; padding: 0.2rem 0.8rem; border-radius: var(--chakra-radii-sm);
+    margin-bottom: 0.8rem;
+  }
+  .marker-new { background: var(--chakra-colors-green-50); color: var(--chakra-colors-green-500); border: 1px dashed var(--chakra-colors-green-500); }
+  .marker-changed { background: var(--chakra-colors-yellow-100); color: #856404; border: 1px dashed var(--chakra-colors-yellow-500); }
+  .marker-current { background: var(--chakra-colors-gray-100); color: var(--chakra-colors-gray-500); }
+
+  .wrap-new {
+    border: 2px dashed var(--chakra-colors-green-500); border-radius: var(--chakra-radii-xl);
+    padding: 1.6rem; margin: 1.2rem 0; background: rgba(237,247,230,0.2);
+  }
+  .wrap-changed {
+    border: 2px dashed var(--chakra-colors-yellow-500); border-radius: var(--chakra-radii-xl);
+    padding: 1.6rem; margin: 1.2rem 0; background: rgba(255,248,225,0.2);
+  }
+  .annot {
+    background: var(--chakra-colors-yellow-100); border: 1px solid var(--chakra-colors-yellow-500);
+    border-radius: var(--chakra-radii-lg); padding: 1rem 1.4rem;
+    margin-top: 0.8rem; font-size: 1.2rem; color: #6d4c00; line-height: 1.5;
+  }
+  .annot strong { color: #4e3600; }
+
+  /* ===== SCREEN TABS ===== */
+  .screen-tabs {
+    display: flex; gap: 0;
+    padding: 0; overflow-x: auto;
+    background: #e65100;
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 300;
+  }
+  .screen-tab {
+    padding: 1.2rem 2rem; cursor: pointer; font-size: 1.3rem; font-weight: 600;
+    color: rgba(255,255,255,0.6); white-space: nowrap; transition: all .15s;
+    border-bottom: 3px solid transparent;
+  }
+  .screen-tab:hover { color: white; }
+  .screen-tab.active { color: white; border-bottom-color: white; }
+  body { padding-top: 4.8rem; }
+  .screen { display: none; }
+  .screen.active { display: block; }
+
+  /* ===== FINANCING SCREENS (01-03) ===== */
+  .fin-layout { max-width: 68rem; margin: 0 auto; padding: 2.4rem; }
+  .fin-heading { font-size: 1.1rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15rem; color: var(--chakra-colors-gray-500); margin-bottom: 0.4rem; }
+  .fin-title { font-size: 2rem; font-weight: 700; margin-bottom: 2rem; }
+
+  .compare { display: grid; grid-template-columns: 1fr 1fr; gap: 1.6rem; }
+  @media(max-width:700px) { .compare { grid-template-columns: 1fr; } }
+
+  .help-box {
+    display: flex; align-items: center; gap: 1.2rem; padding: 1.6rem;
+    background: var(--chakra-colors-white); border-radius: var(--chakra-radii-lg);
+    border: 1px solid var(--chakra-colors-gray-200); margin-top: 1.6rem;
+  }
+  .help-icon {
+    width: 4rem; height: 4rem; border-radius: 50%;
+    background: var(--chakra-colors-blue-50); display: flex;
+    align-items: center; justify-content: center; font-size: 1.8rem; flex-shrink: 0;
+  }
+
+  .consent { display: flex; align-items: center; gap: 0.8rem; font-size: 1.3rem; margin: 1.6rem 0; }
+  .consent input { width: 1.8rem; height: 1.8rem; }
+
+  /* ===== CHAKRA-STYLE MODAL ===== */
+  .modal-overlay {
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(19,28,74,0.56); /* --chakra-colors-gray-transparent900-P56 */
+    display: flex; align-items: center; justify-content: center;
+    z-index: 200; padding: 2.4rem;
+  }
+  .modal {
+    background: var(--chakra-colors-white);
+    border-radius: var(--chakra-radii-xl);
+    box-shadow: var(--chakra-shadows-bottom-xl);
+    padding: 3.2rem;
+    max-width: 52rem; width: 100%;
+    position: relative;
+    max-height: 90vh; overflow-y: auto;
+  }
+  .modal-close {
+    position: absolute; top: 1.6rem; right: 1.6rem;
+    width: 3.2rem; height: 3.2rem; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.6rem; color: var(--chakra-colors-gray-400);
+    cursor: pointer; transition: background 0.15s;
+  }
+  .modal-close:hover { background: var(--chakra-colors-gray-100); color: var(--chakra-colors-gray-700); }
+  .modal-icon {
+    font-size: 4rem; text-align: center; margin-bottom: 1.6rem;
+  }
+  .modal-title {
+    font-size: 2rem; font-weight: 700; text-align: center; margin-bottom: 1.2rem;
+    color: var(--chakra-colors-gray-800);
+  }
+  .modal-text {
+    font-size: 1.4rem; color: var(--chakra-colors-gray-700);
+    text-align: center; margin-bottom: 1.2rem; line-height: 1.6;
+  }
+  .modal-actions {
+    margin-top: 2rem;
+    display: flex; flex-direction: column; gap: 1rem;
+  }
+
+  /* Option cards for rejection modal */
+  .modal-option {
+    display: flex; gap: 1.6rem; align-items: flex-start;
+    padding: 1.6rem; border: 2px solid var(--chakra-colors-gray-200);
+    border-radius: var(--chakra-radii-xl); cursor: pointer;
+    transition: all 0.15s; margin-bottom: 1.2rem;
+  }
+  .modal-option:hover { border-color: var(--chakra-colors-blue-300); background: var(--chakra-colors-blue-50); }
+  .modal-option.selected { border-color: var(--chakra-colors-blue-500); background: var(--chakra-colors-blue-50); }
+  .modal-option-radio {
+    width: 2.4rem; height: 2.4rem; border-radius: 50%;
+    border: 2px solid var(--chakra-colors-gray-300); flex-shrink: 0; margin-top: 0.2rem;
+    position: relative;
+  }
+  .modal-option.selected .modal-option-radio {
+    border-color: var(--chakra-colors-blue-500);
+  }
+  .modal-option.selected .modal-option-radio::after {
+    content: ''; position: absolute;
+    top: 50%; left: 50%; transform: translate(-50%,-50%);
+    width: 1.2rem; height: 1.2rem; border-radius: 50%;
+    background: var(--chakra-colors-blue-500);
+  }
+</style>
+</head>
+<body>
+<div class="screen-tabs" style="background:#e65100 !important;">
+  <div class="screen-tab active" onclick="show(0)">01 — Fin. odesláno</div>
+
+
+  <div class="screen-tab" onclick="show(1)">02 — Doplnění dok.</div>
+  <div class="screen-tab" onclick="show(2)">03 — Fin. schváleno</div>
+  <div class="screen-tab" onclick="show(3)">04 — Obj. CarAudit</div>
+  <div class="screen-tab" onclick="show(4)">05a — Fin. pending</div>
+  <div class="screen-tab" onclick="show(5)">05b — Fin. OK / cash</div>
+  <div class="screen-tab" onclick="show(6)">05c — Fin. zamítnuto</div>
+</div>
+<div class="hdr">
+  <div class="hdr-logo">carvago.</div>
+  <div class="hdr-back">Zpět</div>
+  <div class="hdr-right"><div class="hdr-phone">Potřebujete poradit?&ensp;<b>+420 246 034 700</b></div></div>
+</div>
+
+
+<div class="screen active" id="s0"><div class="bc">
+  <div class="bc-step done"><div class="bc-num">✓</div>Výběr vozu</div><div class="bc-arrow">›</div>
+  <div class="bc-step active"><div class="bc-num">2</div>Způsob nákupu</div><div class="bc-arrow">›</div>
+  <div class="bc-step"><div class="bc-num">3</div>Kontrola stavu vozu</div><div class="bc-arrow">›</div>
+  <div class="bc-step"><div class="bc-num">4</div>Doručení a služby</div><div class="bc-arrow">›</div>
+  <div class="bc-step"><div class="bc-num">5</div>Potvrzení objednávky</div>
+</div>
+<div class="main"><div class="two-col"><div>
+  <div class="card">
+    <span class="marker marker-current">Stávající — beze změny</span>
+    <div style="font-size:1.1rem;font-weight:700;text-transform:uppercase;letter-spacing:0.15rem;color:var(--chakra-colors-gray-500);margin-bottom:0.4rem;">Financování</div>
+    <div style="font-size:2rem;font-weight:700;margin-bottom:2rem;">Stav žádosti</div>
+    <div class="status pending"><div class="icon">⏳</div><div>
+      <strong>Vaši žádost o financování jsme přijali ke zpracování</strong>
+      <div class="sub">Po kontrole zadaných údajů ji zašleme k posouzení poskytovateli a ozveme se vám zpět</div>
+    </div></div>
+  </div>
+  <div class="wrap-new">
+    <span class="marker marker-new">✦ Nový prvek — info banner</span>
+    <div class="card" style="margin:0;">
+      <div class="status info" style="margin-top:0;"><div class="icon">🚗</div><div>
+        <strong>Nečekejte na výsledek — zajistěte si vůz</strong>
+        Na schválení financování nemusíte čekat. Zaplaťte kontrolu CarAudit™ ještě dnes — jakmile bude financování potvrzeno, kontrola může začít bez dalšího čekání. Kvalitní vozy se prodávají rychle a čím dříve budete připraveni, tím lépe.
+      </div></div>
+      <p style="font-size:1.2rem;color:var(--chakra-colors-gray-500);margin-top:0.8rem;">Financování vyhodnocujeme souběžně. Pokud nebude schváleno, vůz je možné uhradit vlastními prostředky nebo si zajistit financování jinde.</p>
+    </div>
+    <div class="annot"><strong>Účel:</strong> Readiness framing — zákazník bude připravený okamžitě po schválení financování.</div>
+  </div>
+  <div class="card">
+    <span class="marker marker-current">Stávající</span>
+    <div class="help-box" style="margin:0;"><div class="help-icon">📞</div><div><div style="font-size:1.3rem;color:var(--chakra-colors-gray-500);">Potřebujete poradit?</div><div style="font-weight:700;">+420 246 034 700</div></div></div>
+  </div>
+  <div class="wrap-new">
+    <span class="marker marker-new">✦ Nové CTA (spodní pozice)</span>
+    <div style="display:flex;flex-direction:column;gap:1rem;align-items:stretch;">
+      <div class="btn btn-primary" style="justify-content:center;">Pokračovat k objednávce CarAudit →</div>
+    </div>
+  </div>
+</div><div class="sidebar">
+  <div class="card receipt">
+    <div class="receipt-heading">Nyní k zaplacení</div>
+    <div class="receipt-row"><span>Kontrola CarAudit™</span><span><span class="strike">4,990 Kč</span> <span class="discount">-40%</span></span></div>
+    <div class="receipt-row total"><span>Cena celkem</span><span>2,990 Kč</span></div>
+    <div style="margin-top:1.2rem;padding:1rem;border:1px solid var(--chakra-colors-gray-200);border-radius:var(--chakra-radii-lg);text-align:center;font-size:1.3rem;color:var(--chakra-colors-gray-500);">Pokud se po kontrole rozhodnete vůz koupit</div>
+  </div>
+  <div class="card receipt">
+    <div class="price-badge"><div class="price-dots"><div class="price-dot filled"></div><div class="price-dot filled"></div><div class="price-dot filled"></div><div class="price-dot filled"></div></div>Velmi dobrá cena</div>
+    <div class="receipt-row"><span>Cena vozu</span><span style="font-weight:600;">1,507,490 Kč</span></div>
+    <div class="receipt-row" style="color:var(--chakra-colors-gray-400);"><span>Cena bez DPH</span><span>1,245,860 Kč</span></div>
+    <div class="receipt-divider"></div>
+    <div class="receipt-row" style="font-weight:600;"><span>Služby celkem</span><span>24,704 Kč</span></div>
+    <div class="svc-row"><span>Doručení domů</span><span>17,424 Kč</span></div>
+    <div class="svc-row"><span>10 litrů paliva</span><span><span class="free">Zdarma</span></span></div>
+    <div class="svc-row"><span>Dovozová STK</span><span>4,490 Kč</span></div>
+    <div class="svc-row"><span>Správní poplatek</span><span>800 Kč</span></div>
+    <div class="svc-row"><span>Registrace vozu</span><span>1,990 Kč</span></div>
+    <div class="svc-row"><span>Další sada pneumatik</span><span><span class="free">Zdarma</span></span></div>
+    <div class="receipt-divider"></div>
+    <div class="receipt-row total"><span>Cena celkem</span><span>1,535,184 Kč</span></div>
+    <div class="receipt-row" style="color:var(--chakra-colors-gray-400);"><span>Cena bez DPH</span><span>1,268,886 Kč</span></div>
+    <div class="fin-section"><div class="receipt-row" style="font-weight:600;"><span>Financování</span><span></span></div><div class="svc-row"><span>Měsíční splátka</span><span style="font-weight:600;">–</span></div></div>
+  </div>
+</div></div></div></div>
+</div>
+<div class="screen" id="s1"><div class="bc">
+  <div class="bc-step done"><div class="bc-num">✓</div>Výběr vozu</div><div class="bc-arrow">›</div>
+  <div class="bc-step active"><div class="bc-num">2</div>Způsob nákupu</div><div class="bc-arrow">›</div>
+  <div class="bc-step"><div class="bc-num">3</div>Kontrola stavu vozu</div><div class="bc-arrow">›</div>
+  <div class="bc-step"><div class="bc-num">4</div>Doručení a služby</div><div class="bc-arrow">›</div>
+  <div class="bc-step"><div class="bc-num">5</div>Potvrzení objednávky</div>
+</div>
+<div class="main"><div class="two-col"><div>
+  <div class="card">
+    <span class="marker marker-current">Stávající — beze změny</span>
+    <div style="font-size:1.1rem;font-weight:700;text-transform:uppercase;letter-spacing:0.15rem;color:var(--chakra-colors-gray-500);margin-bottom:0.4rem;">Financování</div>
+    <div style="font-size:2rem;font-weight:700;margin-bottom:2rem;">Stav žádosti</div>
+    <div class="status pending"><div class="icon">📄</div><div>
+      <strong>K posouzení vaší žádosti o financování je zapotřebí doložit ještě další dokumenty</strong>
+      <div class="sub">Podrobnosti naleznete v zaslaném e-mailu</div>
+    </div></div>
+  </div>
+  <div class="wrap-new">
+    <span class="marker marker-new">✦ Nový prvek — info banner</span>
+    <div class="card" style="margin:0;">
+      <div class="status info" style="margin-top:0;"><div class="icon">⏩</div><div>
+        <strong>Nemusíte čekat na vyřízení dokumentů</strong>
+        I během schvalovacího procesu můžete pokračovat k objednání kontroly vozu. Dokumenty vyřídíte paralelně — jakmile bude financování potvrzeno, kontrola může začít bez dalšího čekání.
+      </div></div>
+    </div>
+    <div class="annot"><strong>Účel:</strong> Readiness framing — oba procesy běží paralelně.</div>
+  </div>
+  <div class="card">
+    <span class="marker marker-current">Stávající</span>
+    <div class="help-box" style="margin:0;"><div class="help-icon">📞</div><div><div style="font-size:1.3rem;color:var(--chakra-colors-gray-500);">Potřebujete poradit?</div><div style="font-weight:700;">+420 246 034 700</div></div></div>
+  </div>
+  <div class="wrap-new">
+    <span class="marker marker-new">✦ Nové CTA (spodní pozice)</span>
+    <div style="display:flex;flex-direction:column;gap:1rem;align-items:stretch;">
+      <div class="btn btn-primary" style="justify-content:center;">Pokračovat k objednávce CarAudit →</div>
+    </div>
+  </div>
+</div><div class="sidebar">
+  <div class="card receipt">
+    <div class="receipt-heading">Nyní k zaplacení</div>
+    <div class="receipt-row"><span>Kontrola CarAudit™</span><span><span class="strike">4,990 Kč</span> <span class="discount">-40%</span></span></div>
+    <div class="receipt-row total"><span>Cena celkem</span><span>2,990 Kč</span></div>
+    <div style="margin-top:1.2rem;padding:1rem;border:1px solid var(--chakra-colors-gray-200);border-radius:var(--chakra-radii-lg);text-align:center;font-size:1.3rem;color:var(--chakra-colors-gray-500);">Pokud se po kontrole rozhodnete vůz koupit</div>
+  </div>
+  <div class="card receipt">
+    <div class="price-badge"><div class="price-dots"><div class="price-dot filled"></div><div class="price-dot filled"></div><div class="price-dot filled"></div><div class="price-dot filled"></div></div>Velmi dobrá cena</div>
+    <div class="receipt-row"><span>Cena vozu</span><span style="font-weight:600;">1,507,490 Kč</span></div>
+    <div class="receipt-row" style="color:var(--chakra-colors-gray-400);"><span>Cena bez DPH</span><span>1,245,860 Kč</span></div>
+    <div class="receipt-divider"></div>
+    <div class="receipt-row" style="font-weight:600;"><span>Služby celkem</span><span>24,704 Kč</span></div>
+    <div class="svc-row"><span>Doručení domů</span><span>17,424 Kč</span></div>
+    <div class="svc-row"><span>10 litrů paliva</span><span><span class="free">Zdarma</span></span></div>
+    <div class="svc-row"><span>Dovozová STK</span><span>4,490 Kč</span></div>
+    <div class="svc-row"><span>Správní poplatek</span><span>800 Kč</span></div>
+    <div class="svc-row"><span>Registrace vozu</span><span>1,990 Kč</span></div>
+    <div class="svc-row"><span>Další sada pneumatik</span><span><span class="free">Zdarma</span></span></div>
+    <div class="receipt-divider"></div>
+    <div class="receipt-row total"><span>Cena celkem</span><span>1,535,184 Kč</span></div>
+    <div class="receipt-row" style="color:var(--chakra-colors-gray-400);"><span>Cena bez DPH</span><span>1,268,886 Kč</span></div>
+    <div class="fin-section"><div class="receipt-row" style="font-weight:600;"><span>Financování</span><span></span></div><div class="svc-row"><span>Měsíční splátka</span><span style="font-weight:600;">–</span></div></div>
+  </div>
+</div></div></div></div>
+</div>
+<div class="screen" id="s2"><div class="bc">
+  <div class="bc-step done"><div class="bc-num">✓</div>Výběr vozu</div><div class="bc-arrow">›</div>
+  <div class="bc-step active"><div class="bc-num">2</div>Způsob nákupu</div><div class="bc-arrow">›</div>
+  <div class="bc-step"><div class="bc-num">3</div>Kontrola stavu vozu</div><div class="bc-arrow">›</div>
+  <div class="bc-step"><div class="bc-num">4</div>Doručení a služby</div><div class="bc-arrow">›</div>
+  <div class="bc-step"><div class="bc-num">5</div>Potvrzení objednávky</div>
+</div>
+<div class="main"><div class="two-col"><div>
+  <div class="card">
+    <span class="marker marker-current">Stávající</span>
+    <div style="font-size:1.1rem;font-weight:700;text-transform:uppercase;letter-spacing:0.15rem;color:var(--chakra-colors-gray-500);margin-bottom:0.4rem;">Financování</div>
+    <div style="font-size:2rem;font-weight:700;margin-bottom:2rem;">Stav žádosti</div>
+    <div class="status approved"><div class="icon">✅</div><div>
+      <strong>Financování schváleno!</strong>
+      <div class="sub">Financování se zvolenými parametry můžete využít pro nákup vašeho nového vozu.</div>
+    </div></div>
+  </div>
+  <div class="wrap-changed">
+    <span class="marker marker-changed">Změněný text</span>
+    <div class="card" style="margin:0;">
+      <p>Skvělá zpráva! Nyní zbývá objednat a zaplatit kontrolu CarAudit™ — po zaplacení začneme s prověřením vašeho vozu.</p>
+    </div>
+    <div class="annot"><strong>Upřesnění:</strong> Kontrola začíná až po platbě, ne po schválení financování. Stávající text „Nyní pokračujte v nákupu objednáním prověrky vozu" je vágní — nový text jasně říká, co je další krok.</div>
+  </div>
+  <div class="card">
+    <span class="marker marker-current">Stávající</span>
+    <div class="help-box" style="margin:0;"><div class="help-icon">📞</div><div><div style="font-size:1.3rem;color:var(--chakra-colors-gray-500);">Potřebujete poradit?</div><div style="font-weight:700;">+420 246 034 700</div></div></div>
+  </div>
+  <div class="wrap-new">
+    <span class="marker marker-new">✦ CTA (spodní pozice)</span>
+    <div style="display:flex;flex-direction:column;gap:1rem;align-items:stretch;">
+      <div class="btn btn-primary" style="justify-content:center;">Pokračovat k objednávce CarAudit →</div>
+    </div>
+  </div>
+</div><div class="sidebar">
+  <div class="card receipt">
+    <div class="receipt-heading">Nyní k zaplacení</div>
+    <div class="receipt-row"><span>Kontrola CarAudit™</span><span><span class="strike">4,990 Kč</span> <span class="discount">-40%</span></span></div>
+    <div class="receipt-row total"><span>Cena celkem</span><span>2,990 Kč</span></div>
+    <div style="margin-top:1.2rem;padding:1rem;border:1px solid var(--chakra-colors-gray-200);border-radius:var(--chakra-radii-lg);text-align:center;font-size:1.3rem;color:var(--chakra-colors-gray-500);">Pokud se po kontrole rozhodnete vůz koupit</div>
+  </div>
+  <div class="card receipt">
+    <div class="price-badge"><div class="price-dots"><div class="price-dot filled"></div><div class="price-dot filled"></div><div class="price-dot filled"></div><div class="price-dot filled"></div></div>Velmi dobrá cena</div>
+    <div class="receipt-row"><span>Cena vozu</span><span style="font-weight:600;">1,507,490 Kč</span></div>
+    <div class="receipt-row" style="color:var(--chakra-colors-gray-400);"><span>Cena bez DPH</span><span>1,245,860 Kč</span></div>
+    <div class="receipt-divider"></div>
+    <div class="receipt-row" style="font-weight:600;"><span>Služby celkem</span><span>24,704 Kč</span></div>
+    <div class="svc-row"><span>Doručení domů</span><span>17,424 Kč</span></div>
+    <div class="svc-row"><span>10 litrů paliva</span><span><span class="free">Zdarma</span></span></div>
+    <div class="svc-row"><span>Dovozová STK</span><span>4,490 Kč</span></div>
+    <div class="svc-row"><span>Správní poplatek</span><span>800 Kč</span></div>
+    <div class="svc-row"><span>Registrace vozu</span><span>1,990 Kč</span></div>
+    <div class="svc-row"><span>Další sada pneumatik</span><span><span class="free">Zdarma</span></span></div>
+    <div class="receipt-divider"></div>
+    <div class="receipt-row total"><span>Cena celkem</span><span>1,535,184 Kč</span></div>
+    <div class="receipt-row" style="color:var(--chakra-colors-gray-400);"><span>Cena bez DPH</span><span>1,268,886 Kč</span></div>
+    <div class="fin-section"><div class="receipt-row" style="font-weight:600;"><span>Financování</span><span></span></div><div class="svc-row"><span>Měsíční splátka</span><span style="font-weight:600;">–</span></div></div>
+  </div>
+</div></div></div></div>
+</div>
+<div class="screen" id="s3">
+<div class="bc">
+  <div class="bc-step done"><div class="bc-num">✓</div>Výběr vozu</div><div class="bc-arrow">›</div>
+  <div class="bc-step done"><div class="bc-num">✓</div>Způsob nákupu</div><div class="bc-arrow">›</div>
+  <div class="bc-step active"><div class="bc-num">3</div>Kontrola stavu vozu</div><div class="bc-arrow">›</div>
+  <div class="bc-step"><div class="bc-num">4</div>Doručení a služby</div><div class="bc-arrow">›</div>
+  <div class="bc-step"><div class="bc-num">5</div>Potvrzení objednávky</div>
+</div>
+
+<div class="main">
+<div class="two-col">
+
+<!-- LEFT COLUMN -->
+<div>
+
+  <!-- Heading + description -->
+  <div class="card">
+    <span class="marker marker-current">Stávající</span>
+    <div class="card-title">Objednávka kontroly</div>
+
+    <div class="wrap-changed" style="margin:0 0 1.6rem;">
+      <span class="marker marker-changed">Změněný text</span>
+      <p>Nyní od vás potřebujeme uhradit poplatek za kontrolu CarAudit™ který stojí jen 2,990 Kč. <strong>Kontrola bude zahájena po přijetí platby a schválení financování.</strong> Poskytneme Vám detailní zprávu o technickém stavu, fotodokumentaci a naše doporučení.</p>
+      <div class="annot"><strong>Klíčová změna:</strong> „Po zaplacení okamžitě začneme" → „po přijetí platby a schválení financování". Upřímný rámec — neslibujeme nic, co ještě nezačalo.</div>
+    </div>
+
+    <div class="checks">
+      <div class="check"><span class="check-icon">✓</span> Výsledek kontroly do 2 dní</div>
+      <div class="check"><span class="check-icon">✓</span> Certifikovaný mechanik</div>
+    </div>
+  </div>
+
+  <!-- Scarcity nudge -->
+  <div class="wrap-new">
+    <span class="marker marker-new">✦ Nový prvek — urgence</span>
+    <div class="card" style="margin:0;">
+      <p>💡 Zaplacením kontroly budete připraveni — jakmile bude financování potvrzeno, kontrola může začít bez dalšího čekání. Kvalitní vozy se prodávají rychle a čím dříve budete připraveni, tím menší je riziko, že vůz mezitím koupí někdo jiný.</p>
+    </div>
+    <div class="annot"><strong>Účel:</strong> Readiness framing — neslibujeme, že začneme pracovat, ale zákazník bude připravený okamžitě po schválení financování. Urgence přes riziko ztráty vozu.</div>
+  </div>
+
+  <!-- Alternative car -->
+  <div class="wrap-new">
+    <span class="marker marker-new">✦ Nový prvek — alternativní vůz</span>
+    <div class="card" style="margin:0;">
+      <p style="font-size:1.3rem;color:var(--chakra-colors-gray-500);">
+        Pokud by vybraný vůz nebyl k dispozici, provedeme kontrolu alternativního vozu dle vašeho výběru.
+      </p>
+    </div>
+    <div class="annot"><strong>Účel:</strong> Snižuje risk platby — peníze nepřijdou vniveč ani když vůz zmizí.</div>
+  </div>
+
+  <!-- Car card -->
+  <div class="card">
+    <span class="marker marker-current">Stávající</span>
+    <p style="font-size:1.4rem;font-weight:600;margin-bottom:0.6rem;">Máte k vozům nějaké dotazy?&emsp;<a href="#">Jak probíhá kontrola CarAudit?</a></p>
+    <div class="car-card">
+      <div class="car-badge">Preferovaný</div>
+      <img src="https://storage.alpha-analytics.cz/get/d31994d6-15a6-408f-aaae-902639ffeba9?ts=1773125760" alt="Ford Ranger 177 kW" onerror="this.style.background='var(--chakra-colors-gray-200)';this.style.minHeight='6.5rem';">
+      <div>
+        <div class="name">Ford Ranger 177 kW</div>
+        <div class="specs">6,500 km · 241 hp · Automat · Diesel</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Billing form -->
+  <div class="card">
+    <span class="marker marker-current">Stávající — beze změny</span>
+    <div class="form-title">Fakturační údaje</div>
+    <div class="form-tabs">
+      <div class="form-tab">Spotřebitel</div>
+      <div class="form-tab">Podnikatel</div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><div class="form-label">Jméno</div><div class="form-input">Ondrej</div></div>
+      <div class="form-group"><div class="form-label">Příjmení</div><div class="form-input">Gdík</div></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><div class="form-label">Telefonní číslo</div><div class="form-input">+420 123 456 789</div></div>
+      <div class="form-group"><div class="form-label">Datum narození</div><div class="form-input">19.09.1985</div></div>
+    </div>
+    <div style="text-align:center;margin:1.2rem 0;"><a href="#">Fakturační adresa</a></div>
+    <div class="form-row">
+      <div class="form-group"><div class="form-label">Ulice</div><div class="form-input">Sukovská 620/17</div></div>
+      <div class="form-group" style="max-width:12rem;"><div class="form-label">Číslo popisné</div><div class="form-input">620/17</div></div>
+      <div class="form-group" style="max-width:10rem;"><div class="form-label">PSČ</div><div class="form-input">14900</div></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><div class="form-label">Město</div><div class="form-input">Praha - Újezd</div></div>
+      <div class="form-group"><div class="form-label">Země</div><div class="form-input">🇨🇿 Česko</div></div>
+    </div>
+  </div>
+
+  <!-- Payment method -->
+  <div class="card">
+    <span class="marker marker-current">Stávající</span>
+    <div class="form-title">Způsob platby</div>
+    <p class="card-sub">Vyberte způsob platby za CarAudit™. Kupní cena vozu se následně hradí vždy pouze převodem.</p>
+    <div class="payment-box">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <div>
+          <div class="payment-title">Online platba</div>
+          <div class="payment-sub">okamžitá platební kartou</div>
+          <div class="payment-price"><span style="text-decoration:line-through;color:var(--chakra-colors-gray-400);margin-right:0.6rem;">4,990 Kč</span> <span style="background:var(--chakra-colors-red-500);color:white;font-size:1rem;padding:0.1rem 0.5rem;border-radius:var(--chakra-radii-sm);">-40%</span></div>
+        </div>
+        <div style="width:2.4rem;height:2.4rem;border-radius:50%;border:2px solid var(--chakra-colors-blue-500);display:flex;align-items:center;justify-content:center;">
+          <div style="width:1.2rem;height:1.2rem;border-radius:50%;background:var(--chakra-colors-blue-500);"></div>
+        </div>
+      </div>
+      <div class="payment-icons">
+        <div class="payment-icon">PayPal</div>
+        <div class="payment-icon">G Pay</div>
+        <div class="payment-icon">Apple Pay</div>
+        <div class="payment-icon">MC</div>
+        <div class="payment-icon">VISA</div>
+      </div>
+    </div>
+    <div class="consent"><input type="checkbox"> Souhlasím s <a href="#">všeobecnými obchodními podmínkami</a></div>
+  </div>
+</div>
+
+<!-- RIGHT COLUMN — SIDEBAR -->
+<div class="sidebar">
+  <!-- Receipt mini -->
+  <div class="card receipt">
+    <div class="receipt-heading">Nyní k zaplacení</div>
+    <div class="receipt-row">
+      <span>Kontrola CarAudit™</span>
+      <span><span class="strike">4,990 Kč</span> <span class="discount">-40%</span></span>
+    </div>
+    <div class="receipt-row total">
+      <span>Cena celkem</span>
+      <span>2,990 Kč</span>
+    </div>
+    <div style="margin-top:1.2rem;padding:1rem;border:1px solid var(--chakra-colors-gray-200);border-radius:var(--chakra-radii-lg);text-align:center;font-size:1.3rem;color:var(--chakra-colors-gray-500);">
+      Pokud se po kontrole rozhodnete vůz koupit
+    </div>
+  </div>
+
+  <!-- Price breakdown -->
+  <div class="card receipt">
+    <div class="price-badge">
+      <div class="price-dots">
+        <div class="price-dot filled"></div><div class="price-dot filled"></div>
+        <div class="price-dot filled"></div><div class="price-dot filled"></div>
+      </div>
+      Velmi dobrá cena
+    </div>
+
+    <div class="receipt-row"><span>Cena vozu</span><span style="font-weight:600;">1,507,490 Kč</span></div>
+    <div class="receipt-row" style="color:var(--chakra-colors-gray-400);"><span>Cena bez DPH</span><span>1,245,860 Kč</span></div>
+
+    <div class="receipt-divider"></div>
+    <div class="receipt-row" style="font-weight:600;"><span>Služby celkem</span><span>24,704 Kč</span></div>
+    <div class="svc-row"><span>Doručení domů</span><span>17,424 Kč</span></div>
+    <div class="svc-row"><span>10 litrů paliva</span><span><span class="free">Zdarma</span></span></div>
+    <div class="svc-row"><span>Dovozová STK</span><span>4,490 Kč</span></div>
+    <div class="svc-row"><span>Správní poplatek</span><span>800 Kč</span></div>
+    <div class="svc-row"><span>Registrace vozu</span><span>1,990 Kč</span></div>
+    <div class="svc-row"><span>Další sada pneumatik</span><span><span class="free">Zdarma</span></span></div>
+
+    <div class="receipt-divider"></div>
+    <div class="receipt-row total"><span>Cena celkem</span><span>1,535,184 Kč</span></div>
+    <div class="receipt-row" style="color:var(--chakra-colors-gray-400);"><span>Cena celkem bez DPH</span><span>1,268,886 Kč</span></div>
+
+    <div class="fin-section">
+      <div class="receipt-row" style="font-weight:600;"><span>Financování</span><span></span></div>
+      <div class="svc-row"><span>Měsíční splátka</span><span style="font-weight:600;">–</span></div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /two-col -->
+
+<!-- BOTTOM CTA BAR -->
+<div class="cta-bar">
+  <div class="btn btn-ghost">← Zpět</div>
+  <div class="btn btn-primary">Pokračovat k platbě →</div>
+</div>
+
+</div><!-- /main -->
+</div><!-- /screen 04 -->
+
+
+<div class="screen" id="s4"><div class="bc">
+  <div class="bc-step done"><div class="bc-num">✓</div>Výběr vozu</div><div class="bc-arrow">›</div>
+  <div class="bc-step done"><div class="bc-num">✓</div>Způsob nákupu</div><div class="bc-arrow">›</div>
+  <div class="bc-step active"><div class="bc-num">3</div>Kontrola stavu vozu</div><div class="bc-arrow">›</div>
+  <div class="bc-step"><div class="bc-num">4</div>Doručení a služby</div><div class="bc-arrow">›</div>
+  <div class="bc-step"><div class="bc-num">5</div>Potvrzení objednávky</div>
+</div>
+<div class="main"><div class="two-col"><div>
+  <div class="card">
+    <span class="marker marker-current">Stávající</span>
+    <div style="font-size:2rem;font-weight:700;margin-bottom:2rem;">Kontrola stavu vozu</div>
+    <div class="car-card">
+      <div class="car-badge">Preferovaný</div>
+      <img src="https://storage.alpha-analytics.cz/get/d31994d6-15a6-408f-aaae-902639ffeba9?ts=1773125760" alt="Ford Ranger 177 kW" onerror="this.style.background='var(--chakra-colors-gray-200)';this.style.minHeight='6.5rem';">
+      <div><div class="name">Ford Ranger 177 kW</div><div class="specs">6,500 km · 241 hp · Automat · Diesel</div></div>
+    </div>
+  </div>
+
+  <div class="wrap-new">
+    <span class="marker marker-new">✦ Nový prvek — oranžový status (po zavření modálu)</span>
+    <div class="card" style="margin:0;">
+      <div class="status pending" style="margin:0;">
+        <div class="icon">⏳</div>
+        <div>
+          <strong>Čekáme na schválení vaší žádosti o financování</strong>
+          <div class="sub">Platba za CarAudit™ je přijata. Jakmile bude financování potvrzeno, zahájíme kontrolu vašeho vozu.</div>
+        </div>
+      </div>
+    </div>
+    <div class="annot"><strong>Pozadí:</strong> Tento status je vidět po zavření modálu. Zobrazuje se pokaždé, dokud není financování schváleno.</div>
+  </div>
+
+  <div class="card">
+    <span class="marker marker-current">Stávající</span>
+    <div class="help-box" style="margin:0;"><div class="help-icon">📞</div><div><div style="font-size:1.3rem;color:var(--chakra-colors-gray-500);">Potřebujete poradit?</div><div style="font-weight:700;">+420 246 034 700</div></div></div>
+  </div>
+</div><div class="sidebar">
+  <div class="card receipt">
+    <div class="receipt-heading">Nyní k zaplacení</div>
+    <div class="receipt-row"><span>Kontrola CarAudit™</span><span><span class="strike">4,990 Kč</span> <span class="discount">-40%</span></span></div>
+    <div class="receipt-row total"><span>Cena celkem</span><span>2,990 Kč</span></div>
+    <div style="margin-top:1.2rem;padding:1rem;border:1px solid var(--chakra-colors-gray-200);border-radius:var(--chakra-radii-lg);text-align:center;font-size:1.3rem;color:var(--chakra-colors-gray-500);">Pokud se po kontrole rozhodnete vůz koupit</div>
+  </div>
+  <div class="card receipt">
+    <div class="price-badge"><div class="price-dots"><div class="price-dot filled"></div><div class="price-dot filled"></div><div class="price-dot filled"></div><div class="price-dot filled"></div></div>Velmi dobrá cena</div>
+    <div class="receipt-row"><span>Cena vozu</span><span style="font-weight:600;">1,507,490 Kč</span></div>
+    <div class="receipt-row" style="color:var(--chakra-colors-gray-400);"><span>Cena bez DPH</span><span>1,245,860 Kč</span></div>
+    <div class="receipt-divider"></div>
+    <div class="receipt-row" style="font-weight:600;"><span>Služby celkem</span><span>24,704 Kč</span></div>
+    <div class="svc-row"><span>Doručení domů</span><span>17,424 Kč</span></div>
+    <div class="svc-row"><span>10 litrů paliva</span><span><span class="free">Zdarma</span></span></div>
+    <div class="svc-row"><span>Dovozová STK</span><span>4,490 Kč</span></div>
+    <div class="svc-row"><span>Správní poplatek</span><span>800 Kč</span></div>
+    <div class="svc-row"><span>Registrace vozu</span><span>1,990 Kč</span></div>
+    <div class="svc-row"><span>Další sada pneumatik</span><span><span class="free">Zdarma</span></span></div>
+    <div class="receipt-divider"></div>
+    <div class="receipt-row total"><span>Cena celkem</span><span>1,535,184 Kč</span></div>
+    <div class="receipt-row" style="color:var(--chakra-colors-gray-400);"><span>Cena bez DPH</span><span>1,268,886 Kč</span></div>
+    <div class="fin-section"><div class="receipt-row" style="font-weight:600;"><span>Financování</span><span></span></div><div class="svc-row"><span>Měsíční splátka</span><span style="font-weight:600;">–</span></div></div>
+  </div>
+</div></div></div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal-5a">
+  <div class="modal">
+    <div class="modal-close" onclick="document.getElementById('modal-5a').style.display='none'">✕</div>
+    <div class="wrap-new" style="margin:0;border:none;background:none;padding:0;">
+      <span class="marker marker-new">✦ Nový modál — financování pending</span>
+      <div class="modal-icon">⏳</div>
+      <h2 class="modal-title">Čekáme na schválení financování</h2>
+      <p class="modal-text">Platba za kontrolu CarAudit™ je přijata — děkujeme! Kontrolu vašeho vozu zahájíme, jakmile bude vaše žádost o financování schválena.</p>
+      <p class="modal-text" style="color:var(--chakra-colors-gray-500);font-size:1.3rem;">Nemusíte nic dalšího dělat. Budeme vás informovat o výsledku.</p>
+      <div class="modal-actions">
+        <div class="btn btn-primary" style="width:100%;justify-content:center;" onclick="document.getElementById('modal-5a').style.display='none'">Rozumím</div>
+      </div>
+      <div class="annot" style="margin-top:1.6rem;"><strong>Chování:</strong> Modál se zobrazuje pokaždé při načtení screen 05 dokud je financování ve stavu pending. Zákazník ho může zavřít tlačítkem ✕ nebo „Rozumím". Pod modálem zůstává oranžový status.</div>
+    </div>
+  </div>
+</div></div>
+<div class="screen" id="s5"><div class="bc">
+  <div class="bc-step done"><div class="bc-num">✓</div>Výběr vozu</div><div class="bc-arrow">›</div>
+  <div class="bc-step done"><div class="bc-num">✓</div>Způsob nákupu</div><div class="bc-arrow">›</div>
+  <div class="bc-step active"><div class="bc-num">3</div>Kontrola stavu vozu</div><div class="bc-arrow">›</div>
+  <div class="bc-step"><div class="bc-num">4</div>Doručení a služby</div><div class="bc-arrow">›</div>
+  <div class="bc-step"><div class="bc-num">5</div>Potvrzení objednávky</div>
+</div>
+<div class="main"><div class="two-col"><div>
+  <div class="card">
+    <span class="marker marker-current">Stávající</span>
+    <div style="font-size:2rem;font-weight:700;margin-bottom:2rem;">Kontrola stavu vozu</div>
+    <div class="car-card">
+      <div class="car-badge">Preferovaný</div>
+      <img src="https://storage.alpha-analytics.cz/get/d31994d6-15a6-408f-aaae-902639ffeba9?ts=1773125760" alt="Ford Ranger 177 kW" onerror="this.style.background='var(--chakra-colors-gray-200)';this.style.minHeight='6.5rem';">
+      <div><div class="name">Ford Ranger 177 kW</div><div class="specs">6,500 km · 241 hp · Automat · Diesel</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <span class="marker marker-current">Stávající</span>
+    <div class="status info" style="margin:0;">
+      <div class="icon">🔍</div>
+      <div>
+        <strong>Ověřujeme stav vozu u prodejce a v dostupných registrech</strong>
+        <div class="sub">Obě podmínky splněny (financování schváleno / vlastní zdroje + CarAudit zaplacen). Kontrola probíhá.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="annot"><strong>Žádný modál.</strong> Zákazník má schválené financování nebo potvrdil platbu z vlastních zdrojů. Obě podmínky splněny → kontrola běží → standardní stav screen 05.</div>
+
+  <div class="card">
+    <span class="marker marker-current">Stávající</span>
+    <div class="help-box" style="margin:0;"><div class="help-icon">📞</div><div><div style="font-size:1.3rem;color:var(--chakra-colors-gray-500);">Potřebujete poradit?</div><div style="font-weight:700;">+420 246 034 700</div></div></div>
+  </div>
+</div><div class="sidebar">
+  <div class="card receipt">
+    <div class="receipt-heading">Nyní k zaplacení</div>
+    <div class="receipt-row"><span>Kontrola CarAudit™</span><span><span class="strike">4,990 Kč</span> <span class="discount">-40%</span></span></div>
+    <div class="receipt-row total"><span>Cena celkem</span><span>2,990 Kč</span></div>
+    <div style="margin-top:1.2rem;padding:1rem;border:1px solid var(--chakra-colors-gray-200);border-radius:var(--chakra-radii-lg);text-align:center;font-size:1.3rem;color:var(--chakra-colors-gray-500);">Pokud se po kontrole rozhodnete vůz koupit</div>
+  </div>
+  <div class="card receipt">
+    <div class="price-badge"><div class="price-dots"><div class="price-dot filled"></div><div class="price-dot filled"></div><div class="price-dot filled"></div><div class="price-dot filled"></div></div>Velmi dobrá cena</div>
+    <div class="receipt-row"><span>Cena vozu</span><span style="font-weight:600;">1,507,490 Kč</span></div>
+    <div class="receipt-row" style="color:var(--chakra-colors-gray-400);"><span>Cena bez DPH</span><span>1,245,860 Kč</span></div>
+    <div class="receipt-divider"></div>
+    <div class="receipt-row" style="font-weight:600;"><span>Služby celkem</span><span>24,704 Kč</span></div>
+    <div class="svc-row"><span>Doručení domů</span><span>17,424 Kč</span></div>
+    <div class="svc-row"><span>10 litrů paliva</span><span><span class="free">Zdarma</span></span></div>
+    <div class="svc-row"><span>Dovozová STK</span><span>4,490 Kč</span></div>
+    <div class="svc-row"><span>Správní poplatek</span><span>800 Kč</span></div>
+    <div class="svc-row"><span>Registrace vozu</span><span>1,990 Kč</span></div>
+    <div class="svc-row"><span>Další sada pneumatik</span><span><span class="free">Zdarma</span></span></div>
+    <div class="receipt-divider"></div>
+    <div class="receipt-row total"><span>Cena celkem</span><span>1,535,184 Kč</span></div>
+    <div class="receipt-row" style="color:var(--chakra-colors-gray-400);"><span>Cena bez DPH</span><span>1,268,886 Kč</span></div>
+    <div class="fin-section"><div class="receipt-row" style="font-weight:600;"><span>Financování</span><span></span></div><div class="svc-row"><span>Měsíční splátka</span><span style="font-weight:600;">–</span></div></div>
+  </div>
+</div></div></div></div>
+<div class="screen" id="s6"><div class="bc">
+  <div class="bc-step done"><div class="bc-num">✓</div>Výběr vozu</div><div class="bc-arrow">›</div>
+  <div class="bc-step done"><div class="bc-num">✓</div>Způsob nákupu</div><div class="bc-arrow">›</div>
+  <div class="bc-step active"><div class="bc-num">3</div>Kontrola stavu vozu</div><div class="bc-arrow">›</div>
+  <div class="bc-step"><div class="bc-num">4</div>Doručení a služby</div><div class="bc-arrow">›</div>
+  <div class="bc-step"><div class="bc-num">5</div>Potvrzení objednávky</div>
+</div>
+<div class="main"><div class="two-col"><div>
+  <div class="card">
+    <span class="marker marker-current">Stávající</span>
+    <div style="font-size:2rem;font-weight:700;margin-bottom:2rem;">Kontrola stavu vozu</div>
+    <div class="car-card">
+      <div class="car-badge">Preferovaný</div>
+      <img src="https://storage.alpha-analytics.cz/get/d31994d6-15a6-408f-aaae-902639ffeba9?ts=1773125760" alt="Ford Ranger 177 kW" onerror="this.style.background='var(--chakra-colors-gray-200)';this.style.minHeight='6.5rem';">
+      <div><div class="name">Ford Ranger 177 kW</div><div class="specs">6,500 km · 241 hp · Automat · Diesel</div></div>
+    </div>
+  </div>
+
+  <div class="wrap-new">
+    <span class="marker marker-new">✦ Stav po výběru „Pokračovat platbou z vlastních zdrojů"</span>
+    <div class="card" style="margin:0;">
+      <div class="status info" style="margin:0;">
+        <div class="icon">🔍</div>
+        <div>
+          <strong>Ověřujeme stav vozu u prodejce a v dostupných registrech</strong>
+          <div class="sub">Zákazník potvrdil platbu z vlastních zdrojů. CarAudit zaplacen → kontrola běží.</div>
+        </div>
+      </div>
+    </div>
+    <div class="annot"><strong>Po potvrzení vlastních zdrojů:</strong> Zákazník explicitně potvrdil, CA je zaplacený → obě podmínky splněny → kontrola běží. Screen 05 vypadá stejně jako varianta 2.</div>
+  </div>
+
+  <div class="card">
+    <span class="marker marker-current">Stávající</span>
+    <div class="help-box" style="margin:0;"><div class="help-icon">📞</div><div><div style="font-size:1.3rem;color:var(--chakra-colors-gray-500);">Potřebujete poradit?</div><div style="font-weight:700;">+420 246 034 700</div></div></div>
+  </div>
+</div><div class="sidebar">
+  <div class="card receipt">
+    <div class="receipt-heading">Nyní k zaplacení</div>
+    <div class="receipt-row"><span>Kontrola CarAudit™</span><span><span class="strike">4,990 Kč</span> <span class="discount">-40%</span></span></div>
+    <div class="receipt-row total"><span>Cena celkem</span><span>2,990 Kč</span></div>
+    <div style="margin-top:1.2rem;padding:1rem;border:1px solid var(--chakra-colors-gray-200);border-radius:var(--chakra-radii-lg);text-align:center;font-size:1.3rem;color:var(--chakra-colors-gray-500);">Pokud se po kontrole rozhodnete vůz koupit</div>
+  </div>
+  <div class="card receipt">
+    <div class="price-badge"><div class="price-dots"><div class="price-dot filled"></div><div class="price-dot filled"></div><div class="price-dot filled"></div><div class="price-dot filled"></div></div>Velmi dobrá cena</div>
+    <div class="receipt-row"><span>Cena vozu</span><span style="font-weight:600;">1,507,490 Kč</span></div>
+    <div class="receipt-row" style="color:var(--chakra-colors-gray-400);"><span>Cena bez DPH</span><span>1,245,860 Kč</span></div>
+    <div class="receipt-divider"></div>
+    <div class="receipt-row" style="font-weight:600;"><span>Služby celkem</span><span>24,704 Kč</span></div>
+    <div class="svc-row"><span>Doručení domů</span><span>17,424 Kč</span></div>
+    <div class="svc-row"><span>10 litrů paliva</span><span><span class="free">Zdarma</span></span></div>
+    <div class="svc-row"><span>Dovozová STK</span><span>4,490 Kč</span></div>
+    <div class="svc-row"><span>Správní poplatek</span><span>800 Kč</span></div>
+    <div class="svc-row"><span>Registrace vozu</span><span>1,990 Kč</span></div>
+    <div class="svc-row"><span>Další sada pneumatik</span><span><span class="free">Zdarma</span></span></div>
+    <div class="receipt-divider"></div>
+    <div class="receipt-row total"><span>Cena celkem</span><span>1,535,184 Kč</span></div>
+    <div class="receipt-row" style="color:var(--chakra-colors-gray-400);"><span>Cena bez DPH</span><span>1,268,886 Kč</span></div>
+    <div class="fin-section"><div class="receipt-row" style="font-weight:600;"><span>Financování</span><span></span></div><div class="svc-row"><span>Měsíční splátka</span><span style="font-weight:600;">–</span></div></div>
+  </div>
+</div></div></div>
+
+<!-- BLOCKING MODAL -->
+<div class="modal-overlay" id="modal-5c" style="display:flex;">
+  <div class="modal">
+    <div class="wrap-new" style="margin:0;border:none;background:none;padding:0;">
+      <span class="marker marker-new">✦ Nový modál — financování zamítnuto (blocking)</span>
+      <div class="modal-icon" style="color:var(--chakra-colors-red-500);">✕</div>
+      <h2 class="modal-title">Žádost o financování nebyla schválena</h2>
+      <p class="modal-text">Vaše žádost o financování bohužel nebyla schválena. Platba za kontrolu CarAudit™ je přijata a váš vůz na vás čeká.</p>
+      <p class="modal-text">Máte dvě možnosti, jak pokračovat:</p>
+
+      <div class="modal-option" onclick="this.classList.toggle('selected'); document.querySelector('.modal-option-b').classList.remove('selected');">
+        <div class="modal-option-radio"></div>
+        <div>
+          <div style="font-weight:700;font-size:1.5rem;">Pokračovat platbou z vlastních zdrojů</div>
+          <p style="font-size:1.3rem;color:var(--chakra-colors-gray-500);margin-top:0.4rem;">Kupní cenu vozu uhradíte bankovním převodem po dokončení kontroly a vašem schválení. Kontrola vašeho vozu může začít okamžitě.</p>
+        </div>
+      </div>
+
+      <div class="modal-option modal-option-b" onclick="this.classList.toggle('selected'); document.querySelectorAll('.modal-option')[0].classList.remove('selected');">
+        <div class="modal-option-radio"></div>
+        <div>
+          <div style="font-weight:700;font-size:1.5rem;">Chci se poradit</div>
+          <p style="font-size:1.3rem;color:var(--chakra-colors-gray-500);margin-top:0.4rem;">Náš specialista se s vámi spojí a proberete další možnosti financování nebo nákupu.</p>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <div class="btn btn-primary" style="width:100%;justify-content:center;">Potvrdit výběr</div>
+      </div>
+
+      <div class="annot" style="margin-top:1.6rem;">
+        <strong>Blocking modál:</strong> Zákazník nemůže zavřít bez výběru (žádný ✕). Po výběru „Vlastní zdroje" + potvrzení → CA zaplacen + vlastní zdroje = kontrola běží okamžitě. Po výběru „Chci se poradit" → handoff na sales, zákazník čeká na kontakt.
+      </div>
+    </div>
+  </div>
+</div></div>
+
+<div style="background:var(--chakra-colors-gray-50);border-top:1px solid var(--chakra-colors-gray-200);padding:2.4rem;text-align:center;font-size:1.2rem;color:var(--chakra-colors-gray-500);">
+  Carvago 2026 · Veškerá práva vyhrazena · Návrh textových změn — interní dokument
+</div>
+
+<script>
+function show(i) {
+  document.querySelectorAll('.screen').forEach((s,j) => s.classList.toggle('active', i===j));
+  document.querySelectorAll('.screen-tab').forEach((t,j) => t.classList.toggle('active', i===j));
+  // Reset modals visibility when switching tabs
+  document.querySelectorAll('.modal-overlay').forEach(m => {
+    // Show modal-5a only for screen 4, modal-5c only for screen 6
+    if (m.id === 'modal-5a') m.style.display = (i === 4) ? 'flex' : 'none';
+    if (m.id === 'modal-5c') m.style.display = (i === 6) ? 'flex' : 'none';
+  });
+}
+</script>
+</body></html>
