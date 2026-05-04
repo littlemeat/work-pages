@@ -141,10 +141,9 @@
     <li><a href="#s5" style="color:var(--blue); text-decoration:none;" data-i18n="toc_5">Prior Survey Data: "Why Not Carvago"</a></li>
     <li><a href="#s6" style="color:var(--blue); text-decoration:none;" data-i18n="toc_6">Hypotheses</a></li>
     <li><a href="#s7" style="color:var(--blue); text-decoration:none;" data-i18n="toc_7">Proposed Approach: Two Tracks</a></li>
-    <li><a href="#s8" style="color:var(--blue); text-decoration:none;" data-i18n="toc_8">Future Considerations</a></li>
+    <li><a href="#s8" style="color:var(--blue); text-decoration:none;" data-i18n="toc_8">Recommendations &amp; Action Items</a></li>
     <li><a href="#s9" style="color:var(--blue); text-decoration:none;" data-i18n="toc_9">Broader Context: Continuous Survey Tool</a></li>
-    <li><a href="#s10" style="color:var(--blue); text-decoration:none;" data-i18n="toc_10">Next Steps</a></li>
-    <li><a href="#s11" style="color:var(--blue); text-decoration:none;" data-i18n="toc_11">Methodology &amp; Data Sources</a></li>
+    <li><a href="#s10" style="color:var(--blue); text-decoration:none;" data-i18n="toc_10">Methodology &amp; Data Sources</a></li>
   </ol>
 </nav>
 
@@ -448,21 +447,71 @@ car-selection<br>
   </tbody>
 </table>
 
+<h4>Why are Italian financings being lost? (Reason codes)</h4>
+
+<p>Salesforce <code>Reason_Code__c</code> on lost financings reveals <strong>who</strong> closes the financing &mdash; bank, customer, or process.</p>
+
+<table>
+  <thead>
+    <tr><th>Reason code</th><th class="num">🇮🇹 IT</th><th class="num">🇨🇿 CZ</th><th>Category</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><strong>no-answer-from-customer</strong></td><td class="num bad">199 (32%)</td><td class="num">44 (9%)</td><td>👤 Customer</td></tr>
+    <tr><td><strong>customer-lost-interest-in-car-purchase</strong></td><td class="num bad">140 (22%)</td><td class="num">19 (4%)</td><td>👤 Customer</td></tr>
+    <tr><td>low-creditworthiness-of-the-customer</td><td class="num">99 (16%)</td><td class="num">67 (14%)</td><td>🏦 Bank</td></tr>
+    <tr><td>other-reasons</td><td class="num">44 (7%)</td><td class="num">5 (1%)</td><td>❓ Other</td></tr>
+    <tr><td>customer-only-tested-the-platform</td><td class="num">39 (6%)</td><td class="num">&mdash;</td><td>👤 Customer</td></tr>
+    <tr><td>opportunity-is-lost</td><td class="num">34 (5%)</td><td class="num">97 (21%)</td><td>🔁 Process</td></tr>
+    <tr><td>customer-opted-for-another-carvago-vehicle</td><td class="num">20 (3%)</td><td class="num">8 (2%)</td><td>👤 Customer</td></tr>
+    <tr><td>payment-by-cash-or-credit-outside-carvago</td><td class="num">18 (3%)</td><td class="num">52 (11%)</td><td>👤 Customer</td></tr>
+    <tr><td>customer-is-debtor-or-has-records-in-registers</td><td class="num">11 (2%)</td><td class="num">53 (11%)</td><td>🏦 Bank</td></tr>
+    <tr><td>customer-did-not-deliver-full-application</td><td class="num">9 (1%)</td><td class="num">&mdash;</td><td>👤 Customer</td></tr>
+    <tr><td>auto-closed after 30 days in financing stage</td><td class="num">3 (0.5%)</td><td class="num bad">116 (25%)</td><td>🔁 Process</td></tr>
+    <tr><td>others (small)</td><td class="num">11 (2%)</td><td class="num">10 (2%)</td><td>&mdash;</td></tr>
+  </tbody>
+</table>
+
+<h4>Aggregated by category</h4>
+
+<table>
+  <thead>
+    <tr><th>Category</th><th class="num">🇮🇹 IT</th><th class="num">🇨🇿 CZ</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>👤 <strong>Customer-driven</strong> (no answer, lost interest, only testing, etc.)</td><td class="num bad">68%</td><td class="num">28%</td></tr>
+    <tr><td>🏦 <strong>Bank-driven</strong> (creditworthiness, debtor records)</td><td class="num">18%</td><td class="num">26%</td></tr>
+    <tr><td>🔁 <strong>Process-driven</strong> (auto-close, opportunity-is-lost)</td><td class="num">5.5%</td><td class="num bad">45%</td></tr>
+    <tr><td>❓ Other / unclassified</td><td class="num">9%</td><td class="num">1%</td></tr>
+  </tbody>
+</table>
+
+<div class="callout callout-red">
+  <strong>This is NOT a bank rejection problem &mdash; it's a customer follow-up problem</strong>
+  In Italy, <strong>68% of lost financings are customer-driven</strong>:
+  <ul style="margin:8px 0 0 20px;">
+    <li><strong>32% no-answer-from-customer</strong> &mdash; F&amp;I tries to contact, customer doesn't respond (3.5&times; more than CZ)</li>
+    <li><strong>22% customer-lost-interest</strong> &mdash; customer gave up (5.5&times; more than CZ)</li>
+    <li>Bank-driven rejections (low creditworthiness, debtor): 18% &mdash; comparable to CZ's 26%</li>
+  </ul>
+  <br>
+  This means the F&amp;I follow-up process for Italy is failing. Italian customers initiate financing on the platform but don't engage with the manual F&amp;I outreach (calls, emails, document requests). Either:
+  <ol style="margin:8px 0 0 20px;">
+    <li><strong>Channel mismatch:</strong> Italians expect digital self-service, not phone calls</li>
+    <li><strong>Speed:</strong> F&amp;I outreach takes too long &mdash; customer cools off / buys elsewhere</li>
+    <li><strong>Language / cultural fit:</strong> outreach not adapted to Italian market</li>
+    <li><strong>Trust:</strong> incoming call from unknown number after online application feels suspicious</li>
+  </ol>
+</div>
+
 <div class="callout callout-red">
   <strong>The Italian financing pipeline is essentially non-functional</strong>
+  Combined with the data above:
   <ul style="margin:8px 0 0 20px;">
     <li><strong>99.7% of Italian financing applications never get assigned to a bank</strong> &mdash; only 2 of 720 records are linked to Agos (the only IT bank partner)</li>
     <li><strong>All 720 IT records have NULL <code>Final_Type_Of_Financing__c</code></strong> &mdash; they're lost before a financing type is even chosen</li>
     <li>CZ has 4&ndash;5 active bank partners with proper pipeline distribution; only 1.5% have no bank</li>
+    <li>Most IT financings are lost in the F&amp;I follow-up phase, not at the bank submission phase</li>
   </ul>
-  <br>
-  Possible root causes (need investigation with F&amp;I team):
-  <ol style="margin:0 0 0 20px;">
-    <li>F&amp;I team doesn't process Italian applications (capacity / language / process gap)</li>
-    <li>Integration with Agos is broken or not configured</li>
-    <li>Italian customers fail basic eligibility before submission (income, residency, etc.)</li>
-    <li>Italian process never auto-creates the bank assignment</li>
-  </ol>
 </div>
 
 <div class="callout callout-orange">
@@ -803,35 +852,198 @@ Note: the GA "Full Funnel" view includes both cash and financing users. The 31.1
 </div>
 
 <!-- ==================== SECTION 8 ==================== -->
-<h2 id="s8">8. Future Considerations</h2>
+<h2 id="s8">8. Recommendations &amp; Action Items</h2>
+
+<div class="callout callout-blue">
+  <strong>This is the consolidated to-do list pulling together findings from all sections above.</strong> Items are grouped by priority and team. Marked as P0 (urgent), P1 (high), P2 (medium), P3 (long-term).
+</div>
+
+<h3>🔥 P0 &mdash; This week / urgent (Italian financing pipeline)</h3>
+
+<p>The most impactful finding of this investigation is that the Italian financing pipeline is essentially non-functional. Fixing this likely moves the conversion needle more than any UX change.</p>
+
+<div class="callout callout-red">
+  <strong>Hard numbers backing P0 priority (Section 3a):</strong>
+  <ul style="margin:8px 0 0 20px;">
+    <li>IT financing approval rate: <strong>3.24% vs CZ 40.98%</strong> (12&times; worse)</li>
+    <li><strong>87% of IT financings end up fin-lost</strong> (vs 56% CZ)</li>
+    <li><strong>99.7% of IT financings never get a bank assigned</strong> (only 2 of 720 records linked to Agos; CZ has 13 of 839 with no bank = 1.5%)</li>
+    <li><strong>68% of IT losses are customer-driven</strong> (no answer 32%, lost interest 22%, only testing 6%, etc.)</li>
+    <li>Pattern is consistent across Nov 2025 &ndash; Apr 2026 (~3% approval every month)</li>
+  </ul>
+</div>
 
 <table>
   <thead>
-    <tr><th>Item</th><th>Details</th><th>When</th></tr>
+    <tr><th>Action</th><th>Owner</th><th>Backed by data</th></tr>
   </thead>
   <tbody>
     <tr>
-      <td><strong>Cart/wizard rework</strong></td>
-      <td>Full redesign of the order entry experience if targeted fixes don't move the needle. Would require UX research, prototyping, and significant dev effort.</td>
-      <td>Only if Track 1+2 results indicate fundamental issues</td>
+      <td><strong>Meeting with F&amp;I team</strong> &mdash; review Italian financing process end-to-end</td>
+      <td>Product + F&amp;I lead</td>
+      <td>720 IT financing applications in 6 months &rarr; only 11 approved, 10 completed. Need to understand the funnel inside F&amp;I.</td>
     </tr>
     <tr>
-      <td><strong>Post-bounce email survey</strong></td>
-      <td>Follow-up for 7+ day old opportunities still in "New"</td>
-      <td>Can complement in-context surveys</td>
+      <td><strong>Verify Agos integration / submission process</strong></td>
+      <td>Tech / F&amp;I</td>
+      <td><strong>Only 2 of 720 IT records (0.3%)</strong> linked to Agos. <strong>All 720 have NULL <code>Final_Type_Of_Financing__c</code></strong>. Either integration is broken or submission never happens.</td>
     </tr>
     <tr>
-      <td><strong>Post-purchase NPS adjustment</strong></td>
-      <td>Add IT-specific questions about buying experience</td>
-      <td>Low effort &mdash; can run in parallel</td>
+      <td><strong>Audit F&amp;I follow-up process for IT</strong> (speed, channel, language)</td>
+      <td>F&amp;I + Italy country manager</td>
+      <td><strong>"no-answer-from-customer": 199 cases (32%) in IT vs 44 (9%) in CZ &mdash; 3.5&times; gap.</strong> "customer-lost-interest": 140 (22%) IT vs 19 (4%) CZ &mdash; 5.5&times; gap.</td>
     </tr>
     <tr>
-      <td><strong>Cash/financing split in SF</strong></td>
-      <td>Will unlock deeper analysis of which payment path has worse conversion</td>
-      <td>Implementation in progress</td>
+      <td><strong>Investigate alternative IT bank partners</strong> (Cofidis Italy, Findomestic, Compass)</td>
+      <td>F&amp;I + BizDev</td>
+      <td>CZ runs <strong>4 active banks</strong> (Moneta 505, Cofidis 239, Leasing ČS 80, Essox 1). IT has <strong>only Agos</strong> with 2 records. More partners = more chance of fit.</td>
+    </tr>
+    <tr>
+      <td><strong>Self-service eligibility pre-check</strong> on platform before manual outreach</td>
+      <td>Product + Tech</td>
+      <td>16% of IT losses are "low-creditworthiness". If customers see eligibility upfront, they self-select out and don't waste F&amp;I time on calls they won't answer (32% no-answer rate).</td>
+    </tr>
+    <tr>
+      <td><strong>Digital-first F&amp;I outreach for IT</strong> (WhatsApp / chat / async forms)</td>
+      <td>F&amp;I + Marketing</td>
+      <td>Hypothesis: 32% no-answer suggests IT customers don't like phone-based follow-up. CZ no-answer is only 9%, so process works there. Test async-first channel for IT.</td>
     </tr>
   </tbody>
 </table>
+
+<h3>📊 P1 &mdash; High priority (qualitative + quick wins)</h3>
+
+<table>
+  <thead>
+    <tr><th>Action</th><th>Owner</th><th>Backed by data</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Hotjar Survey B</strong> on <code>orderWizard:purchase-method</code>, IT locale, exit-intent (Section 7)</td>
+      <td>PM (this week)</td>
+      <td>This is the page where the IT-specific drop happens: <strong>27.63% IT vs 58.57% CZ</strong> step-to-step. IT users spend 35s here (vs 51s CZ) before bouncing. Need to know <em>why</em>.</td>
+    </tr>
+    <tr>
+      <td><strong>A/B test: collapsed payslip</strong> on car-selection / purchase-method (GrowthBook)</td>
+      <td>PM + Tech</td>
+      <td>The car detail page already uses collapsed "Totale servizi" pattern; cart sidebar still shows all line items. Low-risk test of H6 (information overload).</td>
+    </tr>
+    <tr>
+      <td><strong>Review August 2025 transaction change impact</strong> on conversion</td>
+      <td>PM + Data</td>
+      <td>Conversion dropped from <strong>~11% (mid-2025) to ~2% (Apr 2026)</strong> &mdash; the Aug 2025 change (multi-car cart + single-active-opportunity) is the most plausible trigger by timing. Run pre/post cohort analysis on Aug 2025.</td>
+    </tr>
+    <tr>
+      <td><strong>Discuss findings with Italy country manager</strong></td>
+      <td>PM (this week)</td>
+      <td>Doc has IT/EN toggle for easy review. Get qualitative input on F&amp;I process, customer expectations, and competitor activity in IT.</td>
+    </tr>
+    <tr>
+      <td><strong>Add IT-specific section to post-purchase NPS</strong></td>
+      <td>PM + Marketing</td>
+      <td>Low effort. Email NPS already runs. Validate trust hypothesis for users who DID complete purchase &mdash; what made them trust?</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>🛠️ P2 &mdash; Medium priority (deeper investigations &amp; tests)</h3>
+
+<table>
+  <thead>
+    <tr><th>Action</th><th>Owner</th><th>Backed by data</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Trust signals on car detail page</strong> (Carvago guarantee, 14-day return, customer reviews)</td>
+      <td>PM + Marketing</td>
+      <td>Prior Hotjar survey: <strong>57% IT</strong> believe Carvago is "safest way to buy" vs <strong>65% avg</strong> (lowest of all markets). <strong>19% IT cite "no trust in online car purchase"</strong> as their main barrier (highest of all markets).</td>
+    </tr>
+    <tr>
+      <td><strong>Hotjar Survey A</strong> on car detail page, IT locale (after Survey B concludes)</td>
+      <td>PM</td>
+      <td>Catch users <em>before</em> wizard entry. Avg engagement on car-selection is only 7s (IT) / 9s (CZ) &mdash; users don't have time for an in-wizard survey.</td>
+    </tr>
+    <tr>
+      <td><strong>Post-bounce email survey</strong> for 7+ day old opportunities still in "New"</td>
+      <td>PM + CRM</td>
+      <td><strong>78% of lost IT opportunities</strong> are auto-closed after 30 days in "New" stage (Q1 2026). These users entered the wizard and never came back &mdash; email may be the only channel left.</td>
+    </tr>
+    <tr>
+      <td><strong>Multi-car cart engagement</strong> &mdash; review "Scegli fino a 3 auto" prompt visibility</td>
+      <td>PM + UX</td>
+      <td>Avg time on car-selection is <strong>7&ndash;9 seconds</strong> &mdash; not enough to read the multi-car prompt. Users likely don't know they can add up to 3 cars. Test prominence of this option.</td>
+    </tr>
+    <tr>
+      <td><strong>A/B test: softer CTA copy</strong> ("Conferma e Procedi" &rarr; less committal wording)</td>
+      <td>PM + Copy + Tech</td>
+      <td>De-prioritized: CZ uses the same CTA and converts well at this step (62.84% &rarr; 64.07% vs IT now matched at 62.03%). Unlikely to be root cause.</td>
+    </tr>
+    <tr>
+      <td><strong>A/B test: simplified wizard header</strong> (remove or reduce 5-step progress bar)</td>
+      <td>PM + Tech</td>
+      <td>Same caveat as CTA test. The 5-step bar exists in both markets and CZ converts fine.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>🏗️ P3 &mdash; Long-term (only if P0&ndash;P2 don't suffice)</h3>
+
+<table>
+  <thead>
+    <tr><th>Action</th><th>Owner</th><th>Backed by data</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Full cart / wizard rework</strong></td>
+      <td>Product + UX</td>
+      <td>Trigger only if Section 7 surveys + A/B tests don't lift the IT 27.63% &rarr; caraudit-form rate above 50% (CZ baseline 58.57%).</td>
+    </tr>
+    <tr>
+      <td><strong>Cash/financing split tracking</strong> in Salesforce (in progress)</td>
+      <td>Tech / Data</td>
+      <td>Currently the GA "Full Funnel" mixes both paths. With the SF split we could measure cash path conversion in isolation and compare to IT 87% financing-lost rate.</td>
+    </tr>
+    <tr>
+      <td><strong>Italian-market localization</strong> beyond translation</td>
+      <td>Marketing + Product</td>
+      <td>Prior survey: 19% IT distrust online purchase (highest of all markets), 15% don't understand the process (nearly 2&times; avg). Needs strategic work, not just copy fixes.</td>
+    </tr>
+    <tr>
+      <td><strong>Continuous Survey Tool project</strong> (Section 9)</td>
+      <td>Product + Data</td>
+      <td>Build vs buy decision still open. Hotjar covers immediate needs (this investigation alone leverages 2 Hotjar surveys).</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>📅 Suggested timeline</h3>
+
+<div class="timeline">
+  <div class="timeline-item">
+    <div class="tl-label">Week 1 (this week)</div>
+    <div class="tl-text">Schedule meeting with F&amp;I team on IT financing pipeline. Set up Hotjar Survey B. Share doc with Italy country manager.</div>
+  </div>
+  <div class="timeline-item">
+    <div class="tl-label">Week 1&ndash;2</div>
+    <div class="tl-text">Diagnose IT financing issue: integration vs process vs capacity. Decide first concrete fix.</div>
+  </div>
+  <div class="timeline-item">
+    <div class="tl-label">Week 2&ndash;3</div>
+    <div class="tl-text">Collect survey responses (target: 100&ndash;200). Launch collapsed payslip A/B test in GrowthBook.</div>
+  </div>
+  <div class="timeline-item">
+    <div class="tl-label">Week 3&ndash;4</div>
+    <div class="tl-text">Analyze survey + A/B results. Implement first F&amp;I process change for Italy.</div>
+  </div>
+  <div class="timeline-item">
+    <div class="tl-label">Month 2</div>
+    <div class="tl-text">Measure impact on IT financing approval rate and downstream conversion. Iterate.</div>
+  </div>
+  <div class="timeline-item">
+    <div class="tl-label">Month 3+</div>
+    <div class="tl-text"><strong>Decision point:</strong> targeted fixes sufficient? If not, plan cart/wizard rework with UX research.</div>
+  </div>
+</div>
 
 <!-- ==================== SECTION 9 ==================== -->
 <h2 id="s9">9. Broader Context: Continuous Survey Tool</h2>
@@ -849,38 +1061,8 @@ Note: the GA "Full Funnel" view includes both cash and financing users. The 31.1
   <li><strong>Open:</strong> Build vs buy, dashboard location, SF integration</li>
 </ul>
 
-<!-- ==================== SECTION 10 ==================== -->
-<h2 id="s10">10. Next Steps</h2>
-
-<div class="timeline">
-  <div class="timeline-item">
-    <div class="tl-label">This week</div>
-    <div class="tl-text"><strong>Track 1:</strong> Set up Hotjar Survey B (purchase-method page) for IT locale. Survey A (car detail page) deferred to avoid double-surveying users.</div>
-  </div>
-  <div class="timeline-item">
-    <div class="tl-label">This week</div>
-    <div class="tl-text"><strong>Track 2:</strong> Set up first A/B test in GrowthBook (softer CTA or simplified wizard header)</div>
-  </div>
-  <div class="timeline-item">
-    <div class="tl-label">Week 2&ndash;3</div>
-    <div class="tl-text">Collect survey responses (target: 100&ndash;200 per survey) and A/B test data</div>
-  </div>
-  <div class="timeline-item">
-    <div class="tl-label">Week 3</div>
-    <div class="tl-text">Analyze results. Categorize free-text. Review A/B test significance</div>
-  </div>
-  <div class="timeline-item">
-    <div class="tl-label">Week 4</div>
-    <div class="tl-text"><strong>Decision point:</strong> targeted fixes sufficient, or cart/wizard rework needed?</div>
-  </div>
-  <div class="timeline-item">
-    <div class="tl-label">Ongoing</div>
-    <div class="tl-text">Cash/financing split implementation in SF</div>
-  </div>
-</div>
-
 <!-- ==================== SECTION 11 ==================== -->
-<h2 id="s11">11. Methodology &amp; Data Sources</h2>
+<h2 id="s10">10. Methodology &amp; Data Sources</h2>
 
 <table>
   <thead>
