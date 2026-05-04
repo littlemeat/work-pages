@@ -299,10 +299,35 @@ The GA funnel confirms the drop happens between car-selection and caraudit-form 
   Note also <strong>car-check: 22.73% IT vs 82.97% CZ (-60pp)</strong> &mdash; the few IT users who pay for CarAudit don't return for the result much. This is suspicious and worth checking (it could be reporting timing, not a true behavioral gap).
 </div>
 
+<h3>Understanding the path structure</h3>
+
+<p>The wizard splits at <code>purchase-method</code> and converges back at <code>caraudit-form</code>:</p>
+
+<div style="background:var(--gray-light); border:1px solid var(--border); border-radius:8px; padding:20px; margin:16px 0; font-family:monospace; font-size:13px; line-height:1.8;">
+car-selection<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&darr;<br>
+<strong>purchase-method</strong> &nbsp;<em>(customer chooses payment type)</em><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;<span style="color:var(--blue);"><strong>cash</strong></span> &darr;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&darr; <span style="color:var(--orange);"><strong>financing</strong></span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;financing-options<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&darr;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;financing-form<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&darr;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;financing-status &nbsp;<em>(approved or rejected)</em><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&darr;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>(both paths converge)</strong><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&darr;<br>
+<strong>caraudit-form</strong> &nbsp;<em>(payment for inspection)</em>
+</div>
+
+<p style="font-size:13px; color:var(--gray);">
+<strong>Important:</strong> If financing is <em>approved</em>, customer is motivated to continue to caraudit-form. If <em>rejected</em>, the customer can still continue (pay cash for the audit), but many likely lose interest at this point.
+</p>
+
 <h3>Financing Path (subset with additional detail)</h3>
 
-<p>The financing path is a subset of the funnel above, showing the additional steps between purchase-method and caraudit-form for users who choose financing.
-<strong>Cash-paying users skip these steps and go directly: purchase-method &rarr; caraudit-form.</strong></p>
+<p>The financing path table below shows step-to-step retention for users who chose financing. Note: at <code>caraudit-form</code> both paths converge, so the % from financing-status mixes financing users with cash users from the parallel path.</p>
 
 <div class="img-row">
   <div>
@@ -329,20 +354,32 @@ The GA funnel confirms the drop happens between car-selection and caraudit-form 
     <tr><td>financing-options</td><td class="num good">86.19%</td><td class="num">72.81%</td><td class="num good">+13pp</td><td><span class="tag tag-green">IT better</span></td></tr>
     <tr><td>financing-form</td><td class="num">60.47%</td><td class="num">60.55%</td><td class="num neutral">&asymp; 0</td><td><span class="tag tag-blue">Same</span></td></tr>
     <tr><td>financing-status</td><td class="num good">62.35%</td><td class="num">29.74%</td><td class="num good">+33pp</td><td><span class="tag tag-green">IT much better</span> (shorter IT form)</td></tr>
-    <tr><td>caraudit-form</td><td class="num">85.02%</td><td class="num">446.63%*</td><td class="num neutral">&mdash;</td><td class="neutral">*CZ revisits heavily</td></tr>
+    <tr><td>caraudit-form</td><td class="num">85.02%</td><td class="num">446.63%*</td><td class="num neutral">&mdash;</td><td class="neutral">*paths converge here</td></tr>
   </tbody>
 </table>
 
+<div class="callout callout-blue">
+  <strong>Why is CZ caraudit-form 446.63% &mdash; and why isn't IT?</strong>
+  At <code>caraudit-form</code>, both paths converge. Cash users arrive here without ever going through <code>financing-status</code>, so the "% from previous step" can be much higher than 100%. The high 446.63% for CZ reflects that <strong>most CZ users go via cash</strong> and reach caraudit-form directly &mdash; the financing-status group is small but caraudit-form gets users from both paths.
+  <br><br>
+  IT's much lower 85.02% reflects the opposite: <strong>the IT cash path is broken</strong> (only 27.63% of cash users actually reach caraudit-form), so the "cash boost" at caraudit-form is small relative to the financing group.
+</div>
+
 <div class="callout callout-green">
-  <strong>The financing path is NOT the problem &mdash; IT is actually better than CZ</strong>
-  At every financing step, IT either matches or beats CZ's retention. Notably:
+  <strong>Financing-step retention is good in IT &mdash; but with a caveat</strong>
+  At every financing step, IT matches or beats CZ's step-to-step retention:
   <ul style="margin:8px 0 0 20px;">
     <li><strong>financing-options:</strong> IT 86.19% vs CZ 72.81% (+13pp)</li>
-    <li><strong>financing-status:</strong> IT 62.35% vs CZ 29.74% (+33pp) &mdash; IT financing form is shorter</li>
-    <li><strong>caraudit-form:</strong> IT 85.02% &mdash; users who complete financing do proceed to CarAudit</li>
+    <li><strong>financing-status:</strong> IT 62.35% vs CZ 29.74% (+33pp) &mdash; IT financing form is shorter, users reach the verdict screen sooner</li>
   </ul>
-  <br>
-  This confirms the problem is concentrated on the <strong>cash path</strong> (purchase-method &rarr; caraudit-form directly), not financing.
+  However, this only tells us <em>users complete the financing flow</em> &mdash; not that financing was <em>approved</em>.
+</div>
+
+<div class="callout callout-orange">
+  <strong>Open question: does Italy have a worse financing approval rate?</strong>
+  We can't isolate financing approval rate from the GA funnel data alone &mdash; the percentages mix approved and rejected users (both can continue to caraudit-form, but rejected users likely drop). To check this hypothesis we'd need to query Salesforce <code>Carvago_Financing__c</code> by country and look at the approved/rejected ratio.
+  <br><br>
+  If IT has a notably worse approval rate, this would explain part of the cash-path problem too: rejected financing users would have to fall back to cash, but if IT users distrust online cash purchases (which the prior survey confirms), they'd drop instead of converting.
 </div>
 
 <h3>Engagement time per page: IT vs CZ (1&ndash;30 April 2026)</h3>
