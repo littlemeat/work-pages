@@ -375,11 +375,107 @@ car-selection<br>
   However, this only tells us <em>users complete the financing flow</em> &mdash; not that financing was <em>approved</em>.
 </div>
 
+<div class="callout callout-red">
+  <strong>CONFIRMED: Italy's financing approval rate is catastrophic &mdash; 3.24% vs CZ 40.98%</strong>
+  Salesforce data (<code>Financing__c</code>, Nov 2025 &ndash; Apr 2026) shows Italy's financing pipeline is essentially non-functional. <a href="#s3a">See section 3a below for full breakdown.</a>
+</div>
+
+<h3 id="s3a">3a. Salesforce Financing Data: IT vs CZ</h3>
+
+<p>Source: Salesforce <code>Financing__c</code> object, Nov 2025 &ndash; Apr 2026, filtered by <code>Customer_Country_Origin_Picklist__c</code>, excluding test records.</p>
+
+<h4>Status breakdown</h4>
+
+<table>
+  <thead>
+    <tr><th>Status</th><th class="num">🇮🇹 Italy</th><th class="num">🇨🇿 Czech</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>fin-requested</td><td class="num">1</td><td class="num">5</td></tr>
+    <tr><td>fin-in-progress</td><td class="num">63</td><td class="num">3</td></tr>
+    <tr><td>fin-additional-documents-requested</td><td class="num">8</td><td class="num">33</td></tr>
+    <tr><td><strong>fin-approved</strong></td><td class="num">11</td><td class="num">151</td></tr>
+    <tr><td>fin-contract-signed</td><td class="num">0</td><td class="num">39</td></tr>
+    <tr><td>fin-final-documents-sent-to-bank</td><td class="num">0</td><td class="num">9</td></tr>
+    <tr><td><strong>fin-completed</strong></td><td class="num">10</td><td class="num">128</td></tr>
+    <tr><td><strong>fin-lost</strong></td><td class="num bad">627 (87%)</td><td class="num">471 (56%)</td></tr>
+    <tr style="background:var(--blue-light);"><td><strong>Total</strong></td><td class="num"><strong>720</strong></td><td class="num"><strong>839</strong></td></tr>
+  </tbody>
+</table>
+
+<h4>Approval rate</h4>
+
+<table>
+  <thead>
+    <tr><th>Metric</th><th class="num">🇮🇹 Italy</th><th class="num">🇨🇿 Czech</th><th>Difference</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Approval rate <em>(approved+ ÷ approved+ + lost)</em></td><td class="num bad">3.24%</td><td class="num good">40.98%</td><td class="num bad">-37.7 pp (12&times; worse)</td></tr>
+    <tr><td>fin-completed share</td><td class="num bad">1.4%</td><td class="num good">15.3%</td><td class="num bad">-13.9 pp</td></tr>
+    <tr><td>fin-lost share</td><td class="num bad">87.1%</td><td class="num">56.1%</td><td class="num bad">+31 pp</td></tr>
+  </tbody>
+</table>
+
+<h4>Italy approval rate is consistently low &mdash; not a short-term anomaly</h4>
+
+<table>
+  <thead>
+    <tr><th>Month</th><th class="num">Approved/Completed</th><th class="num">Lost</th><th class="num">Approval rate</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Nov 2025</td><td class="num">3</td><td class="num">77</td><td class="num bad">3.7%</td></tr>
+    <tr><td>Dec 2025</td><td class="num">2</td><td class="num">69</td><td class="num bad">2.8%</td></tr>
+    <tr><td>Jan 2026</td><td class="num">3</td><td class="num">59</td><td class="num bad">4.8%</td></tr>
+    <tr><td>Feb 2026</td><td class="num">3</td><td class="num">106</td><td class="num bad">2.8%</td></tr>
+    <tr><td>Mar 2026</td><td class="num">5</td><td class="num">154</td><td class="num bad">3.1%</td></tr>
+    <tr><td>Apr 2026</td><td class="num">5</td><td class="num">160</td><td class="num bad">3.0%</td></tr>
+  </tbody>
+</table>
+
+<h4>Bank pipeline comparison</h4>
+
+<table>
+  <thead>
+    <tr><th>Bank partner</th><th class="num">🇮🇹 Italy</th><th class="num">🇨🇿 Czech</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Moneta</td><td class="num">&mdash;</td><td class="num">505</td></tr>
+    <tr><td>Cofidis</td><td class="num">&mdash;</td><td class="num">239</td></tr>
+    <tr><td>Leasing ČS</td><td class="num">&mdash;</td><td class="num">80</td></tr>
+    <tr><td>Essox</td><td class="num">&mdash;</td><td class="num">1</td></tr>
+    <tr><td>Agos <em>(IT bank partner)</em></td><td class="num">2</td><td class="num">&mdash;</td></tr>
+    <tr style="background:var(--red-light);"><td><strong>(no bank assigned)</strong></td><td class="num bad"><strong>718 (99.7%)</strong></td><td class="num">13 (1.5%)</td></tr>
+  </tbody>
+</table>
+
+<div class="callout callout-red">
+  <strong>The Italian financing pipeline is essentially non-functional</strong>
+  <ul style="margin:8px 0 0 20px;">
+    <li><strong>99.7% of Italian financing applications never get assigned to a bank</strong> &mdash; only 2 of 720 records are linked to Agos (the only IT bank partner)</li>
+    <li><strong>All 720 IT records have NULL <code>Final_Type_Of_Financing__c</code></strong> &mdash; they're lost before a financing type is even chosen</li>
+    <li>CZ has 4&ndash;5 active bank partners with proper pipeline distribution; only 1.5% have no bank</li>
+  </ul>
+  <br>
+  Possible root causes (need investigation with F&amp;I team):
+  <ol style="margin:0 0 0 20px;">
+    <li>F&amp;I team doesn't process Italian applications (capacity / language / process gap)</li>
+    <li>Integration with Agos is broken or not configured</li>
+    <li>Italian customers fail basic eligibility before submission (income, residency, etc.)</li>
+    <li>Italian process never auto-creates the bank assignment</li>
+  </ol>
+</div>
+
 <div class="callout callout-orange">
-  <strong>Open question: does Italy have a worse financing approval rate?</strong>
-  We can't isolate financing approval rate from the GA funnel data alone &mdash; the percentages mix approved and rejected users (both can continue to caraudit-form, but rejected users likely drop). To check this hypothesis we'd need to query Salesforce <code>Carvago_Financing__c</code> by country and look at the approved/rejected ratio.
-  <br><br>
-  If IT has a notably worse approval rate, this would explain part of the cash-path problem too: rejected financing users would have to fall back to cash, but if IT users distrust online cash purchases (which the prior survey confirms), they'd drop instead of converting.
+  <strong>How this connects to the conversion problem</strong>
+  This finding completes the picture:
+  <ol style="margin:8px 0 0 20px;">
+    <li>Italian customer chooses financing on the wizard</li>
+    <li>Goes through financing-options &rarr; financing-form &rarr; financing-status (the GA funnel even shows IT does this <em>better</em> than CZ at the step level)</li>
+    <li>But financing is rejected/lost in 87% of cases &mdash; usually before any bank ever sees it</li>
+    <li>Customer would have to fall back to cash payment for CarAudit &mdash; but the prior survey shows 19% of IT users distrust online car purchases, so they drop instead</li>
+  </ol>
+  <br>
+  This is <strong>likely the single biggest contributor</strong> to the IT conversion drop. The August 2025 transaction change (Section 1) compounds this by making "single active opportunity" the rule &mdash; rejected customers can't keep multiple financing applications going in parallel.
 </div>
 
 <h3>Engagement time per page: IT vs CZ (1&ndash;30 April 2026)</h3>
