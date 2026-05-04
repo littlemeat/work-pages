@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Work Pages — Marie Michalova</title>
+<style>
+  :root {
+    --blue: #1a3a5c;
+    --blue-light: #e8f0fe;
+    --gray: #5f6368;
+    --gray-light: #f8f9fa;
+    --border: #dadce0;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    color: #202124; line-height: 1.6;
+    max-width: 800px; margin: 0 auto; padding: 60px 24px; background: #fff;
+  }
+  header { margin-bottom: 48px; }
+  h1 { font-size: 32px; color: var(--blue); margin-bottom: 8px; }
+  .subtitle { font-size: 16px; color: var(--gray); }
+
+  h2 { font-size: 18px; color: var(--blue); margin: 40px 0 16px; padding-bottom: 8px; border-bottom: 2px solid var(--blue); }
+
+  .project {
+    display: block;
+    background: var(--gray-light);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 16px;
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.15s;
+  }
+  .project:hover {
+    background: var(--blue-light);
+    border-color: var(--blue);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  }
+  .project-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--blue);
+    margin-bottom: 6px;
+  }
+  .project-desc {
+    font-size: 14px;
+    color: #3c4043;
+    margin-bottom: 8px;
+  }
+  .project-meta {
+    font-size: 12px;
+    color: var(--gray);
+  }
+  .project-meta span { margin-right: 12px; }
+
+  .tag {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .tag-orange { background: #fef7e0; color: #e37400; }
+  .tag-green { background: #e6f4ea; color: #188038; }
+  .tag-gray { background: #e8eaed; color: #5f6368; }
+
+  footer {
+    margin-top: 60px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    font-size: 12px;
+    color: var(--gray);
+  }
+  footer a { color: var(--blue); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Work Pages</h1>
+  <p class="subtitle">Marie Michalova — Product Management at Carvago</p>
+</header>
+
+<h2>Projects</h2>
+
+<a href="italy-investigation/" class="project">
+  <div class="project-title">Italy Conversion Investigation</div>
+  <div class="project-desc">Opportunity → Paid CarAudit drop-off analysis for the Italian market. Combines Salesforce data, GA4 funnel analysis, prior survey results, and proposes a two-track approach (Hotjar surveys + GrowthBook A/B tests).</div>
+  <div class="project-meta">
+    <span>📅 April 2026</span>
+    <span class="tag tag-orange">In Progress</span>
+    <span class="tag tag-gray">EN / IT</span>
+  </div>
+</a>
+
+<footer>
+  <p>Source: <a href="https://github.com/littlemeat/work-pages" target="_blank">github.com/littlemeat/work-pages</a></p>
+</footer>
+
+</body>
+</html>
