@@ -1,0 +1,1843 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Step 1 – Výběr vozu – UX Review Mockup</title>
+<style>
+  /* ===== CHAKRA DESIGN TOKENS ===== */
+  :root {
+    --c-black: #080c1f;
+    --c-white: #ffffff;
+    --c-gray-50: #f5f7fb;
+    --c-gray-100: #edf1f8;
+    --c-gray-200: #d7e1ef;
+    --c-gray-300: #b3c3de;
+    --c-gray-400: #8e9fc3;
+    --c-gray-500: #63749b;
+    --c-gray-600: #485885;
+    --c-gray-700: #31406f;
+    --c-gray-800: #1f2b59;
+    --c-gray-900: #131c4a;
+    --c-blue-50: #ebedfe;
+    --c-blue-100: #d8dbfd;
+    --c-blue-200: #b3b8fb;
+    --c-blue-300: #8b92f4;
+    --c-blue-400: #6c73ea;
+    --c-blue-500: #3e47dd;
+    --c-blue-600: #3e27c4;
+    --c-blue-700: #262a98;
+    --c-blue-800: #1d2176;
+    --c-blue-900: #131762;
+    --c-green-50: #edf7e6;
+    --c-green-100: #e8f4dd;
+    --c-green-500: #67b92e;
+    --c-green-600: #4d9f21;
+    --c-yellow-100: #fff6d6;
+    --c-yellow-500: #ffbb35;
+    --c-red-50: #ffeeee;
+    --c-red-500: #fc2d2d;
+    --c-orange-400: #ff9800;
+    --c-teal-100: #eefef7;
+    --c-teal-500: #95e7ce;
+    --font: -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+    --r-md: 0.6rem;
+    --r-lg: 0.8rem;
+    --r-xl: 1.2rem;
+    --r-2xl: 1.6rem;
+    --shadow-sm: 0px 4px 8px 0px rgba(49,64,111,0.06),0px 2px 4px 0px rgba(49,64,111,0.02);
+    --shadow-md: 0px 12px 16px 0px rgba(49,64,111,0.06),0px 4px 6px 0px rgba(49,64,111,0.02);
+    --shadow-controls: 0px 1px 2px 0px rgba(49,64,111,0.06),0px 1px 3px 0px rgba(49,64,111,0.10);
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { font-size:10px; }
+  body { font-family: var(--font); font-size:1.4rem; color: var(--c-gray-800); background: var(--c-gray-50); line-height:1.5; }
+
+  /* ===== ORANGE TAB BAR (review navigation) ===== */
+  .tab-bar { background:#e65100; padding:8px 24px; display:flex; gap:4px; position:sticky; top:0; z-index:100; }
+  .tab-bar button { background:rgba(255,255,255,0.2); border:none; color:#fff; padding:8px 18px; border-radius:6px; cursor:pointer; font-size:1.3rem; font-weight:600; font-family:var(--font); transition:all .15s; }
+  .tab-bar button.active { background:#fff; color:#e65100; }
+  .tab-bar button:hover:not(.active) { background:rgba(255,255,255,0.35); }
+  .tab-bar-label { color:rgba(255,255,255,0.7); font-size:1.1rem; align-self:center; margin-right:8px; text-transform:uppercase; letter-spacing:0.05em; font-weight:600; }
+
+  /* ===== SCREENS ===== */
+  .screen { display:none; }
+  .screen.active { display:block; }
+
+  /* ===== CARVAGO HEADER ===== */
+  .header { background:#fff; padding:16px 32px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid var(--c-gray-200); }
+  .header-logo { font-weight:800; font-size:2rem; color:var(--c-gray-900); letter-spacing:-0.02em; }
+  .header-logo span { color:var(--c-blue-500); }
+  .header-phone { font-size:1.2rem; color:var(--c-gray-500); text-align:right; }
+  .header-phone strong { display:block; color:var(--c-gray-800); font-size:1.4rem; }
+
+  /* ===== BREADCRUMB ===== */
+  .breadcrumb { display:flex; gap:4px; padding:20px 32px; background:#fff; border-bottom:1px solid var(--c-gray-100); align-items:center; flex-wrap:wrap; }
+  .bc-step { display:flex; align-items:center; gap:6px; font-size:1.2rem; color:var(--c-gray-400); }
+  .bc-step.active { color:var(--c-blue-500); font-weight:600; }
+  .bc-step.done { color:var(--c-green-600); }
+  .bc-num { width:22px; height:22px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1.1rem; font-weight:700; background:var(--c-gray-200); color:var(--c-gray-500); }
+  .bc-step.active .bc-num { background:var(--c-blue-500); color:#fff; }
+  .bc-step.done .bc-num { background:var(--c-green-500); color:#fff; }
+  .bc-arrow { color:var(--c-gray-300); margin:0 4px; font-size:1rem; }
+
+  /* ===== TWO-COLUMN LAYOUT ===== */
+  .main { max-width:1120px; margin:0 auto; padding:24px 24px 80px; }
+  .two-col { display:grid; grid-template-columns:minmax(0, 1fr) 340px; gap:24px; align-items:start; }
+
+  /* ===== LEFT COLUMN ===== */
+  .content-card { background:#fff; border-radius:var(--r-xl); padding:24px; margin-bottom:16px; box-shadow:var(--shadow-sm); }
+  .content-card h2 { font-size:2rem; font-weight:700; color:var(--c-gray-900); margin-bottom:12px; }
+  .content-card p { color:var(--c-gray-600); font-size:1.4rem; line-height:1.6; }
+
+  /* ===== CAR CARD ===== */
+  .car-card { background:#fff; border:1px solid var(--c-gray-200); border-radius:var(--r-xl); padding:16px; display:flex; gap:16px; align-items:center; margin-bottom:12px; }
+  .car-card.preferred { border-color: var(--c-blue-300); background: var(--c-blue-50); }
+  .car-thumb { width:140px; height:90px; background:var(--c-gray-100); border-radius:var(--r-lg); display:flex; align-items:center; justify-content:center; overflow:hidden; flex-shrink:0; }
+  .car-thumb img { width:100%; height:100%; object-fit:cover; }
+  .car-thumb-placeholder { color:var(--c-gray-300); font-size:3rem; }
+  .car-info { flex:1; min-width:0; }
+  .car-info h3 { font-size:1.5rem; font-weight:700; color:var(--c-gray-900); margin-bottom:4px; }
+  .car-meta { display:flex; gap:12px; font-size:1.2rem; color:var(--c-gray-500); margin-bottom:6px; flex-wrap:wrap; }
+  .car-meta span { display:flex; align-items:center; gap:3px; }
+  .car-price { font-size:1.6rem; font-weight:700; color:var(--c-gray-900); }
+  .car-price-vat { font-size:1.2rem; color:var(--c-gray-500); font-weight:400; }
+  .car-actions { display:flex; gap:8px; flex-shrink:0; }
+  .car-actions button { width:32px; height:32px; border:1px solid var(--c-gray-200); border-radius:var(--r-md); background:#fff; cursor:pointer; color:var(--c-gray-500); font-size:1.4rem; display:flex; align-items:center; justify-content:center; }
+
+  /* ===== EMPTY SLOT ===== */
+  .empty-slot { border:2px dashed var(--c-gray-200); border-radius:var(--r-xl); padding:20px; display:flex; align-items:center; justify-content:center; gap:12px; margin-bottom:12px; cursor:pointer; transition:all .15s; color:var(--c-gray-500); font-weight:600; font-size:1.4rem; }
+  .empty-slot:hover { border-color:var(--c-blue-300); color:var(--c-blue-500); background:var(--c-blue-50); }
+  .empty-slot .plus { width:28px; height:28px; border-radius:50%; background:var(--c-blue-500); color:#fff; display:flex; align-items:center; justify-content:center; font-size:1.6rem; font-weight:700; }
+
+  /* ===== MOTIVATOR BANNER ===== */
+  .motivator { background:var(--c-blue-50); border-radius:var(--r-xl); padding:16px 20px; display:flex; align-items:center; gap:16px; margin-top:8px; }
+  .motivator-counter { width:48px; height:48px; border-radius:50%; background:var(--c-blue-500); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:1.4rem; flex-shrink:0; }
+  .motivator-text { font-size:1.4rem; color:var(--c-gray-700); font-weight:600; }
+
+  /* ===== RECEIPT SIDEBAR ===== */
+  .sidebar { position:sticky; top:60px; }
+  .receipt { background:#fff; border-radius:var(--r-xl); padding:20px; box-shadow:var(--shadow-sm); margin-bottom:16px; }
+  .receipt h3 { font-size:1.4rem; font-weight:700; color:var(--c-gray-900); margin-bottom:12px; }
+  .receipt-row { display:flex; justify-content:space-between; font-size:1.3rem; margin-bottom:6px; color:var(--c-gray-600); }
+  .receipt-row.total { font-weight:700; color:var(--c-gray-900); font-size:1.5rem; border-top:1px solid var(--c-gray-200); padding-top:10px; margin-top:10px; }
+  .receipt-row .badge { background:var(--c-green-500); color:#fff; font-size:1rem; padding:1px 6px; border-radius:4px; font-weight:600; }
+  .receipt-row .badge-free { background:var(--c-green-500); }
+  .receipt-row .badge-discount { background:var(--c-red-500); }
+  .receipt-info { background:var(--c-gray-50); border-radius:var(--r-lg); padding:12px; font-size:1.2rem; color:var(--c-gray-500); text-align:center; margin-bottom:16px; }
+
+  /* ===== CTA ===== */
+  .btn-primary { background:var(--c-blue-500); color:#fff; border:none; padding:14px 40px; border-radius:var(--r-lg); font-size:1.5rem; font-weight:700; cursor:pointer; font-family:var(--font); display:inline-flex; align-items:center; gap:8px; }
+  .btn-primary:hover { background:var(--c-blue-600); }
+  .btn-secondary { background:#fff; color:var(--c-blue-500); border:2px solid var(--c-blue-500); padding:12px 24px; border-radius:var(--r-lg); font-size:1.4rem; font-weight:600; cursor:pointer; font-family:var(--font); }
+  .btn-ghost { background:transparent; color:var(--c-gray-500); border:1px solid var(--c-gray-200); padding:10px 20px; border-radius:var(--r-lg); font-size:1.3rem; cursor:pointer; font-family:var(--font); }
+
+  /* ===== ANNOTATION SYSTEM ===== */
+  .wrap-current { background:transparent; border:1px solid var(--c-gray-200); border-radius:var(--r-lg); padding:12px; margin-bottom:16px; }
+  .wrap-new { border:2px dashed var(--c-green-500); background:rgba(237,247,230,0.15); border-radius:var(--r-lg); padding:12px; margin-bottom:16px; }
+  .wrap-changed { border:2px dashed var(--c-yellow-500); background:rgba(255,248,225,0.15); border-radius:var(--r-lg); padding:12px; margin-bottom:16px; }
+  .wrap-removed { border:2px dashed var(--c-red-500); background:rgba(255,238,238,0.15); border-radius:var(--r-lg); padding:12px; margin-bottom:16px; opacity:0.5; }
+  .marker { font-size:1.1rem; font-weight:700; margin-bottom:8px; display:flex; align-items:center; gap:6px; }
+  .marker-new { color:var(--c-green-600); }
+  .marker-changed { color:#b58a00; }
+  .marker-current { color:var(--c-gray-500); }
+  .marker-removed { color:var(--c-red-500); }
+  .annot { background:var(--c-yellow-100); border:1px solid var(--c-yellow-500); border-radius:var(--r-lg); margin-top:10px; font-size:1.2rem; color:#6d4c00; line-height:1.5; overflow:hidden; }
+  .annot strong { font-weight:700; }
+  .annot-header { padding:8px 14px; cursor:pointer; display:flex; align-items:center; justify-content:space-between; user-select:none; }
+  .annot-header:hover { background:rgba(255,187,53,0.15); }
+  .annot-label { font-weight:700; font-size:1.15rem; display:flex; align-items:center; gap:6px; }
+  .annot-chevron { font-size:1rem; transition:transform .15s; color:#b58a00; }
+  .annot.open .annot-chevron { transform:rotate(180deg); }
+  .annot-body { padding:0 14px 10px; display:none; }
+  .annot.open .annot-body { display:block; }
+
+  /* Global toggle in tab bar */
+  .annot-toggle { background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.3); color:#fff; padding:6px 14px; border-radius:6px; cursor:pointer; font-size:1.15rem; font-family:var(--font); margin-left:auto; display:flex; align-items:center; gap:5px; transition:all .15s; }
+  .annot-toggle:hover { background:rgba(255,255,255,0.3); }
+  .annot-toggle .toggle-dot { width:8px; height:8px; border-radius:50%; background:#ffbb35; }
+
+  /* ===== SCREEN-SPECIFIC: INLINE SEARCH (Screen C) ===== */
+  .search-bar { display:flex; gap:8px; margin-bottom:16px; }
+  .search-bar input { flex:1; padding:10px 14px; border:1px solid var(--c-gray-200); border-radius:var(--r-lg); font-size:1.4rem; font-family:var(--font); background:#fff; }
+  .search-bar select { padding:10px 14px; border:1px solid var(--c-gray-200); border-radius:var(--r-lg); font-size:1.3rem; background:#fff; font-family:var(--font); color:var(--c-gray-700); }
+  /* ===== MINI CARDS: Default horizontal list (D, E) ===== */
+  .mini-card { background:#fff; border:1px solid var(--c-gray-200); border-radius:var(--r-lg); overflow:hidden; cursor:pointer; transition:all .15s; display:flex; align-items:stretch; margin-bottom:8px; }
+  .mini-card:hover { border-color:var(--c-blue-300); box-shadow:var(--shadow-controls); }
+  .mini-thumb { width:110px; min-height:75px; background:var(--c-gray-100); display:flex; align-items:center; justify-content:center; overflow:hidden; font-size:2.2rem; flex-shrink:0; }
+  .mini-body { padding:10px 14px; flex:1; display:flex; flex-direction:column; justify-content:center; min-width:0; }
+  .mini-info h4 { font-size:1.25rem; font-weight:600; color:var(--c-gray-900); margin-bottom:2px; }
+  .mini-info .mini-meta { font-size:1.05rem; color:var(--c-gray-500); margin-bottom:4px; }
+  .mini-bottom { display:flex; align-items:center; justify-content:space-between; }
+  .mini-price { font-weight:700; font-size:1.3rem; color:var(--c-gray-900); }
+  .mini-add-btn { background:var(--c-blue-500); color:#fff; border:none; padding:5px 14px; border-radius:var(--r-md); font-size:1.1rem; font-weight:600; cursor:pointer; white-space:nowrap; }
+
+  /* ===== MINI CARDS: Horizontal slider variant (C) ===== */
+  .mini-card-slider { display:flex; gap:10px; overflow-x:auto; scroll-snap-type:x mandatory; padding-bottom:8px; -webkit-overflow-scrolling:touch; max-width:100%; }
+  .mini-card-slider::-webkit-scrollbar { height:6px; }
+  .mini-card-slider::-webkit-scrollbar-track { background:var(--c-gray-100); border-radius:3px; }
+  .mini-card-slider::-webkit-scrollbar-thumb { background:var(--c-gray-300); border-radius:3px; }
+  .mini-card-slider::-webkit-scrollbar-thumb:hover { background:var(--c-gray-400); }
+  .mini-card-slider .mini-card { flex:0 0 170px; flex-direction:column; margin-bottom:0; scroll-snap-align:start; min-width:0; }
+  .mini-card-slider .mini-thumb { width:100%; height:100px; }
+  .mini-card-slider .mini-body { padding:10px 12px; }
+  .mini-card-slider .mini-info h4 { font-size:1.1rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .mini-card-slider .mini-info .mini-meta { font-size:0.95rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .mini-card-slider .mini-price { font-size:1.15rem; }
+  .mini-card-slider .mini-add-btn { width:100%; text-align:center; margin-top:4px; padding:6px 0; }
+
+  /* ===== Sub-variant toggle (C) ===== */
+  .subvariant-bar { display:flex; gap:4px; margin-bottom:14px; background:#e65100; border-radius:var(--r-lg); padding:3px; }
+  .subvariant-btn { flex:1; padding:6px 12px; border:none; border-radius:6px; font-size:1.15rem; font-weight:600; font-family:var(--font); cursor:pointer; background:transparent; color:rgba(255,255,255,0.7); transition:all .15s; }
+  .subvariant-btn.active { background:#fff; color:#e65100; }
+  .subvariant-btn:hover:not(.active) { background:rgba(255,255,255,0.15); }
+  .subvariant-panel { display:none; }
+  .subvariant-panel.active { display:block; }
+
+  /* Constrain inline-search-area to prevent overflow */
+  .inline-search-area { background:var(--c-gray-50); border-radius:var(--r-xl); padding:20px; border:1px solid var(--c-gray-200); overflow:hidden; min-width:0; }
+
+  .tab-pills { display:flex; gap:4px; margin-bottom:16px; }
+  .tab-pill { padding:6px 14px; border-radius:var(--r-lg); border:1px solid var(--c-gray-200); background:#fff; font-size:1.2rem; cursor:pointer; font-family:var(--font); color:var(--c-gray-600); font-weight:500; }
+  .tab-pill.active { background:var(--c-blue-500); color:#fff; border-color:var(--c-blue-500); }
+
+  /* ===== INLINE TAB PANELS ===== */
+  .inline-tab-panel { display:none; }
+  .inline-tab-panel.active { display:block; }
+
+  /* ===== PROGRESS VISUAL ===== */
+  .car-progress { display:flex; gap:8px; margin-bottom:16px; align-items:center; }
+  .car-progress-slot { width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:1.2rem; }
+  .car-progress-slot.filled { background:var(--c-blue-500); color:#fff; }
+  .car-progress-slot.empty { background:var(--c-gray-100); color:var(--c-gray-300); border:2px dashed var(--c-gray-300); }
+  .car-progress-slot.active { background:#fff; color:var(--c-blue-500); border:2px solid var(--c-blue-500); animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{box-shadow:0 0 0 0 rgba(62,71,221,0.3)} 50%{box-shadow:0 0 0 6px rgba(62,71,221,0)} }
+  .car-progress-label { font-size:1.2rem; color:var(--c-gray-500); margin-left:4px; }
+
+  /* ===== BENEFIT CHIPS ===== */
+  .benefit-row { display:flex; gap:8px; flex-wrap:wrap; margin:12px 0; }
+  .benefit-chip { display:flex; align-items:center; gap:5px; background:var(--c-green-50); border:1px solid var(--c-green-100); border-radius:var(--r-lg); padding:6px 12px; font-size:1.2rem; color:var(--c-green-600); font-weight:500; }
+  .benefit-chip .icon { color:var(--c-green-500); }
+
+  /* ===== ONBOARDING BANNER ===== */
+  .onboarding { background:#fff; border-radius:var(--r-xl); padding:24px; margin-bottom:16px; box-shadow:var(--shadow-sm); display:flex; gap:20px; align-items:center; }
+  .onboarding-img { width:140px; height:100px; background:var(--c-blue-50); border-radius:var(--r-lg); flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:3rem; }
+  .onboarding-body h3 { font-size:1.6rem; font-weight:700; color:var(--c-gray-900); margin-bottom:6px; }
+  .onboarding-body p { font-size:1.3rem; color:var(--c-gray-600); line-height:1.5; }
+  .toggle-link { color:var(--c-blue-500); font-size:1.2rem; cursor:pointer; font-weight:600; border:none; background:none; padding:0; margin-top:6px; display:inline-block; }
+
+  /* ===== EXPLANATION ACCORDION ===== */
+  .accordion { border:1px solid var(--c-gray-200); border-radius:var(--r-xl); overflow:hidden; margin-bottom:16px; }
+  .accordion-header { padding:14px 20px; background:#fff; cursor:pointer; display:flex; justify-content:space-between; align-items:center; font-weight:600; font-size:1.4rem; color:var(--c-gray-800); }
+  .accordion-header:hover { background:var(--c-gray-50); }
+  .accordion-body { padding:0 20px 16px; font-size:1.3rem; color:var(--c-gray-600); line-height:1.6; display:none; }
+  .accordion.open .accordion-body { display:block; }
+
+  /* ===== SCREEN TITLE ===== */
+  .screen-intro { background:#fff3cd; padding:16px 24px; font-size:1.3rem; color:#6d4c00; border-bottom:1px solid #ffe69c; }
+  .screen-intro strong { font-weight:700; }
+
+  /* ===== MODAL OVERLAY ===== */
+  .modal-overlay { display:none; position:fixed; inset:0; background:rgba(8,12,31,0.5); z-index:200; align-items:center; justify-content:center; }
+  .modal-overlay.open { display:flex; }
+  .modal-box { background:#fff; border-radius:var(--r-2xl); padding:32px; max-width:460px; width:90%; position:relative; box-shadow:var(--shadow-md); animation: modalIn .2s ease-out; }
+  @keyframes modalIn { from{opacity:0;transform:scale(0.95) translateY(8px)} to{opacity:1;transform:scale(1) translateY(0)} }
+  .modal-close { position:absolute; top:16px; right:16px; background:none; border:none; font-size:2rem; color:var(--c-gray-400); cursor:pointer; line-height:1; padding:4px; }
+  .modal-close:hover { color:var(--c-gray-700); }
+  .modal-title { font-size:1.8rem; font-weight:800; color:var(--c-gray-900); text-align:center; margin-bottom:8px; }
+  .modal-text { font-size:1.3rem; color:var(--c-gray-600); text-align:center; margin-bottom:20px; line-height:1.5; }
+  .modal-illustration { text-align:center; margin-bottom:16px; }
+  .modal-illustration img, .modal-illustration .illus-placeholder { width:100%; max-width:320px; height:140px; margin:0 auto; display:block; }
+  .illus-placeholder { background:var(--c-blue-50); border-radius:var(--r-xl); display:flex; align-items:center; justify-content:center; font-size:4rem; gap:8px; }
+  .modal-actions { display:flex; flex-direction:column; gap:8px; }
+  .modal-actions .btn-primary { width:100%; justify-content:center; }
+  .modal-actions .btn-secondary { width:100%; text-align:center; }
+
+  /* ===== SLOT SYSTEM (Screen D) ===== */
+  .slot { border:2px solid var(--c-gray-200); border-radius:var(--r-xl); margin-bottom:16px; overflow:hidden; transition:all .2s; }
+  .slot-header { display:flex; align-items:center; gap:12px; padding:14px 18px; background:#fff; }
+  .slot-badge { width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:1.3rem; flex-shrink:0; }
+  .slot-badge-filled { background:var(--c-green-500); color:#fff; }
+  .slot-badge-active { background:var(--c-blue-500); color:#fff; animation: pulse 2s infinite; }
+  .slot-badge-locked { background:var(--c-gray-200); color:var(--c-gray-400); }
+  .slot-label { font-weight:600; font-size:1.3rem; color:var(--c-gray-800); }
+  .slot-label-sub { font-size:1.15rem; color:var(--c-gray-500); font-weight:400; }
+
+  .slot.filled { border-color:var(--c-green-500); background:var(--c-green-50); }
+  .slot.filled .slot-header { background:var(--c-green-50); }
+  .slot.active { border-color:var(--c-blue-500); background:var(--c-blue-50); box-shadow:0 0 0 3px rgba(62,71,221,0.12); }
+  .slot.active .slot-header { background:var(--c-blue-50); border-bottom:1px solid var(--c-blue-200); }
+  .slot.locked { border-color:var(--c-gray-200); opacity:0.55; }
+  .slot.locked .slot-header { background:var(--c-gray-50); }
+
+  .slot-body { padding:16px 18px; background:#fff; }
+  .slot.active .slot-body { background:var(--c-gray-50); }
+
+  .slot-car-row { display:flex; gap:14px; align-items:center; }
+  .slot-car-thumb { width:100px; height:65px; background:var(--c-gray-100); border-radius:var(--r-lg); flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:2.2rem; }
+  .slot-car-info h4 { font-size:1.4rem; font-weight:700; color:var(--c-gray-900); margin-bottom:2px; }
+  .slot-car-meta { font-size:1.15rem; color:var(--c-gray-500); }
+  .slot-car-price { margin-left:auto; font-weight:700; font-size:1.4rem; color:var(--c-gray-900); white-space:nowrap; }
+  .slot-car-actions { display:flex; gap:6px; margin-left:8px; }
+  .slot-car-actions button { width:28px; height:28px; border:1px solid var(--c-gray-200); border-radius:var(--r-md); background:#fff; cursor:pointer; color:var(--c-gray-500); font-size:1.2rem; display:flex; align-items:center; justify-content:center; }
+
+  /* ===== TRUST BAR (Screen E) ===== */
+  .trust-bar { background:#fff; border:1px solid var(--c-gray-200); border-radius:var(--r-xl); padding:16px; margin-bottom:16px; }
+  .trust-bar h4 { font-size:1.3rem; font-weight:700; color:var(--c-gray-800); margin-bottom:10px; }
+  .trust-item { display:flex; align-items:flex-start; gap:10px; margin-bottom:10px; }
+  .trust-item:last-child { margin-bottom:0; }
+  .trust-icon { width:32px; height:32px; border-radius:50%; background:var(--c-blue-50); display:flex; align-items:center; justify-content:center; font-size:1.4rem; flex-shrink:0; }
+  .trust-item-text { font-size:1.2rem; color:var(--c-gray-700); line-height:1.4; }
+  .trust-item-text strong { color:var(--c-gray-900); }
+
+  /* ===== CTA RIGHT-ALIGNED ===== */
+  .cta-bar { text-align:right; margin-top:24px; }
+</style>
+</head>
+<body>
+
+<!-- ===== TAB BAR ===== -->
+<div class="tab-bar">
+  <span class="tab-bar-label">UX Review:</span>
+  <button class="tab-btn active" onclick="show(0)">A) Současný stav</button>
+  <button class="tab-btn" onclick="show(1)">B) Quick win — INTERIM</button>
+  <button class="tab-btn" onclick="show(2)">C) Inline výběr</button>
+  <button class="tab-btn" onclick="show(3)">D) Inline výběr + sloty</button>
+  <button class="tab-btn" onclick="show(4)">E) Inline výběr + sloty + trust bar</button>
+  <button class="annot-toggle" onclick="toggleAllAnnots()"><span class="toggle-dot"></span> <span id="annotToggleLabel">Zobrazit anotace</span></button>
+</div>
+
+<!-- ============================================================ -->
+<!-- SCREEN A: CURRENT STATE (reference)                          -->
+<!-- ============================================================ -->
+<div class="screen active" id="s0">
+
+<div class="screen-intro">
+  <strong>Screen A: Současný stav</strong> — Reference screenshot reproduction. No changes, just context for comparison.
+</div>
+
+<div class="header">
+  <div style="display:flex; align-items:center; gap:12px;">
+    <span style="font-size:1.6rem; color:var(--c-gray-400); cursor:pointer;">‹</span>
+    <div class="header-logo">carvago<span>.</span></div>
+  </div>
+  <div class="header-phone">
+    Potřebujete poradit?
+    <strong>+420 246 034 700</strong>
+  </div>
+</div>
+
+<div class="breadcrumb">
+  <div class="bc-step active"><span class="bc-num">1</span> Výběr vozu</div>
+  <span class="bc-arrow">›</span>
+  <div class="bc-step"><span class="bc-num">2</span> Způsob nákupu</div>
+  <span class="bc-arrow">›</span>
+  <div class="bc-step"><span class="bc-num">3</span> Kontrola stavu vozu</div>
+  <span class="bc-arrow">›</span>
+  <div class="bc-step"><span class="bc-num">4</span> Doručení a služby</div>
+  <span class="bc-arrow">›</span>
+  <div class="bc-step"><span class="bc-num">5</span> Potvrzení objednávky</div>
+</div>
+
+<div class="main"><div class="two-col">
+  <div>
+    <!-- Onboarding banner -->
+    <div class="onboarding">
+      <div class="onboarding-img">🚗</div>
+      <div class="onboarding-body">
+        <h3>Jak probíhá nákup</h3>
+        <p>Už vás čeká jen pár krůčků k vašemu novému vozu! Co vás bude asi zajímat nejvíc - <strong>celková cena už obsahuje vše nutné, abychom vám vaše nové auto přivezli</strong>, zařídili STK a registraci. Pokud nebudete chtít žádné doplňkové služby, <strong>nezaplatíte už ani korunu navíc</strong>.</p>
+      </div>
+    </div>
+
+    <!-- Section heading -->
+    <div class="content-card">
+      <h2>Výběr vozů pro kontrolu</h2>
+      <p><strong>Chceme, abyste koupili ten nejlepší vůz, a proto ho ze všeho nejdříve musíme pořádně prověřit.</strong> Pokud neprojde preferovaný vůz přísnou technickou kontrolou, zkontrolujeme další vozy z vašeho výběru – i proto je nejlepší vybrat si rovnou tři. O výsledku kontroly vám zašleme detailní zprávu, fotodokumentaci i naše doporučení. A pak už je rozhodnutí jen na vás.</p>
+    </div>
+
+    <!-- Car 1 -->
+    <div style="display:flex; justify-content:space-between; align-items:center; padding:0 4px; margin-bottom:8px;">
+      <span style="font-weight:700; font-size:1.4rem; color:var(--c-gray-800);">Vozy ke kontrole</span>
+      <span style="font-size:1.2rem; color:var(--c-blue-500); cursor:pointer;">Jak probíhá kontrola CarAudit? ⓘ</span>
+    </div>
+
+    <div class="car-card preferred">
+      <div class="car-thumb"><div class="car-thumb-placeholder">🚙</div></div>
+      <div class="car-info">
+        <h3>Ford Ranger 177 kW</h3>
+        <div class="car-meta">
+          <span>6 500 km</span>
+          <span>12/2025</span>
+          <span>177 kW</span>
+          <span>Automat</span>
+          <span>Diesel</span>
+        </div>
+        <div style="font-size:1.2rem; color:var(--c-gray-500);">Německo, doručení: 17 408 Kč</div>
+      </div>
+      <div style="text-align:right;">
+        <div class="car-price">1 506 490 Kč</div>
+        <div class="car-price-vat">1 245 033 Kč bez DPH</div>
+      </div>
+      <div class="car-actions">
+        <button title="Odstranit">🗑</button>
+        <button title="Detail">↗</button>
+      </div>
+    </div>
+
+    <!-- Empty slots (clickable → open modal) -->
+    <div class="empty-slot" onclick="openModal('addCarModalA')">
+      <div class="car-thumb" style="opacity:0.3;width:100px;height:65px;"><div class="car-thumb-placeholder">🚗</div></div>
+      <span class="plus">+</span> Přidat další vůz
+    </div>
+
+    <div class="empty-slot" onclick="openModal('addCarModalA')">
+      <div class="car-thumb" style="opacity:0.3;width:100px;height:65px;"><div class="car-thumb-placeholder">🚗</div></div>
+      <span class="plus">+</span> Přidat další vůz
+    </div>
+
+    <!-- Motivator -->
+    <div class="motivator">
+      <div class="motivator-counter">1/3</div>
+      <div class="motivator-text">Vyberte si až 3 vozy a snáze najdete ten pravý</div>
+      <div style="margin-left:auto; font-size:3rem;">🚗🚗🚗</div>
+    </div>
+
+    <!-- CTA (clickable → open "fewer cars" modal) -->
+    <div class="cta-bar">
+      <button class="btn-primary" onclick="openModal('fewerCarsModalA')">Další →</button>
+    </div>
+
+    <!-- ========= MODAL: Přidat další vůz (Screen A) ========= -->
+    <div class="modal-overlay" id="addCarModalA" onclick="closeModalOnBg(event, 'addCarModalA')">
+      <div class="modal-box">
+        <button class="modal-close" onclick="closeModal('addCarModalA')">×</button>
+        <div class="modal-title">Přidat další vůz</div>
+        <div class="modal-text">Další vůz do objednávky přidáte pomocí tlačítka Koupit na detailu vozu.</div>
+        <div class="modal-actions">
+          <button class="btn-primary">Vybrat z oblíbených</button>
+          <button class="btn-secondary">Vybrat ze všech vozů</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========= MODAL: Více vozů (Screen A) ========= -->
+    <div class="modal-overlay" id="fewerCarsModalA" onclick="closeModalOnBg(event, 'fewerCarsModalA')">
+      <div class="modal-box">
+        <button class="modal-close" onclick="closeModal('fewerCarsModalA')">×</button>
+        <div class="modal-illustration">
+          <div class="illus-placeholder">
+            <span style="font-size:3.5rem;">🚗</span>
+            <span style="font-size:3rem; filter:grayscale(1) opacity(0.5);">🚗</span>
+            <span style="font-size:2.5rem; filter:grayscale(1) opacity(0.3);">🚗</span>
+            <span style="font-size:4rem; margin-left:12px;">👨‍💼</span>
+          </div>
+        </div>
+        <div class="modal-title">Více vozů, jistější způsob najít ten pravý!</div>
+        <div class="modal-text">Kvalitní vozy se prodávají opravdu rychle. Aby vám neutekl ten váš, je lepší mít rovnou na začátku připraveno více vozů ke kontrole.</div>
+        <div class="modal-actions" style="flex-direction:row; gap:10px;">
+          <button class="btn-secondary" style="flex:1;" onclick="closeModal('fewerCarsModalA')">Pokračovat s jedním</button>
+          <button class="btn-primary" style="flex:1; background:var(--c-red-500);" onclick="closeModal('fewerCarsModalA')">Přidat další vůz</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Annotation -->
+    <div class="annot" style="margin-top:20px;">
+        <div class="annot-header" onclick="this.parentElement.classList.toggle('open')">
+          <span class="annot-label">💬 Problém #1: Modal jako mrtvý bod</span>
+          <span class="annot-chevron">▼</span>
+        </div>
+        <div class="annot-body"><strong>Problém #1: Modal jako mrtvý bod.</strong> Po kliknutí na "Přidat další vůz" se otevře modal, který uživatele pošle PRYČ z transakčního wizardu — buď do oblíbených, nebo do vyhledávání. Uživatel musí najít auto, kliknout "Koupit", a teprve pak se vrátí zpět. Návratovost z tohoto odbočení je pravděpodobně velmi nízká.<br><br>
+      <strong>Problém #2: Dvojitá modální frikce.</strong> Pokud uživatel ignoruje empty sloty a klikne "Další", dostane DALŠÍ modal ("Více vozů, jistější způsob najít ten pravý!"). Dva modaly = dva body, kde uživatel může říct "tohle je otravný" a odejít.<br><br>
+      <strong>Problém #3: Motivátor přišel pozdě.</strong> Banner "1/3" je pod empty sloty — tedy pod akcí, ke které má motivovat. Uživatel vidí akci dřív než důvod.<br><br>
+      <strong>Problém #4: Vysvětlení je těžkopádné.</strong> Hlavní textový blok ("Chceme, abyste koupili ten nejlepší vůz...") je solidní obsahově, ale je to jeden plný odstavec. Klíčová pointa — "pokud neprojde váš vůz, zkontrolujeme další" — je uprostřed.</div>
+      </div>
+  </div>
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="receipt">
+      <h3>Nyní k zaplacení</h3>
+      <div class="receipt-row">
+        <span>CarAudit™ ⓘ</span>
+        <span>4 990 Kč</span>
+      </div>
+      <div class="receipt-row">
+        <span>Sleva</span>
+        <span class="badge badge-discount">-40 %</span>
+      </div>
+      <div class="receipt-row total">
+        <span>Cena celkem</span>
+        <span>2 990 Kč</span>
+      </div>
+      <div class="receipt-row" style="font-size:1.1rem; margin-top:2px;">
+        <span>Cena celkem bez DPH</span>
+        <span>2 471 Kč</span>
+      </div>
+    </div>
+
+    <div class="receipt-info">Pokud se po kontrole rozhodnete vůz koupit</div>
+
+    <div class="receipt">
+      <div class="receipt-row">
+        <span><strong>Cena vozu</strong></span>
+        <span><strong>1 506 490 Kč</strong></span>
+      </div>
+      <div class="receipt-row" style="font-size:1.1rem;">
+        <span>Cena bez DPH</span>
+        <span>1 245 033 Kč</span>
+      </div>
+      <div style="margin-top:12px;">
+        <div class="receipt-row">
+          <span><strong>Služby celkem ▴</strong></span>
+          <span><strong>24 688 Kč</strong></span>
+        </div>
+        <div class="receipt-row"><span>Doručení domů</span><span>17 408 Kč</span></div>
+        <div class="receipt-row"><span>10 litrů paliva ⓘ</span><span class="badge badge-free">Zdarma</span></div>
+        <div class="receipt-row"><span>Dovozová STK ⓘ</span><span>4 490 Kč</span></div>
+        <div class="receipt-row"><span>Správní poplatek ⓘ</span><span>800 Kč</span></div>
+        <div class="receipt-row"><span>Registrace vozu ⓘ</span><span>1 990 Kč</span></div>
+        <div class="receipt-row"><span>Další sada pneumatik ⓘ</span><span style="color:var(--c-blue-500); font-weight:600;">Individuální</span></div>
+        <div class="receipt-row"><span>Rozšířená záruka</span><span class="badge badge-free">Zdarma</span></div>
+      </div>
+      <div class="receipt-row total">
+        <span>Cena celkem</span>
+        <span>1 531 178 Kč</span>
+      </div>
+      <div class="receipt-row" style="font-size:1.1rem;">
+        <span>Cena celkem bez DPH</span>
+        <span>1 265 575 Kč</span>
+      </div>
+    </div>
+  </div>
+</div></div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SCREEN B: IMPROVED CURRENT PATTERN                           -->
+<!-- ============================================================ -->
+<div class="screen" id="s1">
+
+<div class="screen-intro">
+  <strong>Screen B: Quick win — INTERIM</strong> — Keeps the same interaction pattern (modal for add), but restructures information hierarchy, copy, and motivation placement to boost add-rate. Low dev effort, deployable immediately while D/E are being built.
+</div>
+
+<div class="header">
+  <div style="display:flex; align-items:center; gap:12px;">
+    <span style="font-size:1.6rem; color:var(--c-gray-400); cursor:pointer;">‹</span>
+    <div class="header-logo">carvago<span>.</span></div>
+  </div>
+  <div class="header-phone">
+    Potřebujete poradit?
+    <strong>+420 246 034 700</strong>
+  </div>
+</div>
+
+<div class="breadcrumb">
+  <div class="bc-step active"><span class="bc-num">1</span> Výběr vozu</div>
+  <span class="bc-arrow">›</span>
+  <div class="bc-step"><span class="bc-num">2</span> Způsob nákupu</div>
+  <span class="bc-arrow">›</span>
+  <div class="bc-step"><span class="bc-num">3</span> Kontrola stavu vozu</div>
+  <span class="bc-arrow">›</span>
+  <div class="bc-step"><span class="bc-num">4</span> Doručení a služby</div>
+  <span class="bc-arrow">›</span>
+  <div class="bc-step"><span class="bc-num">5</span> Potvrzení objednávky</div>
+</div>
+
+<div class="main"><div class="two-col">
+  <div>
+
+    <!-- CHANGE 1: Collapsed onboarding (less space, still accessible) -->
+    <div class="wrap-changed">
+      <div class="marker marker-changed">✎ Oproti A — Onboarding banner → sbalitelný accordion</div>
+      <div class="accordion open">
+        <div class="accordion-header">
+          Jak probíhá nákup <span>▴ Méně</span>
+        </div>
+        <div class="accordion-body" style="display:block;">
+          Celková cena už obsahuje vše nutné — dovoz, STK i registraci. Žádné skryté poplatky.
+        </div>
+      </div>
+      <div class="annot">
+        <div class="annot-header" onclick="this.parentElement.classList.toggle('open')">
+          <span class="annot-label">💬 Oproti A: Onboarding → accordion</span>
+          <span class="annot-chevron">▼</span>
+        </div>
+        <div class="annot-body"><strong>Oproti A:</strong> Onboarding banner zabírá v current stavu ~100px vertikálního prostoru a odsouvá samotný výběr vozů. Pro returning users je to zbytečné. Accordion je defaultně otevřený pro nové uživatele, sbalený pro vracející se. Copy zkrácena na jedno větu — esence zůstala, ale neblokuje viewport.</div>
+      </div>
+    </div>
+
+    <!-- CHANGE 2: Progress indicator ABOVE the car list -->
+    <div class="wrap-new">
+      <div class="marker marker-new">✦ Oproti A — Vizuální progress (1/3) nad seznamem</div>
+      <div class="content-card" style="margin-bottom:0;">
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
+          <h2 style="margin-bottom:0;">Vozy ke kontrole</h2>
+          <span style="font-size:1.2rem; color:var(--c-blue-500); cursor:pointer;">Jak funguje CarAudit™? ⓘ</span>
+        </div>
+
+        <div class="car-progress">
+          <div class="car-progress-slot filled">1</div>
+          <div class="car-progress-slot active">2</div>
+          <div class="car-progress-slot empty">3</div>
+          <div class="car-progress-label">Přidejte ještě 2 vozy — zvýšíte šanci na úspěšný nákup</div>
+        </div>
+
+        <div class="benefit-row">
+          <div class="benefit-chip"><span class="icon">✓</span> Cena CarAudit™ je stejná pro 1–3 vozy</div>
+          <div class="benefit-chip"><span class="icon">✓</span> Pokud 1. vůz neprojde, kontrolujeme další</div>
+          <div class="benefit-chip"><span class="icon">✓</span> 2× vyšší šance na lepší vůz</div>
+        </div>
+      </div>
+      <div class="annot">
+        <div class="annot-header" onclick="this.parentElement.classList.toggle('open')">
+          <span class="annot-label">💬 Oproti A: Progress indikátor nad seznamem</span>
+          <span class="annot-chevron">▼</span>
+        </div>
+        <div class="annot-body"><strong>Oproti A:</strong> Motivace přesunuta NAD seznam vozů, ne pod něj. Tři zásadní změny: (1) Vizuální progress (kolečka 1/2/3) dává okamžitou zpětnou vazbu. (2) Benefit chipy komunikují klíčové argumenty ve skenovatelné formě — "cena CarAudit je stejná" je silný motivátor, který je v current stavu úplně skrytý. (3) Pulsující animace na slotu 2 vytváří jemný vizuální tah. Stat "2× vyšší šance" pochází z translation key <code>carSelection.motivator.noneSelected.text</code>.</div>
+      </div>
+    </div>
+
+    <!-- Car 1 (unchanged) -->
+    <div class="wrap-current">
+      <div class="marker marker-current">— Beze změny — Car card #1</div>
+      <div class="car-card preferred">
+        <div class="car-thumb"><div class="car-thumb-placeholder">🚙</div></div>
+        <div class="car-info">
+          <h3>Ford Ranger 177 kW</h3>
+          <div class="car-meta">
+            <span>6 500 km</span>
+            <span>12/2025</span>
+            <span>177 kW</span>
+            <span>Automat</span>
+            <span>Diesel</span>
+          </div>
+          <div style="font-size:1.2rem; color:var(--c-gray-500);">Německo · Doručení: 17 408 Kč</div>
+        </div>
+        <div style="text-align:right;">
+          <div class="car-price">1 506 490 Kč</div>
+          <div class="car-price-vat">1 245 033 Kč bez DPH</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CHANGE 3: Empty slot with stronger copy -->
+    <div class="wrap-changed">
+      <div class="marker marker-changed">✎ Oproti A — Empty slot copy + vizuál</div>
+      <div class="empty-slot" onclick="openModal('addCarModalB')" style="flex-direction:column; padding:24px; gap:8px; border-color:var(--c-blue-300); background:var(--c-blue-50);">
+        <div style="display:flex; align-items:center; gap:10px;">
+          <span class="plus">+</span>
+          <span style="font-size:1.5rem; font-weight:700; color:var(--c-blue-500);">Přidat záložní vůz</span>
+        </div>
+        <span style="font-size:1.2rem; color:var(--c-gray-500); font-weight:400;">Pokud váš 1. vůz neprojde kontrolou, prověříme rovnou tento</span>
+      </div>
+      <div class="annot">
+        <div class="annot-header" onclick="this.parentElement.classList.toggle('open')">
+          <span class="annot-label">💬 Oproti A: "Záložní vůz" místo "Další vůz"</span>
+          <span class="annot-chevron">▼</span>
+        </div>
+        <div class="annot-body"><strong>Oproti A:</strong> Klíčová změna: ze "Přidat další vůz" (neutrální, nevysvětluje proč) na <strong>"Přidat záložní vůz"</strong> (funkční framing). Podtitulek "Pokud váš 1. vůz neprojde kontrolou, prověříme rovnou tento" okamžitě vysvětluje VALUE PROPOSITION přímo v empty slotu. Uživatel nemusí číst žádný vysvětlující odstavec. Slot 2 je vizuálně výraznější (blue background) — je to aktivní výzva, ne prázdné místo.</div>
+      </div>
+    </div>
+
+    <div class="wrap-changed">
+      <div class="marker marker-changed">✎ Oproti A — 3. slot subtilnější</div>
+      <div class="empty-slot" onclick="openModal('addCarModalB')" style="border-color:var(--c-gray-200);">
+        <span class="plus" style="background:var(--c-gray-400);">+</span> Přidat 3. vůz <span style="font-size:1.1rem; color:var(--c-gray-400); font-weight:400;">(volitelné)</span>
+      </div>
+      <div class="annot">
+        <div class="annot-header" onclick="this.parentElement.classList.toggle('open')">
+          <span class="annot-label">💬 Oproti A: 3. slot subtilnější</span>
+          <span class="annot-chevron">▼</span>
+        </div>
+        <div class="annot-body"><strong>Oproti A:</strong> 3. slot je méně výrazný — vizuální hierarchie jasně říká "2. vůz je důležitý, 3. je bonus". Explicitní label "(volitelné)" snižuje pressure. Paradoxně, snížení tlaku může zvýšit konverzi — uživatel necítí manipulaci.</div>
+      </div>
+    </div>
+
+    <!-- CHANGE 4: Remove motivator banner (integrated above) -->
+    <div class="wrap-removed">
+      <div class="marker marker-removed">✕ Oproti A — Motivator banner odstraněn</div>
+      <div class="motivator" style="opacity:0.4;">
+        <div class="motivator-counter">1/3</div>
+        <div class="motivator-text">Vyberte si až 3 vozy a snáze najdete ten pravý</div>
+      </div>
+      <div class="annot">
+        <div class="annot-header" onclick="this.parentElement.classList.toggle('open')">
+          <span class="annot-label">💬 Oproti A: Motivator odstraněn</span>
+          <span class="annot-chevron">▼</span>
+        </div>
+        <div class="annot-body"><strong>Oproti A:</strong> Funkce tohoto banneru je nyní integrovaná v progress indikátoru nahoře + benefit chips. Duplicitní motivace pod sloty akorát prodlužuje stránku. Informace o "1/3" je v progress kolečkách.</div>
+      </div>
+    </div>
+
+    <!-- CHANGE 5: Remove the "fewer cars" modal -->
+    <div class="wrap-changed">
+      <div class="marker marker-changed">✎ Oproti A — CTA "Další" chování</div>
+      <div class="cta-bar" style="margin-top:16px;">
+        <button class="btn-primary" onclick="openModal('fewerCarsModalB')">Další →</button>
+      </div>
+      <div class="annot">
+        <div class="annot-header" onclick="this.parentElement.classList.toggle('open')">
+          <span class="annot-label">💬 Oproti A: Inline tip místo blokovacího modalu</span>
+          <span class="annot-chevron">▼</span>
+        </div>
+        <div class="annot-body"><strong>Oproti A:</strong> Doporučení: <strong>odstranit modal "Více vozů, jistější způsob"</strong> (ten s ilustrací aut). Místo toho, pokud uživatel klikne "Další" s jedním autem, jemný inline warning nad CTA: <em>"Tip: Se 2 vozy máte 2× vyšší šanci na úspěšný nákup."</em> Neblokující, nemodální. Uživatel může pokračovat bez dalšího klikání. Modální upozornění je FRIKCE — a frikce na CTA button = ztracené konverze.<br><br>
+        <strong>👆 Klikni na "Další" pro porovnání:</strong> V této variantě se zobrazí jen lehký inline tip, ne blokovací modal.</div>
+      </div>
+    </div>
+
+    <!-- ========= MODAL: Přidat záložní vůz (Screen B) ========= -->
+    <div class="modal-overlay" id="addCarModalB" onclick="closeModalOnBg(event, 'addCarModalB')">
+      <div class="modal-box">
+        <button class="modal-close" onclick="closeModal('addCarModalB')">×</button>
+        <div class="modal-title">Přidat záložní vůz</div>
+        <div class="modal-text">Další vůz do objednávky přidáte pomocí tlačítka Koupit na detailu vozu.<br><br><em style="font-size:1.15rem; color:var(--c-gray-400);">(V návrhu B se modal stále zachovává — změna je v copy a framingu. Viz varianta C pro verzi bez modalu.)</em></div>
+        <div class="modal-actions">
+          <button class="btn-primary">Vybrat z oblíbených</button>
+          <button class="btn-secondary">Vybrat ze všech vozů</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========= INLINE TIP instead of modal for "Další" (Screen B) ========= -->
+    <div class="modal-overlay" id="fewerCarsModalB" onclick="closeModalOnBg(event, 'fewerCarsModalB')">
+      <div class="modal-box" style="max-width:520px;">
+        <button class="modal-close" onclick="closeModal('fewerCarsModalB')">×</button>
+        <div style="background:var(--c-blue-50); border:1px solid var(--c-blue-200); border-radius:var(--r-lg); padding:16px 20px; display:flex; align-items:flex-start; gap:12px; margin-bottom:16px;">
+          <span style="font-size:2rem; flex-shrink:0;">💡</span>
+          <div>
+            <div style="font-weight:700; color:var(--c-gray-800); font-size:1.4rem; margin-bottom:4px;">Tip: Se 2 vozy máte 2× vyšší šanci</div>
+            <div style="font-size:1.25rem; color:var(--c-gray-600);">Zákazníci, kteří vyberou více vozů, kupují v průměru lepší vůz. A cena CarAudit™ je stejná.</div>
+          </div>
+        </div>
+        <div style="font-size:1.15rem; color:var(--c-gray-400); text-align:center; margin-bottom:12px; font-style:italic;">Navrhovaná varianta: toto se zobrazí jako INLINE prvek přímo na stránce, ne jako modal. Zde simulováno v modalu pro srovnání.</div>
+        <div class="modal-actions" style="flex-direction:row; gap:10px;">
+          <button class="btn-secondary" style="flex:1;" onclick="closeModal('fewerCarsModalB')">← Přidat vůz</button>
+          <button class="btn-primary" style="flex:1;" onclick="closeModal('fewerCarsModalB')">Pokračovat s 1 vozem →</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- SIDEBAR (unchanged) -->
+  <div class="sidebar">
+    <div class="receipt">
+      <h3>Nyní k zaplacení</h3>
+      <div class="receipt-row"><span>CarAudit™ ⓘ</span><span>4 990 Kč</span></div>
+      <div class="receipt-row"><span>Sleva</span><span class="badge badge-discount">-40 %</span></div>
+      <div class="receipt-row total"><span>Cena celkem</span><span>2 990 Kč</span></div>
+      <div class="receipt-row" style="font-size:1.1rem; margin-top:2px;"><span>Cena celkem bez DPH</span><span>2 471 Kč</span></div>
+    </div>
+    <div class="receipt-info">Pokud se po kontrole rozhodnete vůz koupit</div>
+    <div class="receipt">
+      <div class="receipt-row"><span><strong>Cena vozu</strong></span><span><strong>1 506 490 Kč</strong></span></div>
+      <div class="receipt-row" style="font-size:1.1rem;"><span>Cena bez DPH</span><span>1 245 033 Kč</span></div>
+      <div style="margin-top:12px;">
+        <div class="receipt-row"><span><strong>Služby celkem ▴</strong></span><span><strong>24 688 Kč</strong></span></div>
+        <div class="receipt-row"><span>Doručení domů</span><span>17 408 Kč</span></div>
+        <div class="receipt-row"><span>10 litrů paliva ⓘ</span><span class="badge badge-free">Zdarma</span></div>
+        <div class="receipt-row"><span>Dovozová STK ⓘ</span><span>4 490 Kč</span></div>
+        <div class="receipt-row"><span>Správní poplatek ⓘ</span><span>800 Kč</span></div>
+        <div class="receipt-row"><span>Registrace vozu ⓘ</span><span>1 990 Kč</span></div>
+        <div class="receipt-row"><span>Další sada pneumatik ⓘ</span><span style="color:var(--c-blue-500); font-weight:600;">Individuální</span></div>
+        <div class="receipt-row"><span>Rozšířená záruka</span><span class="badge badge-free">Zdarma</span></div>
+      </div>
+      <div class="receipt-row total"><span>Cena celkem</span><span>1 531 178 Kč</span></div>
+      <div class="receipt-row" style="font-size:1.1rem;"><span>Cena celkem bez DPH</span><span>1 265 575 Kč</span></div>
+    </div>
+  </div>
+</div></div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SCREEN C: RADICAL ALTERNATIVE — INLINE BROWSING               -->
+<!-- ============================================================ -->
+<div class="screen" id="s2">
+
+<div class="screen-intro">
+  <strong>Screen C: Inline výběr</strong> — Instead of sending users away, bring the car search INTO the wizard. Users never leave the transaction flow.
+</div>
+
+<div class="header">
+  <div style="display:flex; align-items:center; gap:12px;">
+    <span style="font-size:1.6rem; color:var(--c-gray-400); cursor:pointer;">‹</span>
+    <div class="header-logo">carvago<span>.</span></div>
+  </div>
+  <div class="header-phone">
+    Potřebujete poradit?
+    <strong>+420 246 034 700</strong>
+  </div>
+</div>
+
+<div class="breadcrumb">
+  <div class="bc-step active"><span class="bc-num">1</span> Výběr vozu</div>
+  <span class="bc-arrow">›</span>
+  <div class="bc-step"><span class="bc-num">2</span> Způsob nákupu</div>
+  <span class="bc-arrow">›</span>
+  <div class="bc-step"><span class="bc-num">3</span> Kontrola stavu vozu</div>
+  <span class="bc-arrow">›</span>
+  <div class="bc-step"><span class="bc-num">4</span> Doručení a služby</div>
+  <span class="bc-arrow">›</span>
+  <div class="bc-step"><span class="bc-num">5</span> Potvrzení objednávky</div>
+</div>
+
+<div class="main"><div class="two-col">
+  <div>
+
+    <!-- Onboarding banner (preserved, collapsible) -->
+    <div class="accordion open" style="margin-bottom:16px;">
+      <div class="accordion-header">
+        Jak probíhá nákup <span>▴ Méně</span>
+      </div>
+      <div class="accordion-body" style="display:block;">
+        Celková cena už obsahuje vše nutné — dovoz, STK i registraci. Žádné skryté poplatky.
+      </div>
+    </div>
+
+    <!-- Compact onboarding -->
+    <div class="wrap-new">
+      <div class="marker marker-new">✎ Oproti B — Heading + progress sloučeny</div>
+      <div class="content-card" style="margin-bottom:0;">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px;">
+          <div>
+            <h2 style="margin-bottom:4px;">Vyberte vozy ke kontrole</h2>
+            <p style="font-size:1.3rem;">Prověříme je naším mechanikem. Vy si pak v klidu vyberete.</p>
+          </div>
+        </div>
+
+        <div class="car-progress">
+          <div class="car-progress-slot filled">1</div>
+          <div class="car-progress-slot active">2</div>
+          <div class="car-progress-slot empty">3</div>
+          <div class="car-progress-label">Cena CarAudit™ je stejná pro 1–3 vozy</div>
+        </div>
+      </div>
+      <div class="annot">
+        <div class="annot-header" onclick="this.parentElement.classList.toggle('open')">
+          <span class="annot-label">💬 Oproti B: Heading + progress sloučeny do jednoho bloku</span>
+          <span class="annot-chevron">▼</span>
+        </div>
+        <div class="annot-body"><strong>Oproti B:</strong> Heading se mění z pasivního "Výběr vozů pro kontrolu" na aktivní "Vyberte vozy ke kontrole". Jednoduchý subtitle nahrazuje celý vysvětlující odstavec. Progress + key benefit v jednom kompaktním bloku.</div>
+      </div>
+    </div>
+
+    <!-- Car 1 -->
+    <div class="wrap-current">
+      <div class="marker marker-current">— Beze změny</div>
+      <div class="car-card preferred">
+        <div class="car-thumb"><div class="car-thumb-placeholder">🚙</div></div>
+        <div class="car-info">
+          <h3>Ford Ranger 177 kW</h3>
+          <div class="car-meta">
+            <span>6 500 km</span><span>12/2025</span><span>177 kW</span><span>Automat</span><span>Diesel</span>
+          </div>
+          <div style="font-size:1.2rem; color:var(--c-gray-500);">Německo · 17 408 Kč</div>
+        </div>
+        <div style="text-align:right;">
+          <div class="car-price">1 506 490 Kč</div>
+          <div class="car-price-vat">1 245 033 Kč bez DPH</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- THE BIG CHANGE: Inline car selection -->
+    <div class="wrap-new">
+      <div class="marker marker-new">✦ Oproti B — Inline výběr vozů (žádný modal)</div>
+
+      <div class="inline-search-area">
+        <div style="font-weight:700; font-size:1.5rem; color:var(--c-gray-800); margin-bottom:4px;">
+          Přidejte záložní vůz
+        </div>
+        <div style="font-size:1.2rem; color:var(--c-gray-500); margin-bottom:14px;">
+          Pokud 1. vůz neprojde kontrolou, prověříme rovnou tento. Vyberte z oblíbených nebo doporučených.
+        </div>
+
+        <!-- Sub-variant toggle -->
+        <div class="subvariant-bar">
+          <button class="subvariant-btn active" onclick="showSubvariant(0)">A) Vertikální list</button>
+          <button class="subvariant-btn" onclick="showSubvariant(1)">B) Horizontální slider</button>
+        </div>
+
+        <!-- ======================== -->
+        <!-- SUB-VARIANT A: VERTICAL  -->
+        <!-- ======================== -->
+        <div class="subvariant-panel active" id="subvarA">
+          <div class="tab-pills" id="pillsCA">
+            <div class="tab-pill" onclick="showInlineTab('CA',0)">Oblíbené (3)</div>
+            <div class="tab-pill active" onclick="showInlineTab('CA',1)">Podobné vozy</div>
+          </div>
+
+          <!-- Oblíbené vertical -->
+          <div class="inline-tab-panel" id="tabCA0">
+            <div style="font-size:1.1rem; color:var(--c-gray-400); margin-bottom:8px;">Vaše oblíbené vozy:</div>
+            <div class="mini-card">
+              <div class="mini-thumb">❤️</div>
+              <div class="mini-body">
+                <div class="mini-info"><h4>VW Amarok 3.0 TDI 177 kW</h4><div class="mini-meta">15 800 km · 2024 · Diesel · Německo</div></div>
+                <div class="mini-bottom"><div class="mini-price">1 390 000 Kč</div><button class="mini-add-btn">+ Přidat</button></div>
+              </div>
+            </div>
+            <div class="mini-card">
+              <div class="mini-thumb">❤️</div>
+              <div class="mini-body">
+                <div class="mini-info"><h4>Ford Ranger Limited 2.0 125 kW</h4><div class="mini-meta">22 100 km · 2023 · Diesel · Rakousko</div></div>
+                <div class="mini-bottom"><div class="mini-price">1 185 000 Kč</div><button class="mini-add-btn">+ Přidat</button></div>
+              </div>
+            </div>
+            <div class="mini-card">
+              <div class="mini-thumb">❤️</div>
+              <div class="mini-body">
+                <div class="mini-info"><h4>Toyota Hilux 2.4 D-4D 110 kW</h4><div class="mini-meta">31 500 km · 2023 · Diesel · Polsko</div></div>
+                <div class="mini-bottom"><div class="mini-price">985 000 Kč</div><button class="mini-add-btn">+ Přidat</button></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Podobné vertical -->
+          <div class="inline-tab-panel active" id="tabCA1">
+            <div style="font-size:1.1rem; color:var(--c-gray-400); margin-bottom:8px;">Vozy podobné vašemu Ford Ranger:</div>
+            <div class="mini-card">
+              <div class="mini-thumb">🚙</div>
+              <div class="mini-body">
+                <div class="mini-info"><h4>Ford Ranger 2.0 EcoBlue 125 kW</h4><div class="mini-meta">12 400 km · 2024 · Diesel · Rakousko</div></div>
+                <div class="mini-bottom"><div class="mini-price">1 289 900 Kč</div><button class="mini-add-btn">+ Přidat</button></div>
+              </div>
+            </div>
+            <div class="mini-card">
+              <div class="mini-thumb">🚙</div>
+              <div class="mini-body">
+                <div class="mini-info"><h4>Toyota Hilux 2.8 D-4D 150 kW</h4><div class="mini-meta">8 200 km · 2024 · Diesel · Německo</div></div>
+                <div class="mini-bottom"><div class="mini-price">1 445 000 Kč</div><button class="mini-add-btn">+ Přidat</button></div>
+              </div>
+            </div>
+            <div class="mini-card">
+              <div class="mini-thumb">🚙</div>
+              <div class="mini-body">
+                <div class="mini-info"><h4>Ford Ranger Wildtrak 155 kW</h4><div class="mini-meta">3 100 km · 2025 · Diesel · Belgie</div></div>
+                <div class="mini-bottom"><div class="mini-price">1 612 000 Kč</div><button class="mini-add-btn">+ Přidat</button></div>
+              </div>
+            </div>
+            <div style="text-align:center; margin-top:12px;">
+              <button class="btn-ghost">Zobrazit více podobných →</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ============================ -->
+        <!-- SUB-VARIANT B: HORIZ SLIDER  -->
+        <!-- ============================ -->
+        <div class="subvariant-panel" id="subvarB">
+          <div class="tab-pills" id="pillsCB">
+            <div class="tab-pill" onclick="showInlineTab('CB',0)">Oblíbené (3)</div>
+            <div class="tab-pill active" onclick="showInlineTab('CB',1)">Podobné vozy</div>
+          </div>
+
+          <!-- Oblíbené slider -->
+          <div class="inline-tab-panel" id="tabCB0">
+            <div style="font-size:1.1rem; color:var(--c-gray-400); margin-bottom:8px;">Vaše oblíbené vozy:</div>
+            <div class="mini-card-slider">
+              <div class="mini-card">
+                <div class="mini-thumb">❤️</div>
+                <div class="mini-body">
+                  <div class="mini-info"><h4>VW Amarok 3.0 TDI 177 kW</h4><div class="mini-meta">15 800 km · 2024 · Diesel</div></div>
+                  <div class="mini-bottom"><div class="mini-price">1 390 000 Kč</div><button class="mini-add-btn">+ Přidat</button></div>
+                </div>
+              </div>
+              <div class="mini-card">
+                <div class="mini-thumb">❤️</div>
+                <div class="mini-body">
+                  <div class="mini-info"><h4>Ford Ranger Ltd 125 kW</h4><div class="mini-meta">22 100 km · 2023 · Diesel</div></div>
+                  <div class="mini-bottom"><div class="mini-price">1 185 000 Kč</div><button class="mini-add-btn">+ Přidat</button></div>
+                </div>
+              </div>
+              <div class="mini-card">
+                <div class="mini-thumb">❤️</div>
+                <div class="mini-body">
+                  <div class="mini-info"><h4>Toyota Hilux 2.4 110 kW</h4><div class="mini-meta">31 500 km · 2023 · Diesel</div></div>
+                  <div class="mini-bottom"><div class="mini-price">985 000 Kč</div><button class="mini-add-btn">+ Přidat</button></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Podobné slider -->
+          <div class="inline-tab-panel active" id="tabCB1">
+            <div style="font-size:1.1rem; color:var(--c-gray-400); margin-bottom:8px;">Vozy podobné vašemu Ford Ranger:</div>
+            <div class="mini-card-slider">
+              <div class="mini-card">
+                <div class="mini-thumb">🚙</div>
+                <div class="mini-body">
+                  <div class="mini-info"><h4>Ford Ranger EcoBlue 125 kW</h4><div class="mini-meta">12 400 km · 2024 · Diesel</div></div>
+                  <div class="mini-bottom"><div class="mini-price">1 289 900 Kč</div><button class="mini-add-btn">+ Přidat</button></div>
+                </div>
+              </div>
+              <div class="mini-card">
+                <div class="mini-thumb">🚙</div>
+                <div class="mini-body">
+                  <div class="mini-info"><h4>Toyota Hilux 2.8 150 kW</h4><div class="mini-meta">8 200 km · 2024 · Diesel</div></div>
+                  <div class="mini-bottom"><div class="mini-price">1 445 000 Kč</div><button class="mini-add-btn">+ Přidat</button></div>
+                </div>
+              </div>
+              <div class="mini-card">
+                <div class="mini-thumb">🚙</div>
+                <div class="mini-body">
+                  <div class="mini-info"><h4>Ford Ranger Wildtrak 155 kW</h4><div class="mini-meta">3 100 km · 2025 · Diesel</div></div>
+                  <div class="mini-bottom"><div class="mini-price">1 612 000 Kč</div><button class="mini-add-btn">+ Přidat</button></div>
+                </div>
+              </div>
+              <div class="mini-card">
+                <div class="mini-thumb">🚙</div>
+                <div class="mini-body">
+                  <div class="mini-info"><h4>VW Amarok 2.0 TDI 125 kW</h4><div class="mini-meta">18 300 km · 2024 · Diesel</div></div>
+                  <div class="mini-bottom"><div class="mini-price">1 320 000 Kč</div><button class="mini-add-btn">+ Přidat</button></div>
+                </div>
+              </div>
+              <div class="mini-card">
+                <div class="mini-thumb">🚙</div>
+                <div class="mini-body">
+                  <div class="mini-info"><h4>Isuzu D-Max 1.9 DDi 120 kW</h4><div class="mini-meta">5 600 km · 2025 · Diesel</div></div>
+                  <div class="mini-bottom"><div class="mini-price">1 195 000 Kč</div><button class="mini-add-btn">+ Přidat</button></div>
+                </div>
+              </div>
+              <div class="mini-card">
+                <div class="mini-thumb">🚙</div>
+                <div class="mini-body">
+                  <div class="mini-info"><h4>Mitsubishi L200 2.2 110 kW</h4><div class="mini-meta">28 400 km · 2023 · Diesel</div></div>
+                  <div class="mini-bottom"><div class="mini-price">889 000 Kč</div><button class="mini-add-btn">+ Přidat</button></div>
+                </div>
+              </div>
+              <div class="mini-card" style="display:flex; align-items:center; justify-content:center; background:var(--c-gray-50); border-style:dashed; min-height:100%;">
+                <div style="text-align:center; padding:20px 12px; color:var(--c-blue-500); font-weight:600; font-size:1.2rem; cursor:pointer;">
+                  Zobrazit více<br>podobných →
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SERP link (always visible) -->
+        <div style="margin-top:14px; padding-top:14px; border-top:1px solid var(--c-gray-200); display:flex; align-items:center; gap:10px;">
+          <span style="font-size:1.5rem;">🔍</span>
+          <div style="flex:1;">
+            <div style="font-size:1.25rem; color:var(--c-gray-600);">Nenašli jste ten pravý?</div>
+            <div style="font-size:1.1rem; color:var(--c-gray-400);">Otevře se vaše poslední hledání. Po kliknutí na Koupit se vůz přidá do objednávky.</div>
+          </div>
+          <a href="#" style="background:var(--c-blue-50); border:1px solid var(--c-blue-200); color:var(--c-blue-500); padding:8px 16px; border-radius:var(--r-lg); font-size:1.2rem; font-weight:600; text-decoration:none; white-space:nowrap; display:inline-flex; align-items:center; gap:4px;">Přejít do nabídky ↗</a>
+        </div>
+
+      </div>
+
+      <div class="annot">
+        <div class="annot-header" onclick="this.parentElement.classList.toggle('open')">
+          <span class="annot-label">💬 Oproti B: Inline výběr (dvě sub-varianty zobrazení)</span>
+          <span class="annot-chevron">▼</span>
+        </div>
+        <div class="annot-body"><strong>Oproti B: Inline výběr místo modalu.</strong><br><br>
+        Místo modalu, který uživatele pošle pryč, přinášíme <strong>výběr z předvybraných vozů přímo do wizardu</strong>. Dvě sub-varianty zobrazení karet (přepni nahoře):<br><br>
+        <strong>A) Vertikální list</strong> — klasický layout, všechny karty viditelné naráz. Konzistentní se SERP. Nevýhoda: zabírá víc vertikálního prostoru.<br>
+        <strong>B) Horizontální slider</strong> — kompaktnější, scrollovatelný. 3 karty viditelné, další se odhalí scrollem. Nevýhoda: skryté karty mají nižší engagement.<br><br>
+        <strong>Dva zdroje + fallback:</strong><br>
+        <strong>"Podobné vozy"</strong> (default) — algoritmický shortlist, 100% uživatelů.<br>
+        <strong>"Oblíbené (N)"</strong> — ~40% cart uživatelů má oblíbené. Pokud MÁ → tab se stane defaultem. Pokud NEMÁ → tab šedý/disabled.<br><br>
+        <strong>3. slot je skrytý</strong> — dokud uživatel nevybere 2. vůz.<br>
+        <strong>Fallback do SERP:</strong> "Přejít do nabídky ↗" otevře SERP v posledním stavu session.</div>
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="wrap-current">
+      <div class="marker marker-current">— Převzato z B — Inline tip + CTA</div>
+      <div style="background:var(--c-blue-50); border:1px solid var(--c-blue-200); border-radius:var(--r-lg); padding:12px 16px; display:flex; align-items:center; gap:10px; margin-bottom:12px;">
+        <span style="font-size:1.6rem;">💡</span>
+        <span style="font-size:1.3rem; color:var(--c-gray-700);">
+          <strong>Tip:</strong> Zákazníci se 2+ vozy mají 2× vyšší šanci koupit lepší vůz. Přidejte záložní vůz výše.
+        </span>
+        <button style="background:none; border:none; color:var(--c-gray-400); cursor:pointer; font-size:1.2rem; margin-left:auto;">✕</button>
+      </div>
+      <div class="cta-bar" style="margin-top:0;">
+        <button class="btn-primary" onclick="openModal('fewerCarsModalC')">Pokračovat s 1 vozem →</button>
+      </div>
+      <div class="annot">
+        <div class="annot-header" onclick="this.parentElement.classList.toggle('open')">
+          <span class="annot-label">💬 Převzato z B: CTA s inline tipem</span>
+          <span class="annot-chevron">▼</span>
+        </div>
+        <div class="annot-body"><strong>Převzato z B, drobná úprava:</strong> CTA říká explicitně "s 1 vozem" — uživatel ví, co dělá. Inline tip nad CTA je neblokující, dismissible. Žádný modal. Pokud uživatel klikne, pokračuje. Pokud si přečte tip a chce přidat vůz, scrollne nahoru. Nulová frikce na critical path.<br><br>
+        <strong>👆 Klikni na CTA:</strong> Uvidíš, jak by vypadal "success" stav — uživatel prostě pokračuje.</div>
+      </div>
+    </div>
+
+    <!-- ========= "Success" simulation for Screen C ========= -->
+    <div class="modal-overlay" id="fewerCarsModalC" onclick="closeModalOnBg(event, 'fewerCarsModalC')">
+      <div class="modal-box" style="max-width:400px;">
+        <button class="modal-close" onclick="closeModal('fewerCarsModalC')">×</button>
+        <div style="text-align:center; padding:16px 0;">
+          <div style="font-size:3rem; margin-bottom:12px;">✅</div>
+          <div class="modal-title" style="font-size:1.6rem;">Žádný modal!</div>
+          <div class="modal-text" style="font-size:1.25rem;">V návrhu C kliknutí na "Pokračovat s 1 vozem" rovnou přesune uživatele na Step 2. Žádná další frikce.<br><br>Toto je jen simulace pro mockup — v reálu by se stránka prostě přepla.</div>
+          <button class="btn-primary" onclick="closeModal('fewerCarsModalC')" style="margin-top:8px;">Rozumím</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="receipt">
+      <h3>Nyní k zaplacení</h3>
+      <div class="receipt-row"><span>CarAudit™ ⓘ</span><span>4 990 Kč</span></div>
+      <div class="receipt-row"><span>Sleva</span><span class="badge badge-discount">-40 %</span></div>
+      <div class="receipt-row total"><span>Cena celkem</span><span>2 990 Kč</span></div>
+      <div class="receipt-row" style="font-size:1.1rem; margin-top:2px;"><span>Cena celkem bez DPH</span><span>2 471 Kč</span></div>
+    </div>
+
+    <div class="wrap-new" style="margin-bottom:0;">
+      <div class="marker marker-new">✦ Oproti B — Sidebar pricing chip</div>
+      <div style="background:var(--c-green-50); border:1px solid var(--c-green-100); border-radius:var(--r-lg); padding:12px 14px; font-size:1.2rem; color:var(--c-green-600); text-align:center; margin-bottom:12px;">
+        ✓ CarAudit™ 2 990 Kč — <strong>platí pro 1–3 vozy</strong>
+      </div>
+      <div class="annot">
+        <div class="annot-header" onclick="this.parentElement.classList.toggle('open')">
+          <span class="annot-label">💬 Oproti B: Pricing reinforcement v sidebaru</span>
+          <span class="annot-chevron">▼</span>
+        </div>
+        <div class="annot-body"><strong>Oproti B:</strong> V C chybí výrazné benefit chipy v heading area (progress label u kroužků je malý). Sidebar chip přímo vedle ceny CarAudit reinforcuje klíčový argument — cena je stejná pro 1–3 vozy. V D/E toto řeší benefit chipy v heading area, proto tam sidebar chip není.</div>
+      </div>
+    </div>
+
+    <div class="receipt-info">Pokud se po kontrole rozhodnete vůz koupit</div>
+    <div class="receipt">
+      <div class="receipt-row"><span><strong>Cena vozu</strong></span><span><strong>1 506 490 Kč</strong></span></div>
+      <div class="receipt-row" style="font-size:1.1rem;"><span>Cena bez DPH</span><span>1 245 033 Kč</span></div>
+      <div style="margin-top:12px;">
+        <div class="receipt-row"><span><strong>Služby celkem ▴</strong></span><span><strong>24 688 Kč</strong></span></div>
+        <div class="receipt-row"><span>Doručení domů</span><span>17 408 Kč</span></div>
+        <div class="receipt-row"><span>10 litrů paliva ⓘ</span><span class="badge badge-free">Zdarma</span></div>
+        <div class="receipt-row"><span>Dovozová STK ⓘ</span><span>4 490 Kč</span></div>
+        <div class="receipt-row"><span>Správní poplatek ⓘ</span><span>800 Kč</span></div>
+        <div class="receipt-row"><span>Registrace vozu ⓘ</span><span>1 990 Kč</span></div>
+        <div class="receipt-row"><span>Další sada pneumatik ⓘ</span><span style="color:var(--c-blue-500); font-weight:600;">Individuální</span></div>
+        <div class="receipt-row"><span>Rozšířená záruka</span><span class="badge badge-free">Zdarma</span></div>
+      </div>
+      <div class="receipt-row total"><span>Cena celkem</span><span>1 531 178 Kč</span></div>
+      <div class="receipt-row" style="font-size:1.1rem;"><span>Cena celkem bez DPH</span><span>1 265 575 Kč</span></div>
+    </div>
+  </div>
+</div></div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SCREEN D: SLOT-BASED INLINE — CLEAR VISUAL PROGRESSION       -->
+<!-- ============================================================ -->
+<div class="screen" id="s3">
+
+<div class="screen-intro">
+  <strong>Screen D: Inline výběr + sloty</strong> — Evoluce varianty C. Každý vůz je vizuálně očíslovaný "slot" se stavem: vyplněný → výběr → zamčený. Inline search je součástí slotu 2, ne plovoucí prvek.
+</div>
+
+<div class="header">
+  <div style="display:flex; align-items:center; gap:12px;">
+    <span style="font-size:1.6rem; color:var(--c-gray-400); cursor:pointer;">‹</span>
+    <div class="header-logo">carvago<span>.</span></div>
+  </div>
+  <div class="header-phone">
+    Potřebujete poradit?
+    <strong>+420 246 034 700</strong>
+  </div>
+</div>
+
+<div class="breadcrumb">
+  <div class="bc-step active"><span class="bc-num">1</span> Výběr vozu</div>
+  <span class="bc-arrow">›</span>
+  <div class="bc-step"><span class="bc-num">2</span> Způsob nákupu</div>
+  <span class="bc-arrow">›</span>
+  <div class="bc-step"><span class="bc-num">3</span> Kontrola stavu vozu</div>
+  <span class="bc-arrow">›</span>
+  <div class="bc-step"><span class="bc-num">4</span> Doručení a služby</div>
+  <span class="bc-arrow">›</span>
+  <div class="bc-step"><span class="bc-num">5</span> Potvrzení objednávky</div>
+</div>
+
+<div class="main"><div class="two-col">
+  <div>
+
+
+    <!-- Onboarding banner (preserved, collapsible) -->
+    <div class="accordion open" style="margin-bottom:16px;">
+      <div class="accordion-header">
+        Jak probíhá nákup <span>▴ Méně</span>
+      </div>
+      <div class="accordion-body" style="display:block;">
+        Celková cena už obsahuje vše nutné — dovoz, STK i registraci. Žádné skryté poplatky.
+      </div>
+    </div>
+
+    <!-- Compact heading -->
+    <div class="wrap-current">
+      <div class="marker marker-current">— Převzato z C — Kompaktní heading + benefit</div>
+      <div class="content-card" style="margin-bottom:0;">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px;">
+          <div>
+            <h2 style="margin-bottom:4px;">Vyberte vozy ke kontrole</h2>
+            <p style="font-size:1.3rem;">Prověříme je mechanikem. Vy si pak v klidu vyberete.</p>
+          </div>
+          <span style="font-size:1.2rem; color:var(--c-blue-500); cursor:pointer; white-space:nowrap; margin-left:16px;">Jak funguje CarAudit™? ⓘ</span>
+        </div>
+        <div class="benefit-row" style="margin-bottom:0;">
+          <div class="benefit-chip"><span class="icon">✓</span> Cena CarAudit™ stejná pro 1–3 vozy</div>
+          <div class="benefit-chip"><span class="icon">✓</span> Neprojde-li 1. vůz, kontrolujeme další</div>
+        </div>
+      </div>
+      <div class="annot">
+        <div class="annot-header" onclick="this.parentElement.classList.toggle('open')">
+          <span class="annot-label">💬 Oproti C: Heading bez progress kroužků</span>
+          <span class="annot-chevron">▼</span>
+        </div>
+        <div class="annot-body"><strong>Oproti C:</strong> Heading + dva benefit chipy — vše podstatné na jednom místě. Žádný progress indikátor — ten je nahrazený samotnou vizuální strukturou slotů.</div>
+      </div>
+    </div>
+
+    <!-- ===== SLOT 1: FILLED ===== -->
+    <div class="wrap-new">
+      <div class="marker marker-new">✦ Oproti C — Slot 1: vyplněný (preferovaný vůz)</div>
+      <div class="slot filled">
+        <div class="slot-header">
+          <div class="slot-badge slot-badge-filled">✓</div>
+          <div>
+            <div class="slot-label">1. vůz — preferovaný</div>
+            <div class="slot-label-sub">Tento vůz prověříme jako první</div>
+          </div>
+        </div>
+        <div class="slot-body" style="background:var(--c-green-50);">
+          <div class="slot-car-row">
+            <div class="slot-car-thumb">🚙</div>
+            <div class="slot-car-info">
+              <h4>Ford Ranger 177 kW</h4>
+              <div class="slot-car-meta">6 500 km · 12/2025 · Automat · Diesel · Německo</div>
+            </div>
+            <div class="slot-car-price">1 506 490 Kč</div>
+            <div class="slot-car-actions">
+              <button title="Odstranit">🗑</button>
+              <button title="Detail">↗</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="annot">
+        <div class="annot-header" onclick="this.parentElement.classList.toggle('open')">
+          <span class="annot-label">💬 Oproti C: Slot systém — vyplněný stav</span>
+          <span class="annot-chevron">▼</span>
+        </div>
+        <div class="annot-body"><strong>Oproti C (nové):</strong> Zelený rámeček + ✓ badge = jasný signál "tohle je hotové". Label "1. vůz — preferovaný" a sub "Tento vůz prověříme jako první" dává kontext přímo na kartě. Uživatel přesně ví, kde v procesu je.</div>
+      </div>
+    </div>
+
+    <!-- ===== SLOT 2: ACTIVE (selecting) ===== -->
+    <div class="wrap-new">
+      <div class="marker marker-new">✦ Oproti C — Slot 2: aktivní výběr (inline výběr uvnitř slotu)</div>
+      <div class="slot active">
+        <div class="slot-header">
+          <div class="slot-badge slot-badge-active">2</div>
+          <div>
+            <div class="slot-label">2. vůz — záložní</div>
+            <div class="slot-label-sub">Pokud 1. vůz neprojde kontrolou, prověříme tento</div>
+          </div>
+        </div>
+        <div class="slot-body">
+
+          <!-- Tabs inside slot 2 — Podobné vozy default; Oblíbené first if user has favorites -->
+          <div class="tab-pills" id="pillsD">
+            <div class="tab-pill" onclick="showInlineTab('D',0)">Oblíbené (3)</div>
+            <div class="tab-pill active" onclick="showInlineTab('D',1)">Podobné vozy</div>
+          </div>
+
+          <!-- TAB D0: Oblíbené -->
+          <div class="inline-tab-panel" id="tabD0">
+            <div style="font-size:1.1rem; color:var(--c-gray-400); margin-bottom:8px;">Vaše oblíbené vozy:</div>
+
+            <div class="mini-card">
+              <div class="mini-thumb">❤️</div>
+              <div class="mini-body">
+                <div class="mini-info">
+                  <h4>Volkswagen Amarok 3.0 TDI 177 kW</h4>
+                  <div class="mini-meta">15 800 km · 2024 · Automat</div>
+                </div>
+                <div class="mini-bottom">
+                  <div class="mini-price">1 390 000 Kč</div>
+                  <button class="mini-add-btn">+ Vybrat</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="mini-card">
+              <div class="mini-thumb">❤️</div>
+              <div class="mini-body">
+                <div class="mini-info">
+                  <h4>Ford Ranger Limited 2.0 125 kW</h4>
+                  <div class="mini-meta">22 100 km · 2023 · Automat</div>
+                </div>
+                <div class="mini-bottom">
+                  <div class="mini-price">1 185 000 Kč</div>
+                  <button class="mini-add-btn">+ Vybrat</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="mini-card">
+              <div class="mini-thumb">❤️</div>
+              <div class="mini-body">
+                <div class="mini-info">
+                  <h4>Toyota Hilux 2.4 D-4D 110 kW</h4>
+                  <div class="mini-meta">31 500 km · 2023 · Manuál</div>
+                </div>
+                <div class="mini-bottom">
+                  <div class="mini-price">985 000 Kč</div>
+                  <button class="mini-add-btn">+ Vybrat</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB D1: Podobné vozy (default) -->
+          <div class="inline-tab-panel active" id="tabD1">
+            <div style="font-size:1.1rem; color:var(--c-gray-400); margin-bottom:8px;">Vozy podobné vašemu Ford Ranger:</div>
+
+            <div class="mini-card">
+              <div class="mini-thumb">🚙</div>
+              <div class="mini-body">
+                <div class="mini-info">
+                  <h4>Ford Ranger 2.0 EcoBlue 125 kW</h4>
+                  <div class="mini-meta">12 400 km · 2024 · Automat</div>
+                </div>
+                <div class="mini-bottom">
+                  <div class="mini-price">1 289 900 Kč</div>
+                  <button class="mini-add-btn">+ Vybrat</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="mini-card">
+              <div class="mini-thumb">🚙</div>
+              <div class="mini-body">
+                <div class="mini-info">
+                  <h4>Toyota Hilux 2.8 D-4D 150 kW</h4>
+                  <div class="mini-meta">8 200 km · 2024 · Automat</div>
+                </div>
+                <div class="mini-bottom">
+                  <div class="mini-price">1 445 000 Kč</div>
+                  <button class="mini-add-btn">+ Vybrat</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="mini-card">
+              <div class="mini-thumb">🚙</div>
+              <div class="mini-body">
+                <div class="mini-info">
+                  <h4>Ford Ranger Wildtrak 2.0 155 kW</h4>
+                  <div class="mini-meta">3 100 km · 2025 · Automat</div>
+                </div>
+                <div class="mini-bottom">
+                  <div class="mini-price">1 612 000 Kč</div>
+                  <button class="mini-add-btn">+ Vybrat</button>
+                </div>
+              </div>
+            </div>
+
+            <div style="text-align:center; margin-top:12px;">
+              <button class="btn-ghost">Zobrazit více podobných →</button>
+            </div>
+          </div>
+
+          <!-- SERP link (always visible, under both tabs) -->
+          <div style="margin-top:14px; padding-top:14px; border-top:1px solid var(--c-gray-200); display:flex; align-items:center; gap:10px;">
+            <span style="font-size:1.5rem;">🔍</span>
+            <div style="flex:1;">
+              <div style="font-size:1.25rem; color:var(--c-gray-600);">Nenašli jste ten pravý?</div>
+              <div style="font-size:1.1rem; color:var(--c-gray-400);">Otevře se vaše poslední hledání. Po kliknutí na Koupit se vůz přidá do objednávky.</div>
+            </div>
+            <a href="#" style="background:var(--c-blue-50); border:1px solid var(--c-blue-200); color:var(--c-blue-500); padding:8px 16px; border-radius:var(--r-lg); font-size:1.2rem; font-weight:600; text-decoration:none; white-space:nowrap; display:inline-flex; align-items:center; gap:4px;">Přejít do nabídky ↗</a>
+          </div>
+
+        </div>
+      </div>
+      <div class="annot">
+        <div class="annot-header" onclick="this.parentElement.classList.toggle('open')">
+          <span class="annot-label">💬 Oproti C: Slot systém — aktivní výběr</span>
+          <span class="annot-chevron">▼</span>
+        </div>
+        <div class="annot-body"><strong>Oproti C (nové):</strong> Výběr je vizuálně UVNITŘ slotu 2, ne jako volně stojící blok. Slot header ("2. vůz — záložní") dává okamžitý kontext.<br><br>
+        <strong>Default tab:</strong> "Podobné vozy" — funguje pro 100% uživatelů bez jakéhokoli setupu. ~40% zákazníků s košíkem má oblíbené vozy — pokud uživatel MÁ oblíbené, tab "Oblíbené" se stane defaultem (vyšší intent). Pokud NEMÁ → tab šedý/disabled, default zůstává Podobné vozy. Mockup ukazuje Podobné vozy jako default.<br><br>
+        <strong>Slot 3 zůstává viditelný jako locked</strong> — na rozdíl od C, kde je 3. slot skrytý. V D je slot systém se stavy (filled → active → locked) celý design pattern — odstranění 3. slotu by rozbilo vizuální konzistenci. Locked stav (šedý, 🔒, "volitelné") je subtilní motivátor bez pressure.<br><br>
+        <strong>SERP fallback se session state:</strong> "Přejít do nabídky" otevře SERP <strong>v posledním stavu z aktuální session</strong> — zachované filtry, řazení, scroll pozice. Pokud žádný SERP stav neexistuje (uživatel přišel přímo z detailu vozu), otevře se SERP s parametry z 1. vozu (typ karoserie, cenové rozpětí ±20%).</div>
+      </div>
+    </div>
+
+    <!-- ===== SLOT 3: LOCKED ===== -->
+    <div class="wrap-new">
+      <div class="marker marker-new">✦ Oproti C — Slot 3: zamčený (odemkne se po výběru 2. vozu)</div>
+      <div class="slot locked">
+        <div class="slot-header">
+          <div class="slot-badge slot-badge-locked">3</div>
+          <div>
+            <div class="slot-label" style="color:var(--c-gray-400);">3. vůz</div>
+            <div class="slot-label-sub">Odemkne se po výběru 2. vozu · <em>volitelné</em></div>
+          </div>
+          <span style="margin-left:auto; font-size:1.4rem;">🔒</span>
+        </div>
+      </div>
+      <div class="annot">
+        <div class="annot-header" onclick="this.parentElement.classList.toggle('open')">
+          <span class="annot-label">💬 Oproti C: Zamčený slot místo skrytého</span>
+          <span class="annot-chevron">▼</span>
+        </div>
+        <div class="annot-body"><strong>Oproti C:</strong> Slot 3 je zavřený — žádné slot-body, žádný search. Vizuálně šedý, s ikonou zámku. Uživatel vidí, že existuje další krok, ale není to na něm teď. Jasný progressive disclosure: po "+" vybrání 2. vozu se slot 2 zazelení (→ filled), slot 3 se otevře (→ active) se stejným inline search. Label "(volitelné)" explicitně snižuje pressure.</div>
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="wrap-current">
+      <div class="marker marker-current">— Převzato z C — Inline tip + CTA</div>
+      <div style="background:var(--c-blue-50); border:1px solid var(--c-blue-200); border-radius:var(--r-lg); padding:12px 16px; display:flex; align-items:center; gap:10px; margin-bottom:12px;">
+        <span style="font-size:1.6rem;">💡</span>
+        <span style="font-size:1.3rem; color:var(--c-gray-700);">
+          <strong>Tip:</strong> Zákazníci se 2+ vozy mají 2× vyšší šanci koupit lepší vůz.
+        </span>
+        <button style="background:none; border:none; color:var(--c-gray-400); cursor:pointer; font-size:1.2rem; margin-left:auto;">✕</button>
+      </div>
+      <div class="cta-bar" style="margin-top:0;">
+        <button class="btn-primary">Pokračovat s 1 vozem →</button>
+      </div>
+      <div class="annot">
+        <div class="annot-header" onclick="this.parentElement.classList.toggle('open')">
+          <span class="annot-label">💬 Převzato z C: CTA s inline tipem</span>
+          <span class="annot-chevron">▼</span>
+        </div>
+        <div class="annot-body"><strong>Převzato z C:</strong> Stejný princip jako C — neblokující tip, explicitní CTA label. Po vybrání 2. vozu se CTA změní na "Pokračovat se 2 vozy →" a tip zmizí (nebo se změní na "Chcete přidat i 3. vůz?").</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="receipt">
+      <h3>Nyní k zaplacení</h3>
+      <div class="receipt-row"><span>CarAudit™ ⓘ</span><span>4 990 Kč</span></div>
+      <div class="receipt-row"><span>Sleva</span><span class="badge badge-discount">-40 %</span></div>
+      <div class="receipt-row total"><span>Cena celkem</span><span>2 990 Kč</span></div>
+      <div class="receipt-row" style="font-size:1.1rem; margin-top:2px;"><span>Cena celkem bez DPH</span><span>2 471 Kč</span></div>
+    </div>
+
+    <div class="receipt-info">Pokud se po kontrole rozhodnete vůz koupit</div>
+    <div class="receipt">
+      <div class="receipt-row"><span><strong>Cena vozu</strong></span><span><strong>1 506 490 Kč</strong></span></div>
+      <div class="receipt-row" style="font-size:1.1rem;"><span>Cena bez DPH</span><span>1 245 033 Kč</span></div>
+      <div style="margin-top:12px;">
+        <div class="receipt-row"><span><strong>Služby celkem ▴</strong></span><span><strong>24 688 Kč</strong></span></div>
+        <div class="receipt-row"><span>Doručení domů</span><span>17 408 Kč</span></div>
+        <div class="receipt-row"><span>10 litrů paliva ⓘ</span><span class="badge badge-free">Zdarma</span></div>
+        <div class="receipt-row"><span>Dovozová STK ⓘ</span><span>4 490 Kč</span></div>
+        <div class="receipt-row"><span>Správní poplatek ⓘ</span><span>800 Kč</span></div>
+        <div class="receipt-row"><span>Registrace vozu ⓘ</span><span>1 990 Kč</span></div>
+        <div class="receipt-row"><span>Další sada pneumatik ⓘ</span><span style="color:var(--c-blue-500); font-weight:600;">Individuální</span></div>
+        <div class="receipt-row"><span>Rozšířená záruka</span><span class="badge badge-free">Zdarma</span></div>
+      </div>
+      <div class="receipt-row total"><span>Cena celkem</span><span>1 531 178 Kč</span></div>
+      <div class="receipt-row" style="font-size:1.1rem;"><span>Cena celkem bez DPH</span><span>1 265 575 Kč</span></div>
+    </div>
+  </div>
+</div></div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SCREEN E: CORRECTED COPY + CARAUDIT TRUST BAR                -->
+<!-- ============================================================ -->
+<div class="screen" id="s4">
+
+<div class="screen-intro">
+  <strong>Screen E: Inline výběr + sloty + trust bar</strong> — Vychází z D. Opravuje nepřesnost v komunikaci CarAudit (1 platba ≠ 3 kontroly, ale záloha dalších vozů). Přidává CarAudit trust bar do sidebaru.
+</div>
+
+<div class="header">
+  <div style="display:flex; align-items:center; gap:12px;">
+    <span style="font-size:1.6rem; color:var(--c-gray-400); cursor:pointer;">‹</span>
+    <div class="header-logo">carvago<span>.</span></div>
+  </div>
+  <div class="header-phone">
+    Potřebujete poradit?
+    <strong>+420 246 034 700</strong>
+  </div>
+</div>
+
+<div class="breadcrumb">
+  <div class="bc-step active"><span class="bc-num">1</span> Výběr vozu</div>
+  <span class="bc-arrow">›</span>
+  <div class="bc-step"><span class="bc-num">2</span> Způsob nákupu</div>
+  <span class="bc-arrow">›</span>
+  <div class="bc-step"><span class="bc-num">3</span> Kontrola stavu vozu</div>
+  <span class="bc-arrow">›</span>
+  <div class="bc-step"><span class="bc-num">4</span> Doručení a služby</div>
+  <span class="bc-arrow">›</span>
+  <div class="bc-step"><span class="bc-num">5</span> Potvrzení objednávky</div>
+</div>
+
+<div class="main"><div class="two-col">
+  <div>
+
+
+    <!-- Onboarding banner (preserved, collapsible) -->
+    <div class="accordion open" style="margin-bottom:16px;">
+      <div class="accordion-header">
+        Jak probíhá nákup <span>▴ Méně</span>
+      </div>
+      <div class="accordion-body" style="display:block;">
+        Celková cena už obsahuje vše nutné — dovoz, STK i registraci. Žádné skryté poplatky.
+      </div>
+    </div>
+
+    <!-- CHANGE: Benefit-driven heading + accurate pricing one-liner -->
+    <div class="wrap-changed">
+      <div class="marker marker-changed">✎ Oproti D — Heading + pricing one-liner (opraven CarAudit model)</div>
+      <div class="content-card" style="margin-bottom:0;">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px;">
+          <div>
+            <h2 style="margin-bottom:4px;">Vyberte vozy ke kontrole</h2>
+            <p style="font-size:1.35rem; color:var(--c-gray-700); line-height:1.5;"><strong>Zaplatíte jednou. Začínáme vaším preferovaným vozem.</strong> Pokud s ním nebude něco v pořádku, přejdeme na další v pořadí — bez další platby.</p>
+          </div>
+          <span style="font-size:1.2rem; color:var(--c-blue-500); cursor:pointer; white-space:nowrap; margin-left:16px;">Jak funguje CarAudit™? ⓘ</span>
+        </div>
+        <div class="benefit-row" style="margin-bottom:0;">
+          <div class="benefit-chip"><span class="icon">✓</span> Jedna platba, až 3 vozy v záloze</div>
+          <div class="benefit-chip"><span class="icon">✓</span> Nemusíte začínat znovu, pokud první vůz nevyjde</div>
+        </div>
+      </div>
+      <div class="annot">
+        <div class="annot-header" onclick="this.parentElement.classList.toggle('open')">
+          <span class="annot-label">💬 Oproti D: Opraven CarAudit model + benefit heading</span>
+          <span class="annot-chevron">▼</span>
+        </div>
+        <div class="annot-body">
+          <strong>Opraven CarAudit model:</strong> V předchozích variantách (C/D) zněl benefit chip "Cena CarAudit™ je stejná pro 1–3 vozy", což mohlo implikovat, že se kontrolují všechny 3 vozy. Realita: <strong>jedna platba = jedna fyzická kontrola mechanikem</strong>. Systém začne preferovaným vozem. Pokud ten nevyhovuje (nedostupný, špatný stav), přejde na další v pořadí — bez další platby.<br><br>
+          <strong>Nová copy:</strong> "Zaplatíte jednou. Začínáme vaším preferovaným vozem." je fakticky přesné a zároveň komunikuje benefit. "Pokud s ním nebude něco v pořádku, přejdeme na další" — vysvětluje mechanismus bez slibování multi-inspekce.<br><br>
+          <strong>Benefit chipy:</strong> "Jedna platba, až 3 vozy v záloze" — framing "v záloze" (not "ke kontrole") přesně popisuje roli dalších vozů. "Nemusíte začínat znovu" — komunikuje úsporu času a peněz, ne počet kontrol.
+        </div>
+      </div>
+    </div>
+
+    <!-- SLOT 1: FILLED -->
+    <div class="slot filled">
+      <div class="slot-header">
+        <div class="slot-badge slot-badge-filled">✓</div>
+        <div>
+          <div class="slot-label">1. vůz — preferovaný</div>
+          <div class="slot-label-sub">Tento vůz prověříme jako první</div>
+        </div>
+      </div>
+      <div class="slot-body" style="background:var(--c-green-50);">
+        <div class="slot-car-row">
+          <div class="slot-car-thumb">🚙</div>
+          <div class="slot-car-info">
+            <h4>Ford Ranger 177 kW</h4>
+            <div class="slot-car-meta">6 500 km · 12/2025 · Automat · Diesel · Německo</div>
+          </div>
+          <div class="slot-car-price">1 506 490 Kč</div>
+          <div class="slot-car-actions">
+            <button title="Odstranit">🗑</button>
+            <button title="Detail">↗</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLOT 2: ACTIVE -->
+    <div class="slot active">
+      <div class="slot-header">
+        <div class="slot-badge slot-badge-active">2</div>
+        <div>
+          <div class="slot-label">2. vůz — záložní</div>
+          <div class="slot-label-sub">Pokud 1. vůz nevyhovuje, přejdeme na tento — bez další platby</div>
+        </div>
+      </div>
+      <div class="slot-body">
+
+        <div class="tab-pills" id="pillsE">
+          <div class="tab-pill" onclick="showInlineTab('E',0)">Oblíbené (3)</div>
+          <div class="tab-pill active" onclick="showInlineTab('E',1)">Podobné vozy</div>
+        </div>
+
+        <!-- TAB E0: Oblíbené -->
+        <div class="inline-tab-panel" id="tabE0">
+          <div style="font-size:1.1rem; color:var(--c-gray-400); margin-bottom:8px;">Vaše oblíbené vozy:</div>
+
+          <div class="mini-card">
+              <div class="mini-thumb">❤️</div>
+              <div class="mini-body">
+                <div class="mini-info">
+                  <h4>Volkswagen Amarok 3.0 TDI 177 kW</h4>
+                  <div class="mini-meta">15 800 km · 2024 · Automat</div>
+                </div>
+                <div class="mini-bottom">
+                  <div class="mini-price">1 390 000 Kč</div>
+                  <button class="mini-add-btn">+ Vybrat</button>
+                </div>
+              </div>
+            </div>
+
+          <div class="mini-card">
+              <div class="mini-thumb">❤️</div>
+              <div class="mini-body">
+                <div class="mini-info">
+                  <h4>Ford Ranger Limited 2.0 125 kW</h4>
+                  <div class="mini-meta">22 100 km · 2023 · Automat</div>
+                </div>
+                <div class="mini-bottom">
+                  <div class="mini-price">1 185 000 Kč</div>
+                  <button class="mini-add-btn">+ Vybrat</button>
+                </div>
+              </div>
+            </div>
+
+          <div class="mini-card">
+              <div class="mini-thumb">❤️</div>
+              <div class="mini-body">
+                <div class="mini-info">
+                  <h4>Toyota Hilux 2.4 D-4D 110 kW</h4>
+                  <div class="mini-meta">31 500 km · 2023 · Manuál</div>
+                </div>
+                <div class="mini-bottom">
+                  <div class="mini-price">985 000 Kč</div>
+                  <button class="mini-add-btn">+ Vybrat</button>
+                </div>
+              </div>
+            </div>
+        </div>
+
+        <!-- TAB E1: Podobné vozy (default) -->
+        <div class="inline-tab-panel active" id="tabE1">
+          <div style="font-size:1.1rem; color:var(--c-gray-400); margin-bottom:8px;">Vozy podobné vašemu Ford Ranger:</div>
+
+          <div class="mini-card">
+              <div class="mini-thumb">🚙</div>
+              <div class="mini-body">
+                <div class="mini-info">
+                  <h4>Ford Ranger 2.0 EcoBlue 125 kW</h4>
+                  <div class="mini-meta">12 400 km · 2024 · Automat</div>
+                </div>
+                <div class="mini-bottom">
+                  <div class="mini-price">1 289 900 Kč</div>
+                  <button class="mini-add-btn">+ Vybrat</button>
+                </div>
+              </div>
+            </div>
+
+          <div class="mini-card">
+              <div class="mini-thumb">🚙</div>
+              <div class="mini-body">
+                <div class="mini-info">
+                  <h4>Toyota Hilux 2.8 D-4D 150 kW</h4>
+                  <div class="mini-meta">8 200 km · 2024 · Automat</div>
+                </div>
+                <div class="mini-bottom">
+                  <div class="mini-price">1 445 000 Kč</div>
+                  <button class="mini-add-btn">+ Vybrat</button>
+                </div>
+              </div>
+            </div>
+
+          <div class="mini-card">
+              <div class="mini-thumb">🚙</div>
+              <div class="mini-body">
+                <div class="mini-info">
+                  <h4>Ford Ranger Wildtrak 2.0 155 kW</h4>
+                  <div class="mini-meta">3 100 km · 2025 · Automat</div>
+                </div>
+                <div class="mini-bottom">
+                  <div class="mini-price">1 612 000 Kč</div>
+                  <button class="mini-add-btn">+ Vybrat</button>
+                </div>
+              </div>
+            </div>
+
+          <div style="text-align:center; margin-top:12px;">
+            <button class="btn-ghost">Zobrazit více podobných →</button>
+          </div>
+        </div>
+
+        <!-- SERP link -->
+        <div style="margin-top:14px; padding-top:14px; border-top:1px solid var(--c-gray-200); display:flex; align-items:center; gap:10px;">
+          <span style="font-size:1.5rem;">🔍</span>
+          <div style="flex:1;">
+            <div style="font-size:1.25rem; color:var(--c-gray-600);">Nenašli jste ten pravý?</div>
+            <div style="font-size:1.1rem; color:var(--c-gray-400);">Otevře se vaše poslední hledání. Po kliknutí na Koupit se vůz přidá do objednávky.</div>
+          </div>
+          <a href="#" style="background:var(--c-blue-50); border:1px solid var(--c-blue-200); color:var(--c-blue-500); padding:8px 16px; border-radius:var(--r-lg); font-size:1.2rem; font-weight:600; text-decoration:none; white-space:nowrap; display:inline-flex; align-items:center; gap:4px;">Přejít do nabídky ↗</a>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- SLOT 3: LOCKED -->
+    <div class="slot locked">
+      <div class="slot-header">
+        <div class="slot-badge slot-badge-locked">3</div>
+        <div>
+          <div class="slot-label" style="color:var(--c-gray-400);">3. vůz</div>
+          <div class="slot-label-sub">Odemkne se po výběru 2. vozu · <em>volitelné</em></div>
+        </div>
+        <span style="margin-left:auto; font-size:1.4rem;">🔒</span>
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <div style="background:var(--c-blue-50); border:1px solid var(--c-blue-200); border-radius:var(--r-lg); padding:12px 16px; display:flex; align-items:center; gap:10px; margin-bottom:12px; margin-top:16px;">
+      <span style="font-size:1.6rem;">💡</span>
+      <span style="font-size:1.3rem; color:var(--c-gray-700);">
+        <strong>Tip:</strong> S dalším vozem v záloze nemusíte platit znovu, pokud ten první nevyjde.
+      </span>
+      <button style="background:none; border:none; color:var(--c-gray-400); cursor:pointer; font-size:1.2rem; margin-left:auto;">✕</button>
+    </div>
+    <div class="cta-bar" style="margin-top:0;">
+      <button class="btn-primary">Pokračovat s 1 vozem →</button>
+    </div>
+
+  </div>
+
+  <!-- SIDEBAR with CarAudit Trust Bar -->
+  <div class="sidebar">
+    <div class="receipt">
+      <h3>Nyní k zaplacení</h3>
+      <div class="receipt-row"><span>CarAudit™ ⓘ</span><span>4 990 Kč</span></div>
+      <div class="receipt-row"><span>Sleva</span><span class="badge badge-discount">-40 %</span></div>
+      <div class="receipt-row total"><span>Cena celkem</span><span>2 990 Kč</span></div>
+      <div class="receipt-row" style="font-size:1.1rem; margin-top:2px;"><span>Cena celkem bez DPH</span><span>2 471 Kč</span></div>
+    </div>
+
+    <!-- NEW: CarAudit Trust Bar -->
+    <div class="wrap-new" style="margin-bottom:12px;">
+      <div class="marker marker-new">✦ Oproti D — CarAudit™ trust bar</div>
+      <div class="trust-bar">
+        <h4>Co je CarAudit™?</h4>
+        <div class="trust-item">
+          <div class="trust-icon">🔧</div>
+          <div class="trust-item-text"><strong>270 bodů kontroly</strong> — exteriér, interiér, motor, převodovka, brzdy, elektronika</div>
+        </div>
+        <div class="trust-item">
+          <div class="trust-icon">👨‍🔧</div>
+          <div class="trust-item-text"><strong>Certifikovaný mechanik</strong> — fyzická prohlídka + diagnostika + testovací jízda</div>
+        </div>
+        <div class="trust-item">
+          <div class="trust-icon">📋</div>
+          <div class="trust-item-text"><strong>Výsledek do 2 dnů</strong> — detailní zpráva, fotodokumentace a naše doporučení</div>
+        </div>
+        <div class="trust-item">
+          <div class="trust-icon">🛡️</div>
+          <div class="trust-item-text"><strong>Vy rozhodujete</strong> — vůz kupujete až po kontrole a na základě výsledků</div>
+        </div>
+      </div>
+      <div class="annot">
+        <div class="annot-header" onclick="this.parentElement.classList.toggle('open')">
+          <span class="annot-label">💬 Oproti D: Nový CarAudit trust bar v sidebaru</span>
+          <span class="annot-chevron">▼</span>
+        </div>
+        <div class="annot-body">
+          <strong>Problém:</strong> "Jak probíhá kontrola CarAudit? ⓘ" je v current stavu malý textový odkaz — make-or-break informace schovaná za klikem. Uživatel, který nechápe co za 2 990 Kč dostane, nepokračuje.<br><br>
+          <strong>Řešení:</strong> Kompaktní trust bar v sidebaru — přímo vedle ceny, kde uživatel přirozeně hledí. 4 ikonky s jedním řádkem textu: co se kontroluje (270 bodů), kdo to dělá (mechanik), jak rychle (2 dny), a klíčová jistota (rozhodujete se po kontrole). Data jsou z existujících translation keys <code>howCarAuditWorks.benefits.*</code>.<br><br>
+          <strong>Proč sidebar a ne main column:</strong> Sidebar je sticky — trust bar je viditelný i při scrollování. Je přímo vedle ceny CarAudit — uživatel vidí "2 990 Kč" a hned pod tím "co za to dostanu". Neblokuje hlavní content (výběr vozů) v levém sloupci.<br><br>
+          <strong>Proč ne velký blok v main column:</strong> Detail page a landing page už CarAudit vysvětlují. V transakci jde o confidence reinforcement, ne edukaci. Stačí 4 řádky, ne celá sekce.
+        </div>
+      </div>
+    </div>
+
+    <div class="receipt-info">Pokud se po kontrole rozhodnete vůz koupit</div>
+    <div class="receipt">
+      <div class="receipt-row"><span><strong>Cena vozu</strong></span><span><strong>1 506 490 Kč</strong></span></div>
+      <div class="receipt-row" style="font-size:1.1rem;"><span>Cena bez DPH</span><span>1 245 033 Kč</span></div>
+      <div style="margin-top:12px;">
+        <div class="receipt-row"><span><strong>Služby celkem ▴</strong></span><span><strong>24 688 Kč</strong></span></div>
+        <div class="receipt-row"><span>Doručení domů</span><span>17 408 Kč</span></div>
+        <div class="receipt-row"><span>10 litrů paliva ⓘ</span><span class="badge badge-free">Zdarma</span></div>
+        <div class="receipt-row"><span>Dovozová STK ⓘ</span><span>4 490 Kč</span></div>
+        <div class="receipt-row"><span>Správní poplatek ⓘ</span><span>800 Kč</span></div>
+        <div class="receipt-row"><span>Registrace vozu ⓘ</span><span>1 990 Kč</span></div>
+        <div class="receipt-row"><span>Další sada pneumatik ⓘ</span><span style="color:var(--c-blue-500); font-weight:600;">Individuální</span></div>
+        <div class="receipt-row"><span>Rozšířená záruka</span><span class="badge badge-free">Zdarma</span></div>
+      </div>
+      <div class="receipt-row total"><span>Cena celkem</span><span>1 531 178 Kč</span></div>
+      <div class="receipt-row" style="font-size:1.1rem;"><span>Cena celkem bez DPH</span><span>1 265 575 Kč</span></div>
+    </div>
+  </div>
+</div></div>
+</div>
+
+<!-- ===== TAB SWITCHING + MODAL SCRIPT ===== -->
+<script>
+function show(i) {
+  // Close any open modals first
+  document.querySelectorAll('.modal-overlay.open').forEach(m => m.classList.remove('open'));
+  document.querySelectorAll('.screen').forEach((s, j) => s.classList.toggle('active', i === j));
+  document.querySelectorAll('.tab-btn').forEach((t, j) => t.classList.toggle('active', i === j));
+}
+
+function openModal(id) {
+  document.getElementById(id).classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function showInlineTab(prefix, i) {
+  // Toggle panels
+  for (let j = 0; j < 5; j++) {
+    const panel = document.getElementById('tab' + prefix + j);
+    if (panel) panel.classList.toggle('active', i === j);
+  }
+  // Toggle pills
+  const pills = document.getElementById('pills' + prefix);
+  if (pills) {
+    pills.querySelectorAll('.tab-pill').forEach((t, j) => t.classList.toggle('active', i === j));
+  }
+}
+
+function showSubvariant(i) {
+  document.querySelectorAll('.subvariant-panel').forEach((p, j) => p.classList.toggle('active', i === j));
+  document.querySelectorAll('.subvariant-btn').forEach((b, j) => b.classList.toggle('active', i === j));
+}
+
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function closeModalOnBg(event, id) {
+  if (event.target === event.currentTarget) {
+    closeModal(id);
+  }
+}
+
+// Annotation toggle
+function toggleAllAnnots() {
+  const annots = document.querySelectorAll('.annot');
+  const anyOpen = Array.from(annots).some(a => a.classList.contains('open'));
+  // If any are open, close all. If all closed, open all.
+  const newState = !anyOpen;
+  annots.forEach(a => a.classList.toggle('open', newState));
+  document.getElementById('annotToggleLabel').textContent = newState ? 'Skrýt anotace' : 'Zobrazit anotace';
+}
+
+// Close on Escape key
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    document.querySelectorAll('.modal-overlay.open').forEach(m => {
+      m.classList.remove('open');
+    });
+    document.body.style.overflow = '';
+  }
+});
+</script>
+
+</body>
+</html>
