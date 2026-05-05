@@ -223,6 +223,15 @@ Conversion = Paid Unique Per Customer / New Opportunities.</p>
   This needs investigation &mdash; it's the most plausible explanation for a drop that's correlated in time and not specific to a single funnel step. Worth testing in the upcoming Hotjar survey.
 </div>
 
+<div class="callout callout-orange">
+  <strong>Secondary trigger: radio-button CTA change (end of September 2025)</strong>
+  At the end of <strong>September 2025</strong> we deployed a major change to the main CTA on the car detail page (radio-button selection of payment options). Across most markets this caused: <strong>more opportunities created, but with lower conversion</strong>.
+  <br><br>
+  Italy timing: the conversion cliff in IT happens at the end of October / start of November (Oct 9.61% &rarr; Nov 5.16%). The radio-button change was <strong>4&ndash;5 weeks earlier</strong>, so the timing partially fits.
+  <br><br>
+  However, IT also shows <strong>continuing growth in opportunity volume</strong> (333 in Oct &rarr; 872 in Mar 2026 &mdash; +160%). This pattern (more opps, lower conversion) is consistent with the radio-button change attracting lower-intent traffic. <strong>This points to a marketing/traffic-quality lever, not just UX.</strong>
+</div>
+
 <!-- ==================== SECTION 2 ==================== -->
 <h2 id="s2">2. Lost Reason Analysis (Salesforce)</h2>
 
@@ -259,6 +268,32 @@ The GA funnel confirms the drop happens between car-selection and caraudit-form 
 <br>&bull; Engagement time &amp; user counts: <a href="https://analytics.google.com/analytics/web/?hl=en&pli=1#/a137399399p261961962/reports/explorer?params=_u..nav%3Dmaui%26_r.explorerCard..startRow%3D0%26_r.explorerCard..seldim%3D%5B%22customDimensionsGroup2Slot24%22%5D%26_r.explorerCard..filterTerm%3Dorderwizard%26_r..dataFilters%3D%5B%7B%22type%22:1,%22fieldName%22:%22country%22,%22evaluationType%22:1,%22expressionList%22:%5B%22Italy%22%5D,%22complement%22:false,%22isCaseSensitive%22:true,%22expression%22:%22%22%7D%5D%26_u.comparisonOption%3Ddisabled%26_u.date00%3D20260401%26_u.date01%3D20260430%26_r.explorerCard..rowsPerPage%3D25%26_r.explorerCard..sortKey%3DactiveUsers%26_r.explorerCard..selmet%3D%5B%22activeUsers%22,%22screenPageViews%22%5D%26_r.copa-filter-builder..filter-to-edit%3D%5B%7B%22type%22:1,%22fieldName%22:%22country%22,%22evaluationType%22:1,%22expressionList%22:%5B%22Italy%22%5D,%22complement%22:false,%22isCaseSensitive%22:true,%22expression%22:%22%22%7D%5D" target="_blank">GA4 Pages and screens</a>
 <br>Reporting period: <strong>1&ndash;30 April 2026</strong>.
 <br><strong>Important:</strong> Funnel percentages are <strong>step-to-step</strong> (from previous step), not from top of funnel. No cohort filtering &mdash; users can revisit steps, causing &gt;100% values.</p>
+
+<h3>Understanding the path structure</h3>
+
+<p>The wizard splits at <code>purchase-method</code> and converges back at <code>caraudit-form</code>:</p>
+
+<div style="background:var(--gray-light); border:1px solid var(--border); border-radius:8px; padding:20px; margin:16px 0; font-family:monospace; font-size:13px; line-height:1.8;">
+car-selection<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&darr;<br>
+<strong>purchase-method</strong> &nbsp;<em>(customer chooses payment type)</em><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;<span style="color:var(--blue);"><strong>cash</strong></span> &darr;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&darr; <span style="color:var(--orange);"><strong>financing</strong></span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;financing-options<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&darr;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;financing-form<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&darr;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;financing-status &nbsp;<em>(approved or rejected)</em><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&darr;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>(both paths converge)</strong><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&darr;<br>
+<strong>caraudit-form</strong> &nbsp;<em>(payment for inspection)</em>
+</div>
+
+<p style="font-size:13px; color:var(--gray);">
+<strong>Important:</strong> If financing is <em>approved</em>, customer is motivated to continue to caraudit-form. If <em>rejected</em>, the customer can still continue (pay cash for the audit), but many likely lose interest at this point.
+</p>
 
 <h3>Full Funnel (all payment methods)</h3>
 
@@ -300,34 +335,8 @@ The GA funnel confirms the drop happens between car-selection and caraudit-form 
   <br><br>
   <strong>The dominant problem is now purchase-method &rarr; caraudit-form: 27.63% IT vs 58.57% CZ (-31pp gap).</strong> Only ~1 in 4 Italian users who reach the payment-method choice proceeds to the CarAudit form &mdash; less than half the CZ rate.
   <br><br>
-  Note also <strong>car-check: 22.73% IT vs 82.97% CZ (-60pp)</strong> &mdash; the few IT users who pay for CarAudit don't return for the result much. This is suspicious and worth checking (it could be reporting timing, not a true behavioral gap).
+  Note also <strong>car-check: 22.73% IT vs 82.97% CZ (-60pp)</strong> &mdash; this means most IT customers who reach the caraudit-form page <em>aren't willing to actually pay</em> for the CarAudit (car-check happens after payment). 80% of CZ customers do pay; only ~23% of IT do. This is likely <strong>another trust signal</strong> &mdash; even after committing through purchase-method, Italian customers hesitate to pay upfront for an inspection of a car they haven't seen physically.
 </div>
-
-<h3>Understanding the path structure</h3>
-
-<p>The wizard splits at <code>purchase-method</code> and converges back at <code>caraudit-form</code>:</p>
-
-<div style="background:var(--gray-light); border:1px solid var(--border); border-radius:8px; padding:20px; margin:16px 0; font-family:monospace; font-size:13px; line-height:1.8;">
-car-selection<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&darr;<br>
-<strong>purchase-method</strong> &nbsp;<em>(customer chooses payment type)</em><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
-&nbsp;&nbsp;<span style="color:var(--blue);"><strong>cash</strong></span> &darr;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&darr; <span style="color:var(--orange);"><strong>financing</strong></span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;financing-options<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&darr;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;financing-form<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&darr;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;financing-status &nbsp;<em>(approved or rejected)</em><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&darr;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>(both paths converge)</strong><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&darr;<br>
-<strong>caraudit-form</strong> &nbsp;<em>(payment for inspection)</em>
-</div>
-
-<p style="font-size:13px; color:var(--gray);">
-<strong>Important:</strong> If financing is <em>approved</em>, customer is motivated to continue to caraudit-form. If <em>rejected</em>, the customer can still continue (pay cash for the audit), but many likely lose interest at this point.
-</p>
 
 <h3>Financing Path (subset with additional detail)</h3>
 
@@ -854,6 +863,17 @@ Note: the GA "Full Funnel" view includes both cash and financing users. The 31.1
 </table>
 
 <div class="callout callout-orange">
+  <strong>Variant B (alternative ordering) &mdash; consider for second iteration</strong>
+  If response volume on Q3 (channel) ends up insufficient (because users abandon after Q1), consider re-running Survey B with the <strong>channel question first</strong>. Reasoning:
+  <ul style="margin:8px 0 0 20px;">
+    <li>Hotjar typically sees 30&ndash;50% drop-off between Q1 and Q3. Channel-first would roughly double the channel sample size.</li>
+    <li>Channel preference is the most directly actionable insight (we know 32% no-answer is a confirmed problem).</li>
+    <li>Trade-off: loses contextual flow (user is hesitating, asked first about contact preference), and people who pick "prefer no contact" don't tell us why.</li>
+  </ul>
+  <strong>Recommended:</strong> run current order first. Switch to Variant B only if Q3 sample is too small after 4 weeks.
+</div>
+
+<div class="callout callout-orange">
   <strong>Survey A (car detail page) is deferred</strong>
   Don't run Survey A and Survey B in parallel &mdash; same user could hit both, polluting both datasets and creating survey fatigue. Survey A can launch <strong>after Survey B has 60+ responses</strong> (estimated 2&ndash;3 weeks).
 </div>
@@ -942,6 +962,11 @@ Note: the GA "Full Funnel" view includes both cash and financing users. The 31.1
       <td><strong>"no-answer-from-customer": 199 cases (32%) in IT vs 44 (9%) in CZ &mdash; 3.5&times; gap.</strong> "customer-lost-interest": 140 (22%) IT vs 19 (4%) CZ &mdash; 5.5&times; gap. Italy has its own call center so language is not the issue &mdash; the question is <em>when</em>, <em>how often</em>, and <em>through which channel</em>.</td>
     </tr>
     <tr>
+      <td><strong>Sales team contact frequency &amp; channel audit for IT</strong> &mdash; how many times do they try to reach a customer before giving up? what time of day? voicemail? SMS fallback?</td>
+      <td>Sales lead + F&amp;I</td>
+      <td>The 32% no-answer rate could be solved either by reaching customers more times or via different channel. Survey B Q3 will tell us preferred channel; sales team needs to confirm current attempt count and timing for IT specifically.</td>
+    </tr>
+    <tr>
       <td><strong>Investigate alternative IT bank partners</strong> (Cofidis Italy, Findomestic, Compass)</td>
       <td>F&amp;I + BizDev</td>
       <td>CZ runs <strong>4 active banks</strong> (Moneta 505, Cofidis 239, Leasing ČS 80, Essox 1). IT has <strong>only Agos</strong> with 2 records. More partners = more chance of fit.</td>
@@ -982,6 +1007,11 @@ Note: the GA "Full Funnel" view includes both cash and financing users. The 31.1
       <td>Conversion dropped from <strong>~11% (mid-2025) to ~2% (Apr 2026)</strong> &mdash; the Aug 2025 change (multi-car cart + single-active-opportunity) is the most plausible trigger by timing. Run pre/post cohort analysis on Aug 2025.</td>
     </tr>
     <tr>
+      <td><strong>Conversation with marketing about IT traffic quality</strong></td>
+      <td>PM + Marketing</td>
+      <td>IT opportunity volume keeps <strong>growing</strong> (333 in Oct 2025 &rarr; 872 in Mar 2026 = +160%) while conversion drops. Combined with the Sep 2025 radio-button CTA change which increased opp volume across markets, this points to <strong>lower-quality traffic / over-broad targeting</strong>. Worth tightening intent signals (audience, keywords, messaging).</td>
+    </tr>
+    <tr>
       <td><strong>Discuss findings with Italy country manager</strong></td>
       <td>PM (this week)</td>
       <td>Doc has IT/EN toggle for easy review. Get qualitative input on F&amp;I process, customer expectations, and competitor activity in IT.</td>
@@ -1020,6 +1050,11 @@ Note: the GA "Full Funnel" view includes both cash and financing users. The 31.1
       <td><strong>Multi-car cart engagement</strong> &mdash; review "Scegli fino a 3 auto" prompt visibility</td>
       <td>PM + UX</td>
       <td>Avg time on car-selection is <strong>7&ndash;9 seconds</strong> &mdash; not enough to read the multi-car prompt. Users likely don't know they can add up to 3 cars. Test prominence of this option.</td>
+    </tr>
+    <tr>
+      <td><strong>Allow customers to close their own opportunity</strong> and start a new one</td>
+      <td>PM + Tech</td>
+      <td>Aug 2025 change made "single active opportunity" the rule. If a customer is stuck (e.g. financing got rejected, or they want a different car), they currently have to wait for the 30-day auto-close or call sales. Self-service close would unblock them &mdash; especially valuable given <strong>78% of IT opps die in "New" stage</strong>. Reduces sunk-cost loops cited in Section 1 hypothesis.</td>
     </tr>
     <tr>
       <td><strong>A/B test: softer CTA copy</strong> ("Conferma e Procedi" &rarr; less committal wording)</td>
