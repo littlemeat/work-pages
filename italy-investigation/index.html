@@ -784,7 +784,7 @@ Note: the GA "Full Funnel" view includes both cash and financing users. The 31.1
       <td>H6</td>
       <td><strong>Information overload &mdash; expanded payslip overwhelms</strong><br>Sidebar payslip shows too many line items at once, causing decision paralysis</td>
       <td>UX review: all services, taxes, total visible simultaneously. Car detail page already uses collapsed pattern.</td>
-      <td><span class="tag tag-orange">A/B test: collapsed payslip (P2)</span></td>
+      <td><span class="tag tag-gray">Removed &mdash; no data backing; revisit if Survey B reveals overload</span></td>
     </tr>
     <tr style="background:var(--red-light);">
       <td>H7 🔥</td>
@@ -835,31 +835,21 @@ Note: the GA "Full Funnel" view includes both cash and financing users. The 31.1
       <td>SRP &rarr; car detail rate for IT, conversion on IT cars vs cross-border</td>
     </tr>
     <tr>
-      <td><span class="tag tag-orange">P2</span></td>
-      <td><strong>Collapsed payslip</strong></td>
-      <td>Collapse service line items behind "Totale servizi &blacktriangledown;" on purchase-method/car-selection</td>
-      <td>H6: Information overload on sidebar. <em>Note: no direct funnel data supports this &mdash; demoted from P1 since CZ has the same expanded payslip and converts fine. Justification is UX consistency with the car detail page (which already uses the collapsed pattern).</em></td>
-      <td>purchase-method &rarr; caraudit-form rate</td>
-    </tr>
-    <tr>
-      <td><span class="tag tag-blue">P3</span></td>
+      <td><span class="tag tag-blue">P2</span></td>
       <td><strong>Softer CTA</strong></td>
       <td>"Conferma e Procedi" &rarr; softer wording</td>
-      <td>H4 (lower priority): CZ uses the same CTA and converts well. Test only if higher-priority items don't move the needle.</td>
+      <td>Tests H4 (commitment shock). CZ uses the same CTA and converts well, so unlikely to be root cause &mdash; but easy to test in GrowthBook and IT-specific copy variants are quick to ship.</td>
       <td>Click-through rate on car detail</td>
-    </tr>
-    <tr>
-      <td><span class="tag tag-blue">P3</span></td>
-      <td><strong>Simplified wizard header</strong></td>
-      <td>Remove or simplify the 5-step progress bar</td>
-      <td>H4 (lower priority): CZ has the same 5-step wizard and converts fine.</td>
-      <td>car-selection &rarr; purchase-method rate</td>
     </tr>
   </tbody>
 </table>
 
 <div class="callout callout-orange">
-  <strong>Why local cars is now P1, collapsed payslip P2:</strong> The original ranking had collapsed payslip as P1, but it has no direct data backing &mdash; CZ uses the same expanded payslip and converts fine. Local cars promotion targets two confirmed barriers (H2 trust gap, H8 cash-path trust) with hard data. P3 items (softer CTA, simplified header) remain low-priority because CZ has the same wizard.
+  <strong>Removed from list:</strong>
+  <ul style="margin:8px 0 0 20px;">
+    <li><strong>Collapsed payslip</strong> &mdash; was P1, then P2. No data supports it (CZ has same expanded payslip and converts fine); only justification was UX consistency. Re-add if Survey B free-text reveals "process feels overwhelming".</li>
+    <li><strong>Simplified wizard header</strong> &mdash; CZ has the same 5-step wizard and converts fine. No data backing, no specific request. Re-add if surveys reveal "wizard feels too heavy".</li>
+  </ul>
 </div>
 
 <h3>Track 2: Qualitative — Hotjar Surveys</h3>
@@ -874,7 +864,7 @@ Note: the GA "Full Funnel" view includes both cash and financing users. The 31.1
   <strong>Goal:</strong> Understand what stops users from entering the order wizard<br>
   <strong>Page:</strong> Car detail page, IT locale only<br>
   <strong>Trigger:</strong> User spent 30s+ on the page but did not click "Conferma e Procedi"<br>
-  <strong>Why here:</strong> Users are still engaged (browsing the car), more likely to respond than in the 8s wizard bounce<br>
+  <strong>Why here:</strong> Users are still engaged (browsing the car), more likely to respond than at the 7&ndash;9s confirmation-screen step (car-selection)<br>
   <strong>Status:</strong> Deferred &mdash; will launch after Survey B concludes, to avoid showing two surveys to the same user
 </div>
 
@@ -1110,11 +1100,6 @@ Note: the GA "Full Funnel" view includes both cash and financing users. The 31.1
       <td>Prior Hotjar survey: <strong>57% IT</strong> believe Carvago is "safest way to buy" vs <strong>65% avg</strong> (lowest of all markets). <strong>19% IT cite "no trust in online car purchase"</strong> as their main barrier (highest of all markets).</td>
     </tr>
     <tr>
-      <td><strong>A/B test: collapsed payslip</strong> on cart sidebar &mdash; <span class="tag tag-orange">Track 1 P2</span></td>
-      <td>PM + Tech</td>
-      <td>The car detail page already uses the collapsed "Totale servizi" pattern; cart sidebar still shows all line items. UX consistency rather than data-driven &mdash; CZ has the same expanded payslip and converts fine, so direct impact is uncertain. Low risk to test.</td>
-    </tr>
-    <tr>
       <td><strong>Hotjar Survey A</strong> on car detail page, IT locale (after Survey B concludes)</td>
       <td>PM</td>
       <td>Catch users <em>before</em> wizard entry. Avg engagement on car-selection is only 7s (IT) / 9s (CZ) &mdash; users don't have time for an in-wizard survey.</td>
@@ -1134,6 +1119,11 @@ Note: the GA "Full Funnel" view includes both cash and financing users. The 31.1
       <td>PM + Tech</td>
       <td>Aug 2025 change made "single active opportunity" the rule. If a customer is stuck (e.g. financing got rejected, or they want a different car), they currently have to wait for the 30-day auto-close or call sales. Self-service close would unblock them &mdash; especially valuable given <strong>78% of IT opps die in "New" stage</strong>. Reduces sunk-cost loops cited in Section 1 hypothesis.</td>
     </tr>
+    <tr>
+      <td><strong>A/B test: softer CTA copy</strong> ("Conferma e Procedi" &rarr; less committal wording) &mdash; <span class="tag tag-blue">Track 1 P2</span></td>
+      <td>PM + Copy + Tech</td>
+      <td>Easy to ship via GrowthBook. CZ uses the same CTA and converts well at this step (CZ 64.07% vs IT 62.03% &mdash; matched), so unlikely to be root cause. Worth testing because IT-specific copy variants ("Continua a esplorare", "Vai al passaggio successivo", etc.) are cheap.</td>
+    </tr>
   </tbody>
 </table>
 
@@ -1144,16 +1134,6 @@ Note: the GA "Full Funnel" view includes both cash and financing users. The 31.1
     <tr><th>Action</th><th>Owner</th><th>Backed by data</th></tr>
   </thead>
   <tbody>
-    <tr>
-      <td><strong>A/B test: softer CTA copy</strong> ("Conferma e Procedi" &rarr; less committal wording) &mdash; <span class="tag tag-blue">Track 1 P3</span></td>
-      <td>PM + Copy + Tech</td>
-      <td>De-prioritized: CZ uses the same CTA and converts well at the same step (CZ 64.07% vs IT 62.03% step-to-step &mdash; matched). Unlikely to be root cause.</td>
-    </tr>
-    <tr>
-      <td><strong>A/B test: simplified wizard header</strong> (remove or reduce 5-step progress bar) &mdash; <span class="tag tag-blue">Track 1 P3</span></td>
-      <td>PM + Tech</td>
-      <td>Same caveat as CTA test. The 5-step bar exists in both markets and CZ converts fine.</td>
-    </tr>
     <tr>
       <td><strong>Full cart / wizard rework</strong></td>
       <td>Product + UX</td>
@@ -1190,7 +1170,7 @@ Note: the GA "Full Funnel" view includes both cash and financing users. The 31.1
   </div>
   <div class="timeline-item">
     <div class="tl-label">Week 2&ndash;3</div>
-    <div class="tl-text">Collect survey responses (target: 100&ndash;200). Launch collapsed payslip A/B test in GrowthBook.</div>
+    <div class="tl-text">Collect survey responses (target: 100&ndash;200). Launch <strong>local cars promotion</strong> A/B test in GrowthBook (Track 1 P1).</div>
   </div>
   <div class="timeline-item">
     <div class="tl-label">Week 3&ndash;4</div>
