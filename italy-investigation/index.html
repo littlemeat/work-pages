@@ -128,7 +128,8 @@
 <p style="font-size:18px; color:var(--gray); margin-bottom: 4px;" data-i18n="subtitle">Opportunity &rarr; Paid CarAudit Drop-off Analysis</p>
 <div class="meta">
   <span data-i18n="author">Author: Marie Michalova</span>
-  <span data-i18n="date">Date: 8 April 2026</span>
+  <span data-i18n="date">Created: 8 April 2026</span>
+  <span data-i18n="updated">Last updated: 5 May 2026</span>
   <span>Status: <span class="tag tag-orange" data-i18n="status">In Progress</span></span>
 </div>
 
@@ -137,7 +138,11 @@
   <ol style="margin:10px 0 0 20px; font-size:13px; line-height:2;">
     <li><a href="#s1" style="color:var(--blue); text-decoration:none;" data-i18n="toc_1">KPI Data: Conversion Trend</a></li>
     <li><a href="#s2" style="color:var(--blue); text-decoration:none;" data-i18n="toc_2">Lost Reason Analysis (Salesforce)</a></li>
-    <li><a href="#s3" style="color:var(--blue); text-decoration:none;" data-i18n="toc_3">GA Funnel: Where Users Drop Off</a></li>
+    <li><a href="#s3" style="color:var(--blue); text-decoration:none;" data-i18n="toc_3">GA Funnel: Where Users Drop Off</a>
+      <ul style="list-style:none; padding-left:16px; line-height:1.8;">
+        <li><a href="#s3a" style="color:var(--gray); text-decoration:none; font-size:12px;" data-i18n="toc_3a">3a. Salesforce Financing Data: IT vs CZ 🔥</a></li>
+      </ul>
+    </li>
     <li><a href="#s4" style="color:var(--blue); text-decoration:none;" data-i18n="toc_4">UX Review: The Car-Selection Page</a></li>
     <li><a href="#s5" style="color:var(--blue); text-decoration:none;" data-i18n="toc_5">Prior Survey Data: "Why Not Carvago"</a></li>
     <li><a href="#s6" style="color:var(--blue); text-decoration:none;" data-i18n="toc_6">Hypotheses</a></li>
@@ -152,6 +157,17 @@
   <strong>Problem Statement</strong>
   Conversion from New Opportunity to Paid CarAudit (unique per customer) in Italy has dropped from ~11&ndash;13% (mid-2025) to ~2&ndash;3% (Q1 2026).
   This needs urgent investigation.
+</div>
+
+<div class="callout callout-blue">
+  <strong>TL;DR &mdash; Top findings</strong>
+  <ol style="margin:8px 0 0 20px;">
+    <li><strong>Italian financing pipeline is essentially broken</strong> &mdash; only 3.24% approval rate vs CZ 40.98% (12&times; worse), 99.7% never reach a bank. <a href="#s3a" style="color:var(--blue);">Section 3a</a></li>
+    <li><strong>The biggest funnel drop is purchase-method &rarr; caraudit-form: 27.63% IT vs 58.57% CZ.</strong> The first wizard step is now matched with CZ; the cash-path commitment is where IT users bail. <a href="#s3" style="color:var(--blue);">Section 3</a></li>
+    <li><strong>F&amp;I follow-up process is failing IT customers</strong> &mdash; 32% of lost financings are "no answer from customer" (3.5&times; CZ). Italy has its own call center, so it's a channel/timing issue. <a href="#s3a" style="color:var(--blue);">Section 3a</a></li>
+    <li><strong>Conversion timing matches August 2025 transaction-flow deploy</strong> (multi-car cart, single active opportunity) and end-of-September radio-button CTA change. Opportunity volume keeps growing (+160%) while conversion drops &mdash; suggests a mix of UX friction + lower-quality traffic. <a href="#s1" style="color:var(--blue);">Section 1</a></li>
+  </ol>
+  <strong>Top 3 actions:</strong> <a href="#s8" style="color:var(--blue);">(1) Fix IT financing pipeline with F&amp;I team</a>, <a href="#s7" style="color:var(--blue);">(2) Run Hotjar Survey B</a>, <a href="#s8" style="color:var(--blue);">(3) Conversation with marketing about IT traffic quality</a>.
 </div>
 
 <!-- ==================== SECTION 1 ==================== -->
@@ -711,38 +727,56 @@ Note: the GA "Full Funnel" view includes both cash and financing users. The 31.1
     <tr>
       <td>H1</td>
       <td><strong>"Just browsing" &mdash; low purchase intent</strong><br>IT traffic has many window shoppers who enter the wizard to explore</td>
-      <td>78% auto-close in "New"; 51% drop at step 1; growing opp volume but declining conversion</td>
-      <td><span class="tag tag-blue">Hotjar Survey</span></td>
+      <td>78% auto-close in "New"; opp volume growing +160% (333 &rarr; 872) while conversion drops; radio-button CTA change in Sep 2025 likely amplified low-intent traffic</td>
+      <td><span class="tag tag-blue">Hotjar Survey B Q1</span> + Marketing review</td>
     </tr>
     <tr>
       <td>H2</td>
       <td><strong>Trust gap &mdash; cross-border purchase anxiety</strong><br>Italian users don't trust buying a car from Germany through an online platform</td>
-      <td>Most IT cars are imported; Italian market is newer for Carvago</td>
-      <td><span class="tag tag-blue">Hotjar Survey</span></td>
+      <td>Prior survey: 19% IT cite "no trust in online car purchase" (highest of all markets); 57% IT believe Carvago is "safest way to buy" vs 65% avg</td>
+      <td><span class="tag tag-blue">Hotjar Survey B Q1</span></td>
     </tr>
     <tr>
       <td>H3</td>
       <td><strong>Process unclear &mdash; "what happens next?"</strong><br>Users don't understand the wizard steps or the CarAudit concept</td>
-      <td>Drop at step 1 before any action is required</td>
-      <td><span class="tag tag-blue">Hotjar Survey</span></td>
+      <td>Prior survey: 15% IT "don't understand how purchase works" (~2&times; avg)</td>
+      <td><span class="tag tag-blue">Hotjar Survey B Q1</span></td>
     </tr>
     <tr>
-      <td>H4</td>
+      <td>H4 <span class="tag tag-gray">Lower priority</span></td>
       <td><strong>Commitment shock &mdash; wizard feels too heavy</strong><br>5-step wizard creates a "serious purchase" feeling that doesn't match exploratory mindset</td>
-      <td>Drop happens before any form filling</td>
-      <td><span class="tag tag-blue">Hotjar Survey</span></td>
+      <td>De-prioritized: CZ has the same wizard and same 9s engagement on car-selection but converts 3&ndash;6&times; better. Wizard layout itself isn't the root cause.</td>
+      <td><span class="tag tag-blue">A/B test: simplified header (P3)</span></td>
     </tr>
     <tr>
       <td>H5</td>
       <td><strong>Comparison shopping</strong><br>Users compare Carvago with local Italian dealers</td>
       <td>Needs return visitor analysis (GA)</td>
-      <td><span class="tag tag-blue">Hotjar Survey</span> + GA</td>
+      <td><span class="tag tag-blue">Hotjar Survey B Q1</span> + GA</td>
     </tr>
     <tr>
       <td>H6</td>
       <td><strong>Information overload &mdash; expanded payslip overwhelms</strong><br>Sidebar payslip shows too many line items at once, causing decision paralysis</td>
-      <td>UX review: all services, taxes, total visible simultaneously</td>
-      <td><span class="tag tag-green">A/B test: collapsed payslip</span></td>
+      <td>UX review: all services, taxes, total visible simultaneously. Car detail page already uses collapsed pattern.</td>
+      <td><span class="tag tag-green">A/B test: collapsed payslip (P1)</span></td>
+    </tr>
+    <tr style="background:var(--red-light);">
+      <td>H7 🔥</td>
+      <td><strong>Italian financing pipeline is broken</strong><br>Customer chooses financing &rarr; F&amp;I never submits to bank or fails to reach customer &rarr; 87% lost</td>
+      <td><strong>CONFIRMED.</strong> 3.24% IT approval rate vs 40.98% CZ; 99.7% of IT financings never get a bank assigned (only 2 of 720 linked to Agos); 32% lost as "no answer from customer".</td>
+      <td><span class="tag tag-red">F&amp;I team review</span> + Survey B Q3 (channel)</td>
+    </tr>
+    <tr style="background:var(--orange-light);">
+      <td>H8</td>
+      <td><strong>Cash-path trust gap &mdash; refusal to pay upfront for inspection</strong><br>Customers reach caraudit-form but won't pay for an inspection of a car they haven't seen physically</td>
+      <td>caraudit-form &rarr; car-check: 22.73% IT vs 82.97% CZ (-60pp). Most IT customers reach the page but don't actually pay. Reinforces H2 trust gap.</td>
+      <td><span class="tag tag-blue">Survey B Q1 option 2</span> ("see car in person")</td>
+    </tr>
+    <tr>
+      <td>H9</td>
+      <td><strong>Aug 2025 transaction change caused decision paralysis</strong><br>Multi-car cart + single active opportunity rule introduces friction (see Section 1)</td>
+      <td>Conversion drop -4.1pp in Aug 2025 (deploy month); -4.5pp cliff in Nov 2025 (~90 days post deploy when old-flow opps cycled out)</td>
+      <td><span class="tag tag-blue">Cohort analysis</span> + Survey B free text</td>
     </tr>
   </tbody>
 </table>
@@ -751,7 +785,11 @@ Note: the GA "Full Funnel" view includes both cash and financing users. The 31.1
 <h2 id="s7">7. Proposed Approach: Two Tracks</h2>
 
 <div class="callout callout-orange">
-  <strong>Why we changed the plan:</strong> The original idea was an exit-intent survey on <code>car-selection</code>. But with only 8 seconds average engagement, users bounce too fast to meaningfully engage with a survey popup. We need to catch users <strong>before</strong> they enter the wizard (car detail page) and <strong>after</strong> the initial bounce (purchase-method page, where engaged users spend 42s).
+  <strong>Why this plan:</strong> The first wizard step (<code>car-selection</code>) is essentially a confirmation screen &mdash; both IT and CZ users spend just 7&ndash;9 seconds there. Surveying users at exit-intent on this page won't yield meaningful answers because they leave too fast. Instead we focus on:
+  <ul style="margin:8px 0 0 20px;">
+    <li><strong>Survey B (purchase-method)</strong> &mdash; users spend 35s here on average; this is where the IT-specific drop happens (27.63% vs 58.57% CZ)</li>
+    <li><strong>Survey A (car detail page)</strong> &mdash; deferred. Catch users <em>before</em> they enter the wizard once we have Survey B data</li>
+  </ul>
 </div>
 
 <h3>Track 1: Qualitative — Hotjar Surveys</h3>
@@ -916,7 +954,7 @@ Note: the GA "Full Funnel" view includes both cash and financing users. The 31.1
 </div>
 
 <div class="callout callout-green">
-  <strong>Decision point after 2&ndash;3 weeks:</strong> If survey results + A/B tests show that targeted fixes improve the 8s bounce and step-to-step rates, we iterate. If not &mdash; and the problem is fundamental (e.g. 70%+ say "just browsing" or "don't trust online purchase") &mdash; then we consider a bigger cart/wizard rework with proper UX research.
+  <strong>Decision point after 2&ndash;3 weeks:</strong> If survey results + A/B tests show that targeted fixes lift the IT purchase-method &rarr; caraudit-form rate above 50% (CZ baseline 58.57%), we iterate. If not &mdash; and the problem is fundamental (e.g. 70%+ say "just browsing" or "don't trust online purchase") &mdash; then we consider a bigger cart/wizard rework with proper UX research. In parallel, the financing-pipeline fix (Section 8 P0) runs independently and likely contributes the largest absolute gain.
 </div>
 
 <!-- ==================== SECTION 8 ==================== -->
@@ -1165,17 +1203,22 @@ Note: the GA "Full Funnel" view includes both cash and financing users. The 31.1
     <tr>
       <td>Salesforce (Opportunity)</td>
       <td>Lost reason codes</td>
-      <td>SOQL on <code>Opportunity</code>, field <code>Opportunity_Reason_Code__c</code>. Note: auto-closing only recently implemented</td>
+      <td>SOQL on <code>Opportunity</code>, field <code>Opportunity_Reason_Code__c</code>. Auto-closing rolled out in two phases: July 2025 ("New" stage), March 2026 ("Financing" stage).</td>
+    </tr>
+    <tr style="background:var(--red-light);">
+      <td><strong>Salesforce (Financing__c)</strong> 🔥</td>
+      <td>Financing approval rate, status breakdown, reason codes, bank pipeline assignment (Section 3a)</td>
+      <td>SOQL on <code>Financing__c</code>: <code>Final_Status__c</code>, <code>Reason_Code__c</code>, <code>Financing_Entity__c</code>, <code>Final_Type_Of_Financing__c</code>. Filtered by <code>Customer_Country_Origin_Picklist__c</code>, <code>Application_Date__c &gt;= 2025-11-01</code>, <code>Is_TEST_Financing__c = false</code>.</td>
     </tr>
     <tr>
-      <td>Google Analytics</td>
-      <td>Transaction funnel step-to-step rates</td>
-      <td><a href="https://lookerstudio.google.com/u/0/reporting/171bb951-df2a-415e-a76c-fc3921031329/page/5oysF" target="_blank">Looker Studio funnel</a>, 1&ndash;7 Apr 2026, Market: IT and CZ. No cohort filtering.</td>
+      <td>Google Analytics 4</td>
+      <td>Transaction funnel step-to-step rates, engagement time, active users per page</td>
+      <td><a href="https://lookerstudio.google.com/u/0/reporting/171bb951-df2a-415e-a76c-fc3921031329/page/5oysF" target="_blank">Looker Studio funnel</a> + <a href="https://analytics.google.com/analytics/web/?hl=en&pli=1#/a137399399p261961962/reports/explorer?params=_u..nav%3Dmaui%26_r.explorerCard..filterTerm%3Dorderwizard%26_u.date00%3D20260401%26_u.date01%3D20260430" target="_blank">GA4 Pages and screens</a>. Reporting period: <strong>1&ndash;30 April 2026</strong> (full month). Markets: IT, CZ. No cohort filtering.</td>
     </tr>
     <tr>
       <td>Prior Hotjar Survey</td>
       <td>"Why not Carvago" barriers by market, Proposition awareness by market</td>
-      <td>Hotjar pop-up survey, all Carvago markets, 2 weeks, 6,082 total responses. See <code>Hotjar Survey Final.pdf</code></td>
+      <td>Hotjar pop-up survey, all Carvago markets, 2 weeks, 6,082 total responses. <a href="https://docs.google.com/presentation/d/1sLIqAbxJOtvBDqCOnUmh1FKSBRFFmIyVWPwDugZzvQ0/edit?slide=id.g35f227666f8_0_0#slide=id.g35f227666f8_0_0" target="_blank">Full results (Google Slides) &rarr;</a></td>
     </tr>
     <tr>
       <td>UX Review</td>
@@ -1188,8 +1231,8 @@ Note: the GA "Full Funnel" view includes both cash and financing users. The 31.1
 <hr>
 
 <div class="footer">
-  <p>Generated 8 April 2026 &mdash; Marie Michalova</p>
-  <p>Jira ticket: <em>to be created</em> &nbsp;|&nbsp; Hotjar survey ID: <em>to be set up</em></p>
+  <p>Created 8 April 2026 &mdash; Last updated 5 May 2026 &mdash; Marie Michalova</p>
+  <p>Hotjar Survey B: <em>to be set up</em> &nbsp;|&nbsp; F&amp;I meeting: <em>to be scheduled</em> &nbsp;|&nbsp; <a href="https://github.com/littlemeat/work-pages/blob/main/italy-investigation/index.html" target="_blank">View source on GitHub</a></p>
 </div>
 
 <script>
