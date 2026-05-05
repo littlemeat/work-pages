@@ -113,6 +113,32 @@
     background: var(--blue); color: #fff; border-color: var(--blue);
   }
   .lang-toggle button:hover:not(.active) { background: var(--gray-light); }
+
+  .back-to-top {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--blue);
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    font-size: 18px;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 200;
+    transition: all 0.15s;
+  }
+  .back-to-top:hover {
+    background: #15314e;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+  }
 </style>
 </head>
 <body>
@@ -528,7 +554,7 @@ car-selection<br>
   <br><br>
   <strong>Note:</strong> Carvago has its own Italian call center, so language is not the barrier. Possible explanations are:
   <ol style="margin:8px 0 0 20px;">
-    <li><strong>Channel mismatch:</strong> Italian customers may prefer async digital channels (WhatsApp, chat, email) over phone calls &mdash; we will test this in Survey B Q3</li>
+    <li><strong>Channel mismatch:</strong> Italian customers may prefer async digital channels (WhatsApp, chat, email) over phone calls &mdash; we will test this in Survey B Q2</li>
     <li><strong>Speed:</strong> F&amp;I outreach takes too long &mdash; customer cools off, finds the car somewhere else, or simply forgets</li>
     <li><strong>Trust:</strong> incoming call from unknown number after online application feels suspicious / spam-like</li>
     <li><strong>Capacity / call timing:</strong> too few attempts, calls placed at wrong times of day, no async follow-up if call missed</li>
@@ -758,13 +784,13 @@ Note: the GA "Full Funnel" view includes both cash and financing users. The 31.1
       <td>H6</td>
       <td><strong>Information overload &mdash; expanded payslip overwhelms</strong><br>Sidebar payslip shows too many line items at once, causing decision paralysis</td>
       <td>UX review: all services, taxes, total visible simultaneously. Car detail page already uses collapsed pattern.</td>
-      <td><span class="tag tag-green">A/B test: collapsed payslip (P1)</span></td>
+      <td><span class="tag tag-orange">A/B test: collapsed payslip (P2)</span></td>
     </tr>
     <tr style="background:var(--red-light);">
       <td>H7 🔥</td>
       <td><strong>Italian financing pipeline is broken</strong><br>Customer chooses financing &rarr; F&amp;I never submits to bank or fails to reach customer &rarr; 87% lost</td>
       <td><strong>CONFIRMED.</strong> 3.24% IT approval rate vs 40.98% CZ; 99.7% of IT financings never get a bank assigned (only 2 of 720 linked to Agos); 32% lost as "no answer from customer".</td>
-      <td><span class="tag tag-red">F&amp;I team review</span> + Survey B Q3 (channel)</td>
+      <td><span class="tag tag-red">F&amp;I team review</span> + Survey B Q2 (channel)</td>
     </tr>
     <tr style="background:var(--orange-light);">
       <td>H8</td>
@@ -792,7 +818,51 @@ Note: the GA "Full Funnel" view includes both cash and financing users. The 31.1
   </ul>
 </div>
 
-<h3>Track 1: Qualitative — Hotjar Surveys</h3>
+<h3>Track 1: Quantitative — A/B Tests via GrowthBook</h3>
+
+<p>Tests easy to launch via GrowthBook in parallel with the surveys. Prioritized based on data backing &mdash; tests targeting confirmed barriers (H2, H8) come first; UX-consistency tests later.</p>
+
+<table>
+  <thead>
+    <tr><th>Priority</th><th>Test</th><th>What changes</th><th>Hypothesis</th><th>Primary metric</th></tr>
+  </thead>
+  <tbody>
+    <tr style="background:var(--red-light);">
+      <td><span class="tag tag-red">P1</span></td>
+      <td><strong>Local cars promotion</strong></td>
+      <td>Promo banner / dedicated filter "Auto in Italia" on SRP for IT locale (~82k IT cars of 1,050k total = ~8% inventory)</td>
+      <td><strong>H2 + H8 (data-backed):</strong> 19% IT distrust online cross-border purchase (prior survey); 22.73% caraudit-form &rarr; car-check (vs 82.97% CZ) shows IT customers won't pay upfront for an unseen car. Local cars remove import friction (no nationalization tax 646&euro;, registration is local) and address "Germania, importazione" anxiety.</td>
+      <td>SRP &rarr; car detail rate for IT, conversion on IT cars vs cross-border</td>
+    </tr>
+    <tr>
+      <td><span class="tag tag-orange">P2</span></td>
+      <td><strong>Collapsed payslip</strong></td>
+      <td>Collapse service line items behind "Totale servizi &blacktriangledown;" on purchase-method/car-selection</td>
+      <td>H6: Information overload on sidebar. <em>Note: no direct funnel data supports this &mdash; demoted from P1 since CZ has the same expanded payslip and converts fine. Justification is UX consistency with the car detail page (which already uses the collapsed pattern).</em></td>
+      <td>purchase-method &rarr; caraudit-form rate</td>
+    </tr>
+    <tr>
+      <td><span class="tag tag-blue">P3</span></td>
+      <td><strong>Softer CTA</strong></td>
+      <td>"Conferma e Procedi" &rarr; softer wording</td>
+      <td>H4 (lower priority): CZ uses the same CTA and converts well. Test only if higher-priority items don't move the needle.</td>
+      <td>Click-through rate on car detail</td>
+    </tr>
+    <tr>
+      <td><span class="tag tag-blue">P3</span></td>
+      <td><strong>Simplified wizard header</strong></td>
+      <td>Remove or simplify the 5-step progress bar</td>
+      <td>H4 (lower priority): CZ has the same 5-step wizard and converts fine.</td>
+      <td>car-selection &rarr; purchase-method rate</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="callout callout-orange">
+  <strong>Why local cars is now P1, collapsed payslip P2:</strong> The original ranking had collapsed payslip as P1, but it has no direct data backing &mdash; CZ uses the same expanded payslip and converts fine. Local cars promotion targets two confirmed barriers (H2 trust gap, H8 cash-path trust) with hard data. P3 items (softer CTA, simplified header) remain low-priority because CZ has the same wizard.
+</div>
+
+<h3>Track 2: Qualitative — Hotjar Surveys</h3>
 
 <div class="callout callout-orange">
   <strong>Sequencing:</strong> We start with Survey B only (purchase-method page) to avoid showing two surveys to the same user. Survey A (car detail page) can be launched later if needed.
@@ -837,14 +907,16 @@ Note: the GA "Full Funnel" view includes both cash and financing users. The 31.1
 <div class="callout callout-blue">
   <strong>Goal:</strong> Understand the purchase-method &rarr; caraudit-form drop (27.63% IT vs 58.57% CZ) and quantify channel preference for F&amp;I outreach<br>
   <strong>Page:</strong> <code>orderWizard:purchase-method</code>, IT locale only<br>
-  <strong>Trigger:</strong> Exit intent <strong>after at least 10s on page</strong> (avg engagement is 35s &mdash; avoid accidental triggers from quick bounces)<br>
+  <strong>Trigger:</strong> <strong>10s after page load OR exit-intent (whichever comes first)</strong>. Auto-fire at 10s ensures good sample size; exit-intent catches users who bounce sooner.<br>
   <strong>Why here:</strong> These users already passed the wizard entry &mdash; they're committed enough to choose payment but something stops them at the cash/financing decision<br>
   <strong>Sample target:</strong> ~30&ndash;60 responses/month at typical 5&ndash;10% Hotjar response rate. Run for <strong>2&ndash;3 months</strong> for statistical confidence.
 </div>
 
+<p style="font-size:12px; color:var(--gray); margin-bottom:16px;">Below: Italian survey copy as it will appear to IT users. Switch the language toggle (top right) to view English / Czech reference versions.</p>
+
 <div class="survey-q">
-  <div class="q-label">Question 1 &mdash; Single choice (1 of 1 required)</div>
-  <div class="q-text">
+  <div class="q-label">Question 1 &mdash; Single choice (required)</div>
+  <div class="q-text" data-survey-it="Cosa ti sta facendo esitare?" data-survey-en="What's making you hesitate?" data-survey-cs="Co tě brzdí?">
     Cosa ti sta facendo esitare?
     <em>(What's making you hesitate?)</em>
   </div>
@@ -861,16 +933,7 @@ Note: the GA "Full Funnel" view includes both cash and financing users. The 31.1
 </div>
 
 <div class="survey-q">
-  <div class="q-label">Question 2 &mdash; Free text, optional (shown after Q1)</div>
-  <div class="q-text">
-    C'&egrave; qualcosa di specifico che ti farebbe procedere subito?
-    <em>(Is anything specific that would make you proceed right now?)</em>
-  </div>
-  <p style="color:var(--gray); font-size:12px; margin:0;">Free text &mdash; qualitative gold for discovering unexpected blockers we didn't list.</p>
-</div>
-
-<div class="survey-q">
-  <div class="q-label">Question 3 &mdash; Single choice (1 of 1 required)</div>
+  <div class="q-label">Question 2 &mdash; Single choice (required)</div>
   <div class="q-text">
     Se Carvago ti contattasse per aiutarti, come preferiresti?
     <em>(If Carvago contacted you to help, how would you prefer it?)</em>
@@ -882,7 +945,16 @@ Note: the GA "Full Funnel" view includes both cash and financing users. The 31.1
     <li>Chat sul sito <em>(Live web chat)</em></li>
     <li>Preferirei non essere contattato/a <em>(Prefer no contact &mdash; tests self-service expectation)</em></li>
   </ol>
-  <p style="color:var(--gray); font-size:12px; margin:0;">This question stands alone &mdash; even if Q1 is answered randomly, the channel preference is actionable for the F&amp;I team. Directly probes the 32% no-answer-from-customer problem.</p>
+  <p style="color:var(--gray); font-size:12px; margin:0;">Moved from Q3 to Q2 to maximize response rate on this directly-actionable question. Tests the 32% no-answer-from-customer hypothesis.</p>
+</div>
+
+<div class="survey-q">
+  <div class="q-label">Question 3 &mdash; Free text, optional (shown after Q2)</div>
+  <div class="q-text">
+    C'&egrave; qualcosa di specifico che ti farebbe procedere subito?
+    <em>(Is anything specific that would make you proceed right now?)</em>
+  </div>
+  <p style="color:var(--gray); font-size:12px; margin:0;">Free text &mdash; qualitative gold for discovering unexpected blockers we didn't list.</p>
 </div>
 
 <h4>Survey B design rationale</h4>
@@ -890,74 +962,30 @@ Note: the GA "Full Funnel" view includes both cash and financing users. The 31.1
 <table>
   <thead><tr><th>Decision</th><th>Why</th></tr></thead>
   <tbody>
-    <tr><td>3 questions max (1 required + 1 optional + 1 short choice)</td><td>Exit-intent context &mdash; users are leaving. Hotjar best practice: keep under 4 questions.</td></tr>
+    <tr><td>3 questions (2 required + 1 optional)</td><td>Exit-intent context &mdash; users are leaving. Hotjar best practice: keep under 4 questions.</td></tr>
+    <tr><td>Q1 hesitation, Q2 channel, Q3 free text</td><td>Q1 sets context (why are you hesitating). Q2 is the most directly actionable insight (channel preference for F&amp;I), placed second so it gets the highest possible response rate after Q1. Q3 free text is the bonus for engaged respondents.</td></tr>
     <tr><td>Q1 has 7 specific options + Other</td><td>Each option maps to a specific intervention (trust signals, copy, financing UX, live chat, etc.) so we can act on results directly.</td></tr>
     <tr><td>Q1 includes "Just comparing"</td><td>Baseline for traffic quality. If 50%+ pick this, the problem isn't UX &mdash; it's traffic intent / expectations set elsewhere.</td></tr>
     <tr><td>Q1 excludes "Price too high"</td><td>Customer already saw price on SRP and car detail (twice). At purchase-method (35s engagement), price is unlikely to be the trigger. Prior survey confirmed price isn't IT-specific (39% IT vs 42% avg).</td></tr>
-    <tr><td>Q3 is universal (asked of everyone)</td><td>Even if Q1 answer is unclear, channel preference is actionable on its own. Directly tests 32% no-answer hypothesis.</td></tr>
-    <tr><td>10s minimum on page</td><td>Avoid accidental triggers. Median engagement here is 35s, so 10s filters out fast bouncers.</td></tr>
+    <tr><td>10s timer OR exit-intent (whichever first)</td><td>Auto-fire at 10s ensures we collect data even from users who never trigger exit-intent. Exit-intent catches the rest. Avg engagement is 35s so 10s is well within normal flow.</td></tr>
     <tr><td>IT locale only</td><td>Focused investigation; CZ is the healthy control with comparable wizard but ~60% conversion.</td></tr>
   </tbody>
 </table>
 
 <div class="callout callout-orange">
   <strong>Variant B (alternative ordering) &mdash; consider for second iteration</strong>
-  If response volume on Q3 (channel) ends up insufficient (because users abandon after Q1), consider re-running Survey B with the <strong>channel question first</strong>. Reasoning:
+  If response volume on Q2 (channel) ends up insufficient (because users abandon after Q1), consider re-running Survey B with the <strong>channel question first</strong>. Reasoning:
   <ul style="margin:8px 0 0 20px;">
-    <li>Hotjar typically sees 30&ndash;50% drop-off between Q1 and Q3. Channel-first would roughly double the channel sample size.</li>
+    <li>Hotjar typically sees 30&ndash;50% drop-off between Q1 and Q2. Channel-first would roughly double the channel sample size.</li>
     <li>Channel preference is the most directly actionable insight (we know 32% no-answer is a confirmed problem).</li>
     <li>Trade-off: loses contextual flow (user is hesitating, asked first about contact preference), and people who pick "prefer no contact" don't tell us why.</li>
   </ul>
-  <strong>Recommended:</strong> run current order first. Switch to Variant B only if Q3 sample is too small after 4 weeks.
+  <strong>Recommended:</strong> run current order first. Switch to Variant B only if Q2 sample is too small after 4 weeks.
 </div>
 
 <div class="callout callout-orange">
   <strong>Survey A (car detail page) is deferred</strong>
   Don't run Survey A and Survey B in parallel &mdash; same user could hit both, polluting both datasets and creating survey fatigue. Survey A can launch <strong>after Survey B has 60+ responses</strong> (estimated 2&ndash;3 weeks).
-</div>
-
-<h3>Track 2: Quantitative — A/B Tests via GrowthBook</h3>
-
-<p>Run in parallel with the surveys. Prioritized based on the CZ benchmark data &mdash; since CZ has the same 9s car-selection behavior but converts well, the problem is likely downstream.</p>
-
-<table>
-  <thead>
-    <tr><th>Priority</th><th>Test</th><th>What changes</th><th>Hypothesis</th><th>Primary metric</th></tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><span class="tag tag-red">P1</span></td>
-      <td><strong>Collapsed payslip</strong></td>
-      <td>Collapse service line items behind "Totale servizi &blacktriangledown;" on purchase-method/car-selection</td>
-      <td>H6: Information overload on sidebar</td>
-      <td>car-selection &rarr; purchase-method rate</td>
-    </tr>
-    <tr>
-      <td><span class="tag tag-red">P1</span></td>
-      <td><strong>Local cars promotion</strong></td>
-      <td>Promo banner / dedicated filter "Auto in Italia" on SRP for IT locale (~82k IT cars of 1,050k total = ~8% inventory)</td>
-      <td>H2 (cross-border trust gap), H8 (cash-path trust). Local cars reduce import friction (no nationalization tax, registration is local) and address "Germania, importazione" anxiety.</td>
-      <td>SRP &rarr; car detail rate for IT, conversion on IT cars vs cross-border</td>
-    </tr>
-    <tr>
-      <td><span class="tag tag-orange">P2</span></td>
-      <td><strong>Softer CTA</strong></td>
-      <td>"Conferma e Procedi" &rarr; softer wording</td>
-      <td>H4: CTA creates commitment shock</td>
-      <td>Click-through rate on car detail</td>
-    </tr>
-    <tr>
-      <td><span class="tag tag-blue">P3</span></td>
-      <td><strong>Simplified wizard header</strong></td>
-      <td>Remove or simplify the 5-step progress bar</td>
-      <td>H4: Seeing 5 steps triggers "too much"</td>
-      <td>car-selection &rarr; purchase-method rate</td>
-    </tr>
-  </tbody>
-</table>
-
-<div class="callout callout-orange">
-  <strong>Note:</strong> CZ has the same 9s car-selection engagement and the same 5-step wizard, yet converts well. This suggests P2 and P3 are less likely to be the root cause. <strong>Survey B on the purchase-method page is the highest priority &mdash; we need to understand what specifically blocks IT users at the payment choice.</strong>
 </div>
 
 <div class="callout callout-green">
@@ -1009,7 +1037,7 @@ Note: the GA "Full Funnel" view includes both cash and financing users. The 31.1
     <tr>
       <td><strong>Sales team contact frequency &amp; channel audit for IT</strong> &mdash; how many times do they try to reach a customer before giving up? what time of day? voicemail? SMS fallback?</td>
       <td>Sales lead + F&amp;I</td>
-      <td>The 32% no-answer rate could be solved either by reaching customers more times or via different channel. Survey B Q3 will tell us preferred channel; sales team needs to confirm current attempt count and timing for IT specifically.</td>
+      <td>The 32% no-answer rate could be solved either by reaching customers more times or via different channel. Survey B Q2 will tell us preferred channel; sales team needs to confirm current attempt count and timing for IT specifically.</td>
     </tr>
     <tr>
       <td><strong>Investigate alternative IT bank partners</strong> (Cofidis Italy, Findomestic, Compass)</td>
@@ -1024,7 +1052,7 @@ Note: the GA "Full Funnel" view includes both cash and financing users. The 31.1
     <tr>
       <td><strong>Add async F&amp;I outreach channels for IT</strong> (WhatsApp / chat / async forms)</td>
       <td>F&amp;I + Marketing</td>
-      <td>Hypothesis: 32% no-answer rate suggests phone alone isn't enough. The Italian call center exists but Italian customers may prefer async channels. Survey B Q3 will quantify channel preference. Add WhatsApp/chat as fallback when phone goes unanswered.</td>
+      <td>Hypothesis: 32% no-answer rate suggests phone alone isn't enough. The Italian call center exists but Italian customers may prefer async channels. Survey B Q2 will quantify channel preference. Add WhatsApp/chat as fallback when phone goes unanswered.</td>
     </tr>
   </tbody>
 </table>
@@ -1037,14 +1065,14 @@ Note: the GA "Full Funnel" view includes both cash and financing users. The 31.1
   </thead>
   <tbody>
     <tr>
-      <td><strong>Hotjar Survey B</strong> on <code>orderWizard:purchase-method</code>, IT locale, exit-intent (Section 7)</td>
-      <td>PM (this week)</td>
-      <td>This is the page where the IT-specific drop happens: <strong>27.63% IT vs 58.57% CZ</strong> step-to-step. IT users spend 35s here (vs 51s CZ) before bouncing. Need to know <em>why</em>.</td>
+      <td><strong>A/B test: promote local IT cars on SRP</strong> (filter or promo banner "Auto in Italia") &mdash; <span class="tag tag-red">Track 1 P1</span></td>
+      <td>PM + Tech + Marketing</td>
+      <td>Inventory: <strong>~82k IT cars of 1,050k total (~8%)</strong> &mdash; enough to support a meaningful filter. Directly addresses H2 (19% IT distrust online cross-border purchase) and H8 (cash-path trust gap, 22.73% caraudit-form &rarr; car-check). Caveat: customers buying local cars may use Carvago only for the CarAudit (lower margin), but brand awareness &amp; trust gains likely outweigh this for IT market.</td>
     </tr>
     <tr>
-      <td><strong>A/B test: collapsed payslip</strong> on car-selection / purchase-method (GrowthBook)</td>
-      <td>PM + Tech</td>
-      <td>The car detail page already uses collapsed "Totale servizi" pattern; cart sidebar still shows all line items. Low-risk test of H6 (information overload).</td>
+      <td><strong>Hotjar Survey B</strong> on <code>orderWizard:purchase-method</code>, IT locale &mdash; <span class="tag tag-green">Track 2 priority</span></td>
+      <td>PM (this week)</td>
+      <td>This is the page where the IT-specific drop happens: <strong>27.63% IT vs 58.57% CZ</strong> step-to-step. IT users spend 35s here (vs 51s CZ) before bouncing. Trigger: <strong>10s timer OR exit-intent (whichever first)</strong>. Need to know <em>why</em> users hesitate and their preferred contact channel.</td>
     </tr>
     <tr>
       <td><strong>Review August 2025 transaction change impact</strong> on conversion</td>
@@ -1057,14 +1085,9 @@ Note: the GA "Full Funnel" view includes both cash and financing users. The 31.1
       <td>IT opportunity volume keeps <strong>growing</strong> (333 in Oct 2025 &rarr; 872 in Mar 2026 = +160%) while conversion drops. Combined with the Sep 2025 radio-button CTA change which increased opp volume across markets, this points to <strong>lower-quality traffic / over-broad targeting</strong>. Worth tightening intent signals (audience, keywords, messaging).</td>
     </tr>
     <tr>
-      <td><strong>A/B test: promote local IT cars on SRP</strong> (filter or promo banner "Auto in Italia")</td>
-      <td>PM + Tech + Marketing</td>
-      <td>Inventory: <strong>~82k IT cars of 1,050k total (~8%)</strong> &mdash; enough to support a meaningful filter. Directly addresses H2 (19% IT distrust online cross-border purchase) and H8 (cash-path trust gap, 22.73% caraudit-form &rarr; car-check). Caveat: customers buying local cars may use Carvago only for the CarAudit (lower margin), but brand awareness &amp; trust gains likely outweigh this for IT market.</td>
-    </tr>
-    <tr>
       <td><strong>Discuss findings with Italy country manager</strong></td>
       <td>PM (this week)</td>
-      <td>Doc has IT/EN toggle for easy review. Get qualitative input on F&amp;I process, customer expectations, and competitor activity in IT.</td>
+      <td>Doc has EN / IT / CS language toggle for easy review. Get qualitative input on F&amp;I process, customer expectations, and competitor activity in IT.</td>
     </tr>
     <tr>
       <td><strong>Add IT-specific section to post-purchase NPS</strong></td>
@@ -1087,6 +1110,11 @@ Note: the GA "Full Funnel" view includes both cash and financing users. The 31.1
       <td>Prior Hotjar survey: <strong>57% IT</strong> believe Carvago is "safest way to buy" vs <strong>65% avg</strong> (lowest of all markets). <strong>19% IT cite "no trust in online car purchase"</strong> as their main barrier (highest of all markets).</td>
     </tr>
     <tr>
+      <td><strong>A/B test: collapsed payslip</strong> on cart sidebar &mdash; <span class="tag tag-orange">Track 1 P2</span></td>
+      <td>PM + Tech</td>
+      <td>The car detail page already uses the collapsed "Totale servizi" pattern; cart sidebar still shows all line items. UX consistency rather than data-driven &mdash; CZ has the same expanded payslip and converts fine, so direct impact is uncertain. Low risk to test.</td>
+    </tr>
+    <tr>
       <td><strong>Hotjar Survey A</strong> on car detail page, IT locale (after Survey B concludes)</td>
       <td>PM</td>
       <td>Catch users <em>before</em> wizard entry. Avg engagement on car-selection is only 7s (IT) / 9s (CZ) &mdash; users don't have time for an in-wizard survey.</td>
@@ -1106,16 +1134,6 @@ Note: the GA "Full Funnel" view includes both cash and financing users. The 31.1
       <td>PM + Tech</td>
       <td>Aug 2025 change made "single active opportunity" the rule. If a customer is stuck (e.g. financing got rejected, or they want a different car), they currently have to wait for the 30-day auto-close or call sales. Self-service close would unblock them &mdash; especially valuable given <strong>78% of IT opps die in "New" stage</strong>. Reduces sunk-cost loops cited in Section 1 hypothesis.</td>
     </tr>
-    <tr>
-      <td><strong>A/B test: softer CTA copy</strong> ("Conferma e Procedi" &rarr; less committal wording)</td>
-      <td>PM + Copy + Tech</td>
-      <td>De-prioritized: CZ uses the same CTA and converts well at this step (62.84% &rarr; 64.07% vs IT now matched at 62.03%). Unlikely to be root cause.</td>
-    </tr>
-    <tr>
-      <td><strong>A/B test: simplified wizard header</strong> (remove or reduce 5-step progress bar)</td>
-      <td>PM + Tech</td>
-      <td>Same caveat as CTA test. The 5-step bar exists in both markets and CZ converts fine.</td>
-    </tr>
   </tbody>
 </table>
 
@@ -1127,9 +1145,19 @@ Note: the GA "Full Funnel" view includes both cash and financing users. The 31.1
   </thead>
   <tbody>
     <tr>
+      <td><strong>A/B test: softer CTA copy</strong> ("Conferma e Procedi" &rarr; less committal wording) &mdash; <span class="tag tag-blue">Track 1 P3</span></td>
+      <td>PM + Copy + Tech</td>
+      <td>De-prioritized: CZ uses the same CTA and converts well at the same step (CZ 64.07% vs IT 62.03% step-to-step &mdash; matched). Unlikely to be root cause.</td>
+    </tr>
+    <tr>
+      <td><strong>A/B test: simplified wizard header</strong> (remove or reduce 5-step progress bar) &mdash; <span class="tag tag-blue">Track 1 P3</span></td>
+      <td>PM + Tech</td>
+      <td>Same caveat as CTA test. The 5-step bar exists in both markets and CZ converts fine.</td>
+    </tr>
+    <tr>
       <td><strong>Full cart / wizard rework</strong></td>
       <td>Product + UX</td>
-      <td>Trigger only if Section 7 surveys + A/B tests don't lift the IT 27.63% &rarr; caraudit-form rate above 50% (CZ baseline 58.57%).</td>
+      <td>Trigger only if Section 7 surveys + A/B tests don't lift the IT 27.63% purchase-method &rarr; caraudit-form rate above 50% (CZ baseline 58.57%).</td>
     </tr>
     <tr>
       <td><strong>Cash/financing split tracking</strong> in Salesforce (in progress)</td>
@@ -1246,6 +1274,8 @@ Note: the GA "Full Funnel" view includes both cash and financing users. The 31.1
   <p>Created 8 April 2026 &mdash; Last updated 5 May 2026 &mdash; Marie Michalova</p>
   <p>Hotjar Survey B: <em>to be set up</em> &nbsp;|&nbsp; F&amp;I meeting: <em>to be scheduled</em> &nbsp;|&nbsp; <a href="https://github.com/littlemeat/work-pages/blob/main/italy-investigation/index.html" target="_blank">View source on GitHub</a></p>
 </div>
+
+<button class="back-to-top" onclick="window.scrollTo({top:0, behavior:'smooth'})" title="Back to top" aria-label="Back to top">↑</button>
 
 <script>
 // Multi-language dictionary: T[lang][englishKey] = translation
@@ -1527,6 +1557,13 @@ const T = {
     "Collapsed payslip": "Riepilogo pagamento compresso",
     "Softer CTA": "CTA più morbida",
     "Simplified wizard header": "Header del wizard semplificato",
+
+    // Track ordering and priority badges
+    "Track 1 P1": "Track 1 P1",
+    "Track 1 P2": "Track 1 P2",
+    "Track 1 P3": "Track 1 P3",
+    "Track 2 priority": "Priorità Track 2",
+    "Why local cars is now P1, collapsed payslip P2:": "Perché auto locali ora P1, riepilogo compresso P2:",
   },
 
   cs: {
@@ -1806,6 +1843,13 @@ const T = {
     "Collapsed payslip": "Sbalený přehled plateb",
     "Softer CTA": "Měkčí CTA",
     "Simplified wizard header": "Zjednodušená hlavička wizardu",
+
+    // Track ordering and priority badges
+    "Track 1 P1": "Track 1 P1",
+    "Track 1 P2": "Track 1 P2",
+    "Track 1 P3": "Track 1 P3",
+    "Track 2 priority": "Track 2 priorita",
+    "Why local cars is now P1, collapsed payslip P2:": "Proč jsou lokální auta teď P1 a sbalený přehled P2:",
   },
 };
 
