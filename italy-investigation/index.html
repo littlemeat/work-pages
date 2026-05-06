@@ -579,23 +579,32 @@ car-selection<br>
   </ul>
 </div>
 
-<h4>The IT financing form is too short &mdash; structural problem</h4>
+<h4>The Italian financing process is intentionally manual &mdash; not a form bug</h4>
 
 <div class="img-container">
-  <img src="img/IT-financing-form.png" alt="IT financing form - very short, only name/surname/phone/email" style="max-width:800px;">
+  <img src="img/IT-financing-form.png" alt="IT financing form - intentionally short lead-capture form" style="max-width:800px;">
 </div>
-<p class="img-caption">The IT financing form: only 4 fields (Name, Surname, Phone, Email) + consent checkbox. Most fields pre-filled.</p>
+<p class="img-caption">The IT financing form: only 4 fields (Name, Surname, Phone, Email) + consent. Designed as a lead-capture form, not a full application.</p>
+
+<div class="callout callout-blue">
+  <strong>Process design (per Italy country manager)</strong>
+  <ol style="margin:8px 0 0 20px;">
+    <li>Customer fills the short form (lead capture &mdash; just contact info)</li>
+    <li>Customer support calls to gather additional information</li>
+    <li>Customer provides further info on the call AND sometimes sends documents (ID, payslip, etc.)</li>
+    <li>Only with complete data does the application get submitted to Agos</li>
+  </ol>
+  This is by design &mdash; Italian customers prefer a guided, personal process over a long upfront form. The short form is appropriate for the entry point.
+</div>
 
 <div class="callout callout-red">
-  <strong>The IT financing form captures almost no qualifying information</strong>
-  The form has <strong>only 4 fields</strong> (name, surname, phone, email) and a consent checkbox. Compare this to a typical financing application that asks for: employment status, monthly income, dependents, address history, ID type, etc.
-  <br><br>
-  This explains <em>two</em> of our findings simultaneously:
+  <strong>But this means the entire pipeline depends on a successful callback</strong>
+  Two consequences fall out of this process design:
   <ul style="margin:8px 0 0 20px;">
-    <li><strong>High form completion rate</strong> (60.47% IT financing-form completion in GA funnel) &mdash; with only 4 fields, of course it's easy to "complete"</li>
-    <li><strong>Catastrophic approval rate</strong> (3.24%) &mdash; the bank receives essentially a contact card, not a financing application. Approval depends 100% on a successful follow-up call.</li>
+    <li><strong>High form completion (60.47% IT)</strong> &mdash; expected, the form is just lead capture</li>
+    <li><strong>99.7% never reach Agos</strong> &mdash; not because integration is broken, but because <strong>99.7% never finish the post-form data collection</strong>. They drop somewhere between step 2 and step 4 above.</li>
   </ul>
-  <strong>If the customer doesn't pick up the phone, financing dies.</strong> And we know 32% don't pick up.
+  <strong>The 32% no-answer-from-customer is not a process failure &mdash; it IS the bottleneck baked into the process.</strong> If customer support can't reach the customer (or the customer loses interest), there's no way to ever submit to a bank. Approval depends 100% on what happens between form submission and bank submission.
 </div>
 
 <h4>Time-to-first-touch: IT is actually fast (NOT the problem)</h4>
@@ -624,18 +633,19 @@ car-selection<br>
 
 <div class="callout callout-orange">
   <strong>How this connects to the conversion problem</strong>
-  This finding completes the picture:
+  Walking through the Italian process as designed:
   <ol style="margin:8px 0 0 20px;">
-    <li>Italian customer chooses financing on the wizard</li>
-    <li>Fills in the very short form (4 fields) &mdash; <strong>this is too little for the bank to make a decision</strong></li>
-    <li>Goes through financing-options &rarr; financing-form &rarr; financing-status (the GA funnel even shows IT does this <em>better</em> than CZ at the step level &mdash; because the form is so short)</li>
-    <li>F&amp;I responds within 12h on median &mdash; but customer doesn't pick up (32%) or loses interest (22%)</li>
-    <li>Without a successful call, F&amp;I has nothing to send to the bank</li>
-    <li>Financing is lost in 87% of cases &mdash; usually before any bank ever sees a complete application</li>
-    <li>Customer would have to fall back to cash payment for CarAudit &mdash; but the prior survey shows 19% of IT users distrust online car purchases, so they drop instead</li>
+    <li>Customer chooses financing on the wizard, fills the short lead-capture form (4 fields)</li>
+    <li>GA funnel shows <strong>60.47% complete the form</strong> &mdash; high because form is short</li>
+    <li>Customer support attempts to call within 12h median (faster than CZ)</li>
+    <li>BUT: <strong>32% no-answer-from-customer</strong>, <strong>22% customer-lost-interest</strong> &mdash; total 54% of losses happen at this step</li>
+    <li>For those who do answer: customer support gathers info verbally, asks for documents (ID, payslip, etc.)</li>
+    <li>Some customers don't deliver the documents (1% of losses, but probably understated)</li>
+    <li>Only when all data is collected does the application reach Agos &mdash; <strong>0.3% of applications make it this far</strong></li>
+    <li>Customers whose financing dies would have to fall back to cash payment for CarAudit &mdash; but 19% of IT users distrust online purchases, so they drop instead</li>
   </ol>
   <br>
-  This is <strong>likely the single biggest contributor</strong> to the IT conversion drop. The August 2025 transaction change (Section 1) compounds this by making "single active opportunity" the rule &mdash; rejected customers can't keep multiple financing applications going in parallel.
+  This is <strong>likely the single biggest contributor</strong> to the IT conversion drop. The bottleneck is not in the form, integration, or banking — it's in steps 3-6 above: the manual data-collection phase that depends entirely on customer engagement after the initial lead capture. The August 2025 transaction change (Section 1) compounds this by making "single active opportunity" the rule &mdash; rejected customers can't keep multiple financing applications going in parallel.
 </div>
 
 <h3>Engagement time per page: IT vs CZ (1&ndash;30 April 2026)</h3>
@@ -1088,14 +1098,19 @@ Note: the GA "Full Funnel" view includes both cash and financing users. The 31.1
       <td>CZ runs <strong>4 active banks</strong> (Moneta 505, Cofidis 239, Leasing ČS 80, Essox 1). IT has <strong>only Agos</strong> with 2 records. More partners = more chance of fit.</td>
     </tr>
     <tr style="background:var(--red-light);">
-      <td><strong>Extend the IT financing form</strong> &mdash; capture employment, income, dependents, etc. upfront</td>
-      <td>Product + Tech + F&amp;I</td>
-      <td>The current IT form has <strong>only 4 fields</strong> (name, surname, phone, email). The bank can't pre-evaluate, so approval depends 100% on a successful follow-up call. Combined with 32% no-answer, this is a structural killer. Extending the form would: (a) let the bank evaluate without needing the call, (b) reduce dependence on F&amp;I outreach success, (c) help self-disqualify low-fit customers before they tie up F&amp;I.</td>
+      <td><strong>Improve the post-form data-collection phase</strong> &mdash; reduce dependency on phone callback success</td>
+      <td>Product + Tech + F&amp;I + Italy CM</td>
+      <td>Italy uses an intentionally manual process: short form &rarr; CS calls &rarr; gathers info + documents &rarr; submits to Agos. The 32% no-answer + 22% lost-interest loss happens in the data-collection phase. <strong>Concrete options:</strong> (a) Send customer a self-serve link after form submission to fill in missing info async (income, employer, etc.), (b) Add WhatsApp/email channel for document upload, (c) Allow customer to schedule the call themselves to a time that suits them. Goal: keep the lead-capture form short (matches IT preference), but make the data-collection phase resilient to the customer not answering an unscheduled call.</td>
     </tr>
     <tr>
-      <td><strong>Self-service eligibility pre-check</strong> on platform before manual outreach</td>
+      <td><strong>Allow customers to upload documents async</strong> (ID, payslip, etc.) without waiting for a call</td>
       <td>Product + Tech</td>
-      <td>16% of IT losses are "low-creditworthiness". If customers see eligibility upfront, they self-select out and don't waste F&amp;I time on calls they won't answer (32% no-answer rate). <em>Complementary to extending the form.</em></td>
+      <td>Some lost cases are due to customer not delivering documents after the call. Async upload (link sent via SMS/email after form) lets the customer act on their own time, especially relevant for the 32% who don't pick up the phone but might respond to an asynchronous prompt.</td>
+    </tr>
+    <tr>
+      <td><strong>Self-service eligibility pre-check</strong> on platform (optional, before manual outreach)</td>
+      <td>Product + Tech</td>
+      <td>16% of IT losses are "low-creditworthiness". A short, optional eligibility quiz between form submission and the F&amp;I call would let obviously-ineligible customers self-disqualify (saving F&amp;I time) while preserving the short-form lead-capture model.</td>
     </tr>
     <tr>
       <td><strong>Add async F&amp;I outreach channels for IT</strong> (WhatsApp / chat / async forms)</td>
