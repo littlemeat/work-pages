@@ -114,6 +114,42 @@
   }
   .lang-toggle button:hover:not(.active) { background: var(--gray-light); }
 
+  /* Collapsible sections */
+  h2[id^="s"] {
+    cursor: pointer;
+    user-select: none;
+  }
+  h2[id^="s"]::before {
+    content: '▾';
+    display: inline-block;
+    width: 18px;
+    margin-right: 4px;
+    font-size: 13px;
+    color: var(--gray);
+    transition: transform 0.15s;
+  }
+  h2[id^="s"].collapsed::before {
+    transform: rotate(-90deg);
+  }
+  h2[id^="s"]:hover::before {
+    color: var(--blue);
+  }
+  .collapse-controls {
+    margin: -16px 0 24px;
+    font-size: 12px;
+    color: var(--gray);
+  }
+  .collapse-controls button {
+    background: none;
+    border: none;
+    color: var(--blue);
+    cursor: pointer;
+    padding: 4px 8px;
+    font-size: 12px;
+    text-decoration: underline;
+  }
+  .collapse-controls button:hover { color: #15314e; }
+
   .back-to-top {
     position: fixed;
     bottom: 24px;
@@ -177,6 +213,10 @@
     <li><a href="#s9" style="color:var(--blue); text-decoration:none;" data-i18n="toc_9">Broader Context: Continuous Survey Tool</a></li>
     <li><a href="#s10" style="color:var(--blue); text-decoration:none;" data-i18n="toc_10">Methodology &amp; Data Sources</a></li>
   </ol>
+  <div class="collapse-controls">
+    <button onclick="toggleAllSections(true)">Collapse all</button>
+    <button onclick="toggleAllSections(false)">Expand all</button>
+  </div>
 </nav>
 
 <div class="callout callout-red" data-i18n-html="problem_statement">
@@ -1611,6 +1651,10 @@ const T = {
     "Softer CTA": "CTA più morbida",
     "Simplified wizard header": "Header del wizard semplificato",
 
+    // Collapse controls
+    "Collapse all": "Comprimi tutto",
+    "Expand all": "Espandi tutto",
+
     // Track ordering and priority badges
     "Track 1 P1": "Track 1 P1",
     "Track 1 P2": "Track 1 P2",
@@ -1897,6 +1941,10 @@ const T = {
     "Softer CTA": "Měkčí CTA",
     "Simplified wizard header": "Zjednodušená hlavička wizardu",
 
+    // Collapse controls
+    "Collapse all": "Sbalit vše",
+    "Expand all": "Rozbalit vše",
+
     // Track ordering and priority badges
     "Track 1 P1": "Track 1 P1",
     "Track 1 P2": "Track 1 P2",
@@ -1905,6 +1953,54 @@ const T = {
     "Why local cars is now P1, collapsed payslip P2:": "Proč jsou lokální auta teď P1 a sbalený přehled P2:",
   },
 };
+
+// ----- Collapsible sections -----
+function setSectionCollapsed(h2, collapsed) {
+  h2.classList.toggle('collapsed', collapsed);
+  let node = h2.nextElementSibling;
+  while (node && node.tagName !== 'H2') {
+    node.style.display = collapsed ? 'none' : '';
+    node = node.nextElementSibling;
+  }
+}
+
+function toggleAllSections(collapsed) {
+  document.querySelectorAll('h2[id^="s"]').forEach(h2 => setSectionCollapsed(h2, collapsed));
+}
+
+function setupCollapsibleSections() {
+  document.querySelectorAll('h2[id^="s"]').forEach(h2 => {
+    h2.addEventListener('click', (e) => {
+      // Don't toggle when user clicks an inline link inside the heading
+      if (e.target.tagName === 'A') return;
+      const willCollapse = !h2.classList.contains('collapsed');
+      setSectionCollapsed(h2, willCollapse);
+    });
+  });
+
+  // When a TOC link is clicked, auto-expand the target section
+  document.querySelectorAll('nav a[href^="#s"]').forEach(link => {
+    link.addEventListener('click', () => {
+      const id = link.getAttribute('href').slice(1);
+      const target = document.getElementById(id);
+      if (target && target.tagName === 'H2') {
+        setSectionCollapsed(target, false);
+      }
+    });
+  });
+
+  // If page loads with a hash, expand that section
+  if (location.hash) {
+    const target = document.querySelector(location.hash);
+    if (target && target.tagName === 'H2') {
+      setSectionCollapsed(target, false);
+    }
+  }
+}
+
+document.addEventListener('DOMContentLoaded', setupCollapsibleSections);
+
+// ----- Language toggle -----
 
 // Capture the pristine English state ONCE at first toggle.
 // All subsequent toggles restore from this baseline before applying a new
