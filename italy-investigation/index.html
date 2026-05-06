@@ -1833,52 +1833,98 @@ const T = {
   },
 };
 
-// Store original English content
-const originals = new Map();
+// Capture the pristine English state ONCE at first toggle.
+// All subsequent toggles restore from this baseline before applying a new
+// language. Avoids the bug where text-node walking dirties innerHTML before
+// data-i18n-html elements snapshot it (which froze IT content into "EN").
+let baseline = null;
 let currentLang = 'en';
 
+function captureBaseline() {
+  baseline = {
+    htmlEls: new Map(),  // data-i18n-html element -> original innerHTML
+    textNodes: new Map() // text node -> original textContent
+  };
+  // Snapshot data-i18n-html elements (and skip their text nodes below)
+  document.querySelectorAll('[data-i18n-html]').forEach(el => {
+    baseline.htmlEls.set(el, el.innerHTML);
+  });
+  // Snapshot all text nodes that are NOT inside a data-i18n-html element
+  const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
+    acceptNode: (node) => {
+      let p = node.parentElement;
+      while (p) {
+        if (p.hasAttribute && p.hasAttribute('data-i18n-html')) return NodeFilter.FILTER_REJECT;
+        p = p.parentElement;
+      }
+      return NodeFilter.FILTER_ACCEPT;
+    }
+  }, false);
+  while (walker.nextNode()) {
+    baseline.textNodes.set(walker.currentNode, walker.currentNode.textContent);
+  }
+}
+
+function restoreBaseline() {
+  // Restore innerHTML for data-i18n-html elements first (this also restores
+  // their child text nodes implicitly).
+  baseline.htmlEls.forEach((html, el) => { el.innerHTML = html; });
+  // Restore stand-alone text nodes
+  baseline.textNodes.forEach((text, node) => {
+    if (node.isConnected) node.textContent = text;
+  });
+}
+
+const I18N_HTML = {
+  problem_statement: {
+    it: '<strong>Dichiarazione del Problema</strong>La conversione da Nuova Opportunity a CarAudit Pagato (unico per cliente) in Italia è scesa da ~11–13% (metà 2025) a ~2–3% (Q1 2026). È necessaria un\'indagine urgente.',
+    cs: '<strong>Definice problému</strong>Konverze z nové Opportunity na zaplacený CarAudit (unikátní za zákazníka) v Itálii klesla z ~11–13 % (polovina 2025) na ~2–3 % (Q1 2026). Vyžaduje urgentní investigaci.'
+  }
+};
+
 function setLang(lang) {
+  if (!baseline) captureBaseline();
   currentLang = lang;
+
   document.querySelectorAll('.lang-toggle button').forEach(b => b.classList.remove('active'));
   document.querySelector(`.lang-toggle button[onclick="setLang('${lang}')"]`).classList.add('active');
 
-  // Always restore originals first
-  originals.forEach((original, node) => {
-    if (node.nodeType === Node.TEXT_NODE) {
-      node.textContent = original;
-    } else {
-      node.innerHTML = original;
-    }
-  });
+  // Always start from the pristine English baseline
+  restoreBaseline();
 
   if (lang === 'en') return;
 
   const dict = T[lang];
   if (!dict) return;
 
-  // Translate all text nodes that match dictionary keys
-  const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
+  // Apply data-i18n-html overrides first (replaces the whole innerHTML chunk)
+  document.querySelectorAll('[data-i18n-html]').forEach(el => {
+    const key = el.getAttribute('data-i18n-html');
+    if (I18N_HTML[key] && I18N_HTML[key][lang]) {
+      el.innerHTML = I18N_HTML[key][lang];
+    }
+  });
+
+  // Then translate text nodes that match dictionary keys.
+  // Skip text nodes inside data-i18n-html elements (already handled above).
+  const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
+    acceptNode: (node) => {
+      let p = node.parentElement;
+      while (p) {
+        if (p.hasAttribute && p.hasAttribute('data-i18n-html')) return NodeFilter.FILTER_REJECT;
+        p = p.parentElement;
+      }
+      return NodeFilter.FILTER_ACCEPT;
+    }
+  }, false);
+
   while (walker.nextNode()) {
     const node = walker.currentNode;
     const trimmed = node.textContent.trim();
     if (trimmed && dict[trimmed]) {
-      if (!originals.has(node)) originals.set(node, node.textContent);
       node.textContent = node.textContent.replace(trimmed, dict[trimmed]);
     }
   }
-
-  // Handle data-i18n-html elements
-  document.querySelectorAll('[data-i18n-html]').forEach(el => {
-    const key = el.getAttribute('data-i18n-html');
-    if (!originals.has(el)) originals.set(el, el.innerHTML);
-    if (key === 'problem_statement') {
-      if (lang === 'it') {
-        el.innerHTML = '<strong>Dichiarazione del Problema</strong>La conversione da Nuova Opportunity a CarAudit Pagato (unico per cliente) in Italia è scesa da ~11–13% (metà 2025) a ~2–3% (Q1 2026). È necessaria un\'indagine urgente.';
-      } else if (lang === 'cs') {
-        el.innerHTML = '<strong>Definice problému</strong>Konverze z nové Opportunity na zaplacený CarAudit (unikátní za zákazníka) v Itálii klesla z ~11–13 % (polovina 2025) na ~2–3 % (Q1 2026). Vyžaduje urgentní investigaci.';
-      }
-    }
-  });
 }
 </script>
 
