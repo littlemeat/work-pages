@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 36'><rect x='1' y='4' width='34' height='9' rx='2' fill='%23fff'/><rect x='1' y='13' width='34' height='9' fill='%230b4ea2'/><rect x='1' y='22' width='34' height='10' rx='2' fill='%23ee1c25'/></svg>">
+<title>Slovakia Conversion Investigation — Opportunity → Paid CarAudit</title>
+<style>
+  :root {
+    --blue: #1a3a5c;
+    --blue-light: #e8f0fe;
+    --red: #d93025;
+    --red-light: #fce8e6;
+    --green: #188038;
+    --green-light: #e6f4ea;
+    --orange: #e37400;
+    --orange-light: #fef7e0;
+    --gray: #5f6368;
+    --gray-light: #f8f9fa;
+    --border: #dadce0;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    color: #202124; line-height: 1.6;
+    max-width: 960px; margin: 0 auto; padding: 40px 24px; background: #fff;
+  }
+  h1 { font-size: 28px; color: var(--blue); margin-bottom: 8px; }
+  h2 { font-size: 20px; color: var(--blue); margin: 48px 0 16px; padding-bottom: 8px; border-bottom: 2px solid var(--blue); }
+  h3 { font-size: 16px; color: #202124; margin: 28px 0 12px; }
+  h4 { font-size: 14px; color: var(--blue); margin: 20px 0 8px; }
+  p, li { font-size: 14px; color: #3c4043; }
+  p { margin-bottom: 12px; }
+  ul, ol { margin: 0 0 16px 24px; }
+  li { margin-bottom: 6px; }
+  .meta { color: var(--gray); font-size: 13px; margin-bottom: 32px; }
+  .meta span { margin-right: 16px; }
+
+  .callout { padding: 16px 20px; border-radius: 8px; margin: 20px 0; font-size: 14px; }
+  .callout-red { background: var(--red-light); border-left: 4px solid var(--red); }
+  .callout-green { background: var(--green-light); border-left: 4px solid var(--green); }
+  .callout-orange { background: var(--orange-light); border-left: 4px solid var(--orange); }
+  .callout-blue { background: var(--blue-light); border-left: 4px solid var(--blue); }
+  .callout strong { display: block; margin-bottom: 4px; }
+
+  table { width: 100%; border-collapse: collapse; margin: 16px 0 24px; font-size: 13px; }
+  th { background: var(--blue); color: #fff; padding: 10px 12px; text-align: left; font-weight: 600; }
+  td { padding: 8px 12px; border-bottom: 1px solid var(--border); }
+  tr:nth-child(even) { background: var(--gray-light); }
+  .num { text-align: right; font-variant-numeric: tabular-nums; }
+  .bad { color: var(--red); font-weight: 600; }
+  .good { color: var(--green); font-weight: 600; }
+  .neutral { color: var(--gray); }
+
+  .bar { height: 18px; border-radius: 3px; min-width: 2px; display: inline-block; vertical-align: middle; }
+
+  .tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; margin-right: 4px; }
+  .tag-red { background: var(--red-light); color: var(--red); }
+  .tag-green { background: var(--green-light); color: var(--green); }
+  .tag-orange { background: var(--orange-light); color: var(--orange); }
+  .tag-blue { background: var(--blue-light); color: var(--blue); }
+
+  .img-container { margin: 20px 0; text-align: center; }
+  .img-container img {
+    max-width: 100%;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  }
+  .img-row {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 20px 0;
+  }
+  .img-row img {
+    width: 100%;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  }
+  .img-caption { font-size: 12px; color: var(--gray); text-align: center; margin-top: 6px; }
+
+  .survey-q {
+    background: var(--gray-light); border: 1px solid var(--border);
+    border-radius: 8px; padding: 16px; margin: 12px 0;
+  }
+  .survey-q .q-label { font-size: 11px; text-transform: uppercase; color: var(--gray); letter-spacing: 0.5px; margin-bottom: 6px; }
+  .survey-q .q-text { font-size: 15px; font-weight: 600; color: #202124; margin-bottom: 10px; }
+  .survey-q .q-text em { font-weight: 400; color: var(--gray); }
+  .survey-q ol { margin: 0 0 0 20px; }
+  .survey-q li { font-size: 13px; margin-bottom: 4px; }
+  .survey-q li em { color: var(--gray); }
+
+  .timeline { border-left: 3px solid var(--blue); margin: 16px 0 16px 8px; padding-left: 20px; }
+  .timeline-item { margin-bottom: 16px; position: relative; }
+  .timeline-item::before { content: ''; position: absolute; left: -26px; top: 4px; width: 10px; height: 10px; border-radius: 50%; background: var(--blue); }
+  .timeline-item .tl-label { font-size: 12px; color: var(--gray); font-weight: 600; }
+  .timeline-item .tl-text { font-size: 14px; }
+
+  hr { border: none; border-top: 1px solid var(--border); margin: 32px 0; }
+  .footer { font-size: 12px; color: var(--gray); margin-top: 40px; padding-top: 16px; border-top: 1px solid var(--border); }
+
+  .lang-toggle {
+    float: right;
+    display: flex; align-items: center; gap: 8px;
+    font-size: 13px; color: var(--gray);
+    margin-bottom: 8px;
+  }
+  .lang-toggle button {
+    padding: 5px 14px; border-radius: 20px; border: 1px solid var(--border);
+    background: #fff; color: var(--gray); cursor: pointer; font-size: 13px; font-weight: 500;
+    transition: all 0.15s;
+  }
+  .lang-toggle button.active {
+    background: var(--blue); color: #fff; border-color: var(--blue);
+  }
+  .lang-toggle button:hover:not(.active) { background: var(--gray-light); }
+
+  .back-to-top {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--blue);
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    font-size: 18px;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 200;
+    transition: all 0.15s;
+  }
+  .back-to-top:hover {
+    background: #15314e;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+  }
+</style>
+</head>
+<body>
+
+<div class="lang-toggle">
+  <span>Language:</span>
+  <button class="active" onclick="setLang('en')">English</button>
+  <button onclick="setLang('cs')">Čeština</button>
+</div>
+
+<h1 data-i18n="title">Slovakia Conversion Investigation</h1>
+<p style="font-size:18px; color:var(--gray); margin-bottom: 4px;" data-i18n="subtitle">Opportunity &rarr; Paid CarAudit Drop-off Analysis</p>
+<div class="meta">
+  <span data-i18n="author">Author: Marie Michalova</span>
+  <span data-i18n="date">Created: 6 May 2026</span>
+  <span data-i18n="updated">Last updated: 6 May 2026</span>
+  <span>Status: <span class="tag tag-orange" data-i18n="status">Draft</span></span>
+</div>
+
+<nav style="background:var(--gray-light); border-radius:8px; padding:20px 24px; margin-bottom:32px;">
+  <strong style="font-size:14px; color:var(--blue);" data-i18n="toc_title">Table of Contents</strong>
+  <ol style="margin:10px 0 0 20px; font-size:13px; line-height:2;">
+    <li><a href="#s1" style="color:var(--blue); text-decoration:none;" data-i18n="toc_1">KPI Data: Conversion Trend</a></li>
+    <li><a href="#s2" style="color:var(--blue); text-decoration:none;" data-i18n="toc_2">GA Funnel: Where Users Drop Off</a></li>
+    <li><a href="#s3" style="color:var(--blue); text-decoration:none;" data-i18n="toc_3">Financing &amp; Lost-Reason Classification Gap</a></li>
+    <li><a href="#s4" style="color:var(--blue); text-decoration:none;" data-i18n="toc_4">Past Hotjar Survey: Where Does SK Sit?</a></li>
+    <li><a href="#s5" style="color:var(--blue); text-decoration:none;" data-i18n="toc_5">Hypotheses</a></li>
+    <li><a href="#s6" style="color:var(--blue); text-decoration:none;" data-i18n="toc_6">Recommendations</a></li>
+    <li><a href="#s7" style="color:var(--blue); text-decoration:none;" data-i18n="toc_7">Methodology &amp; Data Sources</a></li>
+  </ol>
+</nav>
+
+<div class="callout callout-red" data-i18n-html="problem_statement">
+  <strong>Problem Statement</strong>
+  Conversion from New Opportunity to Paid CarAudit (unique per customer) in Slovakia is structurally about half of CZ across the entire 14-month window (SK 14&ndash;34% vs CZ 24&ndash;42%).
+  Two key inflections: a sharp drop in <strong>July 2025</strong> following the auto-close-after-30-days rollout, and a continued bottoming-out around Dec 2025 (13.84%).
+  Unlike Italy, this is not a sudden cliff &mdash; it's a chronic structural gap with one acute trigger.
+</div>
+
+<div class="callout callout-blue">
+  <strong>TL;DR &mdash; Top findings</strong>
+  <ol style="margin:8px 0 0 20px;">
+    <li><strong>SK conversion is structurally lower than CZ all year</strong> &mdash; SK runs at 50&ndash;70% of CZ's Paid/New-Opp rate every single month. The May 2025 new-flow deploy did <em>not</em> hurt SK (it briefly spiked +7pp). The acute trigger is <strong>July 2025</strong>, not the new flow. <a href="#s1" style="color:var(--blue);">Section 1</a></li>
+    <li><strong>Two SK-specific funnel cliffs vs CZ (April 2026):</strong> caraudit-form &rarr; car-check is 52.5% in SK vs 83.0% in CZ (&minus;30pp), and purchase-method &rarr; financing-options is 43.2% in SK vs 72.8% in CZ (&minus;30pp). <a href="#s3" style="color:var(--blue);">Section 3</a></li>
+    <li><strong>Financing approval rate is 16.2% in SK vs 40.3% in CZ</strong> (Nov 2025 &ndash; Apr 2026). 18% of lost financings are categorized as "other-reasons" (vs 1% in CZ) &mdash; the call center can't classify SK-specific friction with the existing reason codes. <a href="#s3" style="color:var(--blue);">Section 3</a></li>
+    <li><strong>SK call-center / sales process is also breaking down upstream:</strong> 76% of lost opps in SK are "auto-closed after 30 days in stage New" + 24% have <em>no</em> reason classification. CZ at least classifies 12% as "Without Offer" / "Seller Denied". SK lost-reason data is essentially blank. <a href="#s3" style="color:var(--blue);">Section 3</a></li>
+  </ol>
+  <strong>Top 3 actions:</strong> <a href="#s6" style="color:var(--blue);">(1) Run Hotjar SK survey to identify the "other-reasons" content</a>, <a href="#s6" style="color:var(--blue);">(2) Investigate the financing-options &amp; car-check entry barriers</a>, <a href="#s6" style="color:var(--blue);">(3) Fix SK lost-reason classification process with sales/F&amp;I team</a>.
+</div>
+
+<!-- ==================== SECTION 1 ==================== -->
+<h2 id="s1" data-i18n="h_s1">1. KPI Data: Conversion Trend</h2>
+
+<p data-i18n-html="s1_source">Data source: <strong>[PROD] KPI sheet</strong>, countries = SK and CZ (benchmark).
+Conversion = Paid Unique Per Customer / New Opportunities.</p>
+
+<h3 data-i18n="s1_h3">Slovakia vs Czechia: Monthly Funnel (Mar 2025 &ndash; Apr 2026)</h3>
+
+<table>
+  <thead>
+    <tr><th>Month</th><th class="num">SK New Opps</th><th class="num">SK Paid /Customer</th><th class="num">SK Paid/New Opp %</th><th class="num">CZ Paid/New Opp %</th><th class="num">SK / CZ ratio</th><th>SK Trend</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Apr 2026</td><td class="num">500</td><td class="num">84</td><td class="num bad">16.80%</td><td class="num">23.83%</td><td class="num">71%</td>
+      <td><div class="bar" style="width:34px; background:var(--red);"></div></td></tr>
+    <tr><td>Mar 2026</td><td class="num">462</td><td class="num">75</td><td class="num bad">16.23%</td><td class="num">26.20%</td><td class="num">62%</td>
+      <td><div class="bar" style="width:32px; background:var(--red);"></div></td></tr>
+    <tr><td>Feb 2026</td><td class="num">414</td><td class="num">64</td><td class="num bad">15.46%</td><td class="num">27.08%</td><td class="num">57%</td>
+      <td><div class="bar" style="width:31px; background:var(--red);"></div></td></tr>
+    <tr><td>Jan 2026</td><td class="num">369</td><td class="num">71</td><td class="num bad">19.24%</td><td class="num">23.48%</td><td class="num">82%</td>
+      <td><div class="bar" style="width:38px; background:var(--orange);"></div></td></tr>
+    <tr><td>Dec 2025</td><td class="num">289</td><td class="num">40</td><td class="num bad">13.84%</td><td class="num">23.47%</td><td class="num">59%</td>
+      <td><div class="bar" style="width:28px; background:var(--red);"></div></td></tr>
+    <tr><td>Nov 2025</td><td class="num">383</td><td class="num">82</td><td class="num bad">21.41%</td><td class="num">24.70%</td><td class="num">87%</td>
+      <td><div class="bar" style="width:43px; background:var(--orange);"></div></td></tr>
+    <tr><td>Oct 2025</td><td class="num">548</td><td class="num">90</td><td class="num bad">16.42%</td><td class="num">30.26%</td><td class="num">54%</td>
+      <td><div class="bar" style="width:33px; background:var(--red);"></div></td></tr>
+    <tr><td>Sep 2025</td><td class="num">362</td><td class="num">87</td><td class="num">24.03%</td><td class="num">39.96%</td><td class="num">60%</td>
+      <td><div class="bar" style="width:48px; background:var(--orange);"></div></td></tr>
+    <tr><td>Aug 2025</td><td class="num">313</td><td class="num">61</td><td class="num bad">19.49%</td><td class="num">39.07%</td><td class="num">50%</td>
+      <td><div class="bar" style="width:39px; background:var(--orange);"></div></td></tr>
+    <tr><td><strong>Jul 2025</strong></td><td class="num">311</td><td class="num">65</td><td class="num bad"><strong>20.90%</strong></td><td class="num">40.44%</td><td class="num">52%</td>
+      <td><div class="bar" style="width:42px; background:var(--orange);"></div></td></tr>
+    <tr><td>Jun 2025</td><td class="num">296</td><td class="num">87</td><td class="num good">29.39%</td><td class="num">40.73%</td><td class="num">72%</td>
+      <td><div class="bar" style="width:59px; background:var(--green);"></div></td></tr>
+    <tr><td><strong>May 2025</strong></td><td class="num">316</td><td class="num">108</td><td class="num good"><strong>34.18%</strong></td><td class="num">40.05%</td><td class="num">85%</td>
+      <td><div class="bar" style="width:68px; background:var(--green);"></div></td></tr>
+    <tr><td>Apr 2025</td><td class="num">342</td><td class="num">93</td><td class="num good">27.19%</td><td class="num">42.12%</td><td class="num">65%</td>
+      <td><div class="bar" style="width:54px; background:var(--green);"></div></td></tr>
+    <tr><td>Mar 2025</td><td class="num">335</td><td class="num">90</td><td class="num good">26.87%</td><td class="num">40.03%</td><td class="num">67%</td>
+      <td><div class="bar" style="width:54px; background:var(--green);"></div></td></tr>
+  </tbody>
+</table>
+
+<div class="callout callout-red">
+  <strong>SK is structurally lower than CZ all year &mdash; with one acute inflection in July 2025</strong>
+  <ul style="margin:8px 0 0 20px;">
+    <li><strong>Chronic gap:</strong> SK Paid/New-Opp % runs at <strong>50&ndash;87% of CZ</strong> every single month over the 14-month window. SK never reaches the CZ benchmark, even before any 2025 deploys.</li>
+    <li><strong>Acute inflection: Jun &rarr; Jul 2025, &minus;8.5 pp</strong> (29.39% &rarr; 20.90%). This coincides exactly with the auto-close-after-30-days-in-stage-New rollout in <strong>July 2025</strong>.</li>
+    <li><strong>Bottom: Dec 2025 (13.84%)</strong>, then partial recovery to ~16&ndash;19% in 2026. SK has not returned to the spring 2025 baseline.</li>
+    <li>Importantly, the <strong>May 2025 new-flow deploy</strong> (SK only, ~3 months earlier than other markets) did <em>not</em> hurt SK &mdash; it briefly improved the rate to a 14-month peak of 34.18%. <strong>SK's story is not about the new wizard flow.</strong></li>
+  </ul>
+</div>
+
+<h3>SK-specific deploy timeline</h3>
+
+<div class="timeline">
+  <div class="timeline-item">
+    <div class="tl-label">May 6, 2025</div>
+    <div class="tl-text"><strong>New transaction flow rolled out to SK</strong> (multi-car cart, single active opportunity). SK got this <strong>~3 months earlier</strong> than CZ/IT. Impact: SK Paid/New-Opp % went up briefly (Apr 27.19% &rarr; May 34.18%) before settling. <strong>The new flow is not a candidate cause for SK's drop.</strong></div>
+  </div>
+  <div class="timeline-item">
+    <div class="tl-label">July 2025 (all markets)</div>
+    <div class="tl-text"><strong>Auto-close-after-30-days in stage New</strong> rollout. SK Paid/New-Opp drops Jun &rarr; Jul by &minus;8.5pp. <strong>This is the acute trigger for SK.</strong> Implication: SK had many opps sitting in "New" longer than 30d, so when auto-close switched on, those opps started counting as losses. This points to <strong>upstream slow follow-up</strong> &mdash; either call center cadence, lead-quality, or both.</div>
+  </div>
+  <div class="timeline-item">
+    <div class="tl-label">End of September 2025</div>
+    <div class="tl-text"><strong>Radio-button CTA change &mdash; never released to SK.</strong> So SK's September drop pattern can't be blamed on it. (CZ, by contrast, dropped sharply in Oct 2025 immediately after this deploy.)</div>
+  </div>
+  <div class="timeline-item">
+    <div class="tl-label">March 2026 (all markets)</div>
+    <div class="tl-text"><strong>Auto-close-after-30-days in stage Financing</strong> rollout. In CZ this added 116 lost financings (25% of CZ fin-lost) in the Nov 2025 &ndash; Apr 2026 window. <strong>SK has zero auto-closed-financing entries</strong> &mdash; either SK financings resolve faster, OR more likely the upstream opp is closed first, so financings inherit "opportunity-is-lost" (34% of SK fin-lost).</div>
+  </div>
+</div>
+
+<div class="callout callout-orange">
+  <strong>Caveat &mdash; the chronic vs acute distinction matters</strong>
+  Italy's investigation found a single dominant trigger (the August 2025 transaction flow). Slovakia's pattern is different: there is a chronic structural gap (SK 50&ndash;70% of CZ <em>before</em> any 2025 deploy) <strong>plus</strong> an acute July 2025 inflection. Recommendations need to address both layers &mdash; UX-level deploys did not create SK's gap; they only added a step down.
+</div>
+
+<!-- ==================== SECTION 2 ==================== -->
+<h2 id="s2" data-i18n="h_s2">2. GA Funnel: Where Users Drop Off</h2>
+
+<p data-i18n-html="s2_intro">Data source: <strong><a href="https://lookerstudio.google.com/u/0/reporting/171bb951-df2a-415e-a76c-fc3921031329/page/5oysF" target="_blank">Looker Studio &mdash; Transaction Funnel Carvago</a></strong>. Reporting period: <strong>1&ndash;30 April 2026</strong> (full month). Markets: SK (target) and CZ (benchmark). Device: all.</p>
+
+<h3 data-i18n="s2_h_path">Wizard path structure</h3>
+
+<p data-i18n="s2_path_intro">The order wizard splits at <code>purchase-method</code> into a cash path and a financing path. Both paths converge at <code>caraudit-form</code>:</p>
+
+<pre style="background:var(--gray-light); border:1px solid var(--border); border-radius:8px; padding:16px; font-size:12px; line-height:1.6; overflow:auto; font-family:ui-monospace, 'SF Mono', Menlo, monospace;">
+                              car-selection
+                                    │
+                              purchase-method
+                                    │
+                ┌─── cash path ─────┴─── financing path ───┐
+                │                                          │
+                │                                  financing-options
+                │                                          │
+                │                                   financing-form
+                │                                          │
+                │                                  financing-status
+                │                                          │
+                └────────────►  caraudit-form  ◄───────────┘
+                                    │
+                                car-check
+                                    │
+                                 delivery
+                                    │
+                                services / warranty
+                                    │
+                            order-confirmation
+</pre>
+
+<div class="callout callout-orange" data-i18n-html="s2_caveat_pct">
+  <strong>Reading the funnel</strong>
+  Percentages shown next to each step are the conversion rate <em>from the previous step</em>, <strong>not cumulative from the top</strong>. Numbers above 100% indicate path mixing &mdash; e.g. cash users skip <code>financing-status</code> and arrive at <code>caraudit-form</code> from a different upstream step, so step-to-step share at <code>caraudit-form</code> exceeds 100% relative to <code>financing-status</code>.
+</div>
+
+<h3 data-i18n="s2_h_screens">Side-by-side: SK vs CZ funnel (April 2026)</h3>
+
+<div class="img-container">
+  <img src="img/funnel-sk-apr2026.png" alt="SK transaction funnel April 2026">
+  <div class="img-caption" data-i18n="s2_cap_sk">SK funnel &mdash; Without Financing (left) and Financing (right). 1&ndash;30 April 2026.</div>
+</div>
+
+<div class="img-container">
+  <img src="img/funnel-cz-apr2026.png" alt="CZ transaction funnel April 2026">
+  <div class="img-caption" data-i18n="s2_cap_cz">CZ benchmark funnel &mdash; same date range and step structure.</div>
+</div>
+
+<h3 data-i18n="s2_h_cash">Without-Financing path: SK vs CZ</h3>
+
+<table>
+  <thead>
+    <tr><th data-i18n="s2_step">Step transition</th><th class="num">SK</th><th class="num">CZ</th><th class="num" data-i18n="s2_gap">Gap (pp)</th><th data-i18n="s2_note">Note</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>car-selection &rarr; purchase-method</td><td class="num">59.0%</td><td class="num">64.1%</td><td class="num">&minus;5</td><td data-i18n="s2_minor">Minor SK gap</td></tr>
+    <tr><td>purchase-method &rarr; caraudit-form</td><td class="num">60.4%</td><td class="num">58.6%</td><td class="num good">+2</td><td data-i18n="s2_parity">SK on par</td></tr>
+    <tr style="background:var(--red-light);"><td><strong>caraudit-form &rarr; car-check</strong></td><td class="num bad"><strong>52.5%</strong></td><td class="num">83.0%</td><td class="num bad">&minus;30</td><td><strong data-i18n="s2_cliff1">Cliff #1 &mdash; SK loses 30pp here</strong></td></tr>
+    <tr><td>car-check &rarr; delivery</td><td class="num">33.3%</td><td class="num">25.3%</td><td class="num good">+8</td><td data-i18n="s2_minor2">SK actually better here</td></tr>
+  </tbody>
+</table>
+
+<h3 data-i18n="s2_h_fin">Financing path: SK vs CZ</h3>
+
+<table>
+  <thead>
+    <tr><th data-i18n="s2_step">Step transition</th><th class="num">SK</th><th class="num">CZ</th><th class="num" data-i18n="s2_gap">Gap (pp)</th><th data-i18n="s2_note">Note</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>car-selection &rarr; purchase-method</td><td class="num">59.0%</td><td class="num">64.1%</td><td class="num">&minus;5</td><td data-i18n="s2_minor">Minor SK gap</td></tr>
+    <tr style="background:var(--red-light);"><td><strong>purchase-method &rarr; financing-options</strong></td><td class="num bad"><strong>43.2%</strong></td><td class="num">72.8%</td><td class="num bad">&minus;30</td><td><strong data-i18n="s2_cliff2">Cliff #2 &mdash; financing entry barrier</strong></td></tr>
+    <tr><td>financing-options &rarr; financing-form</td><td class="num">139.9%</td><td class="num">60.6%</td><td class="num neutral">&mdash;</td><td data-i18n="s2_pathmix">Path mixing &mdash; not directly comparable</td></tr>
+    <tr><td>financing-form &rarr; financing-status</td><td class="num">25.5%</td><td class="num">29.7%</td><td class="num">&minus;4</td><td data-i18n="s2_smallgap">Small gap, both markets drop hard here</td></tr>
+  </tbody>
+</table>
+
+<div class="callout callout-red" data-i18n-html="s2_finding">
+  <strong>Two SK-specific cliffs vs CZ &mdash; both around &minus;30pp</strong>
+  <ol style="margin:8px 0 0 20px;">
+    <li><strong>caraudit-form &rarr; car-check (SK 52.5% vs CZ 83.0%, &minus;30pp).</strong> Customers who reach the CarAudit form abandon at the car-check step at 1.6&times; the CZ rate. This is the <em>same pattern</em> Italy showed &mdash; the CarAudit-related friction is not unique to one country.</li>
+    <li><strong>purchase-method &rarr; financing-options (SK 43.2% vs CZ 72.8%, &minus;30pp).</strong> SK customers who select financing as a payment method bail at 1.7&times; the CZ rate before they even see the financing options. This connects directly to the financing approval gap (Section 3) and suggests something on the financing-options screen, OR that SK customers select "financing" speculatively and disengage when reality hits.</li>
+  </ol>
+  Both cliffs are independently large enough to drive the headline conversion gap.
+</div>
+
+<!-- ==================== SECTION 3 ==================== -->
+<h2 id="s3" data-i18n="h_s3">3. Financing &amp; Lost-Reason Classification Gap</h2>
+
+<p data-i18n-html="s3_intro">Salesforce data, <strong>Nov 2025 &ndash; Apr 2026</strong> (last 6 months). Two angles in one section because they tell the same story: SK's downstream sales/financing process produces a lot of unclassified outcomes, which masks the actual barriers.</p>
+
+<h3 data-i18n="s3_h_approval">Financing approval rate: SK 16.2% vs CZ 40.3%</h3>
+
+<table>
+  <thead>
+    <tr><th data-i18n="s3_status">Final status</th><th class="num">SK</th><th class="num">CZ</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>fin-approved</td><td class="num">4</td><td class="num">139</td></tr>
+    <tr><td>fin-contract-signed</td><td class="num">9</td><td class="num">37</td></tr>
+    <tr><td>fin-final-documents-sent-to-bank</td><td class="num">4</td><td class="num">12</td></tr>
+    <tr><td>fin-completed</td><td class="num">30</td><td class="num">128</td></tr>
+    <tr><td><strong data-i18n="s3_approved_total">Total approved+ (any positive final state)</strong></td><td class="num good"><strong>47</strong></td><td class="num good"><strong>316</strong></td></tr>
+    <tr><td><strong>fin-lost</strong></td><td class="num bad"><strong>244</strong></td><td class="num bad"><strong>468</strong></td></tr>
+    <tr style="background:var(--blue-light);"><td><strong data-i18n="s3_approval_rate">Approval rate (approved+ / approved+ + lost)</strong></td><td class="num bad"><strong>16.2%</strong></td><td class="num good"><strong>40.3%</strong></td></tr>
+  </tbody>
+</table>
+
+<div class="callout callout-orange" data-i18n-html="s3_approval_caveat">
+  <strong>Caveat &mdash; this is partly downstream of opp-loss, not pure bank rejection.</strong>
+  34% of SK fin-lost (83 of 244) have reason <code>opportunity-is-lost</code> &mdash; i.e. the upstream Opportunity was closed first, and the financing inherited the loss. The pure bank-decision approval rate is higher than 16.2%, but still meaningfully below CZ's 40.3% even after this adjustment.
+</div>
+
+<h3 data-i18n="s3_h_finreasons">Lost financing reason codes</h3>
+
+<table>
+  <thead>
+    <tr><th data-i18n="s3_reason">Reason</th><th class="num">SK %</th><th class="num">CZ %</th><th data-i18n="s3_category">Category</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>opportunity-is-lost</td><td class="num">34%</td><td class="num">21%</td><td><span class="tag tag-blue" data-i18n="s3_cat_upstream">upstream</span></td></tr>
+    <tr><td>no-answer-from-customer</td><td class="num">19%</td><td class="num">9%</td><td><span class="tag tag-orange" data-i18n="s3_cat_process">process</span></td></tr>
+    <tr style="background:var(--red-light);"><td><strong>other-reasons</strong></td><td class="num bad"><strong>18%</strong></td><td class="num">1%</td><td><strong data-i18n="s3_cat_unclassified">unclassified</strong></td></tr>
+    <tr><td>payment-by-cash-or-credit-outside-carvago</td><td class="num">9%</td><td class="num">11%</td><td><span class="tag tag-blue" data-i18n="s3_cat_customer">customer</span></td></tr>
+    <tr><td>low-creditworthiness</td><td class="num">6%</td><td class="num">14%</td><td><span class="tag tag-blue" data-i18n="s3_cat_bank">bank</span></td></tr>
+    <tr><td>car-was-sold-by-dealer-to-another-customer</td><td class="num">4%</td><td class="num">1%</td><td><span class="tag tag-orange" data-i18n="s3_cat_process">process</span></td></tr>
+    <tr><td>customer-opted-for-another-carvago-vehicle</td><td class="num">4%</td><td class="num">2%</td><td><span class="tag tag-blue" data-i18n="s3_cat_customer">customer</span></td></tr>
+    <tr><td>customer-is-debtor-or-records-in-registers</td><td class="num">3%</td><td class="num">11%</td><td><span class="tag tag-blue" data-i18n="s3_cat_bank">bank</span></td></tr>
+    <tr><td>bank-asked-for-co-guarantor-customer-denied</td><td class="num">2.5%</td><td class="num">0%</td><td><span class="tag tag-blue" data-i18n="s3_cat_bank">bank</span> &mdash; <strong data-i18n="s3_skonly">SK-only</strong></td></tr>
+    <tr><td>auto-closed-30d-financing (March 2026 deploy)</td><td class="num">0%</td><td class="num">25%</td><td><span class="tag tag-orange" data-i18n="s3_cat_process">process</span></td></tr>
+  </tbody>
+</table>
+
+<div class="callout callout-red" data-i18n-html="s3_finding_other">
+  <strong>"Other-reasons" is 18% in SK vs 1% in CZ &mdash; an 18&times; gap</strong>
+  Either there's a systematic SK-specific friction the existing reason codes don't capture, OR the SK call center / F&amp;I team isn't classifying at the same rigor as CZ. Likely both. Either way, this category alone hides 44 lost financings whose true cause is unknown to us. <strong>Identifying what sits inside "other-reasons" is a P0 action.</strong>
+</div>
+
+<div class="callout callout-blue" data-i18n-html="s3_finding_skonly">
+  <strong>SK-only: bank-asked-for-co-guarantor (2.5%)</strong>
+  6 SK financings were lost because the bank required a co-guarantor and the customer declined. CZ has zero in this category. This points to a bank-pipeline-policy difference for SK.
+</div>
+
+<h3 data-i18n="s3_h_oppreasons">Lost opportunity reason codes &mdash; SK classification is essentially blank</h3>
+
+<table>
+  <thead>
+    <tr><th data-i18n="s3_reason">Reason</th><th class="num">SK %</th><th class="num">CZ %</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Automatically closed after 30 days in stage New</td><td class="num">76%</td><td class="num">75%</td></tr>
+    <tr style="background:var(--red-light);"><td><strong>NULL (no reason set)</strong></td><td class="num bad"><strong>24%</strong></td><td class="num">12%</td></tr>
+    <tr><td>Without Offer</td><td class="num">0%</td><td class="num">5%</td></tr>
+    <tr><td>Automatically closed after 30 days in stage Financing</td><td class="num">0%</td><td class="num">4%</td></tr>
+    <tr><td>Seller Denied</td><td class="num">0%</td><td class="num">2%</td></tr>
+    <tr><td>Business Denied</td><td class="num">0.1%</td><td class="num">0.5%</td></tr>
+  </tbody>
+</table>
+
+<div class="callout callout-red" data-i18n-html="s3_finding_oppclassification">
+  <strong>SK lost-opportunity reasons are essentially uncategorized</strong>
+  76% are auto-closed by the system, 24% have no reason set at all, and the remaining manual categories (Without Offer, Seller Denied, Business Denied) that CZ uses meaningfully are <strong>completely empty in SK</strong>. The SK sales/call-center team is either not classifying lost opportunities, or the configuration is different. <strong>This means we have almost no signal about why SK opportunities are lost manually &mdash; before they hit auto-close.</strong>
+</div>
+
+<h3 data-i18n="s3_h_banks">Bank pipeline</h3>
+
+<table>
+  <thead>
+    <tr><th data-i18n="s3_bank">Bank / financing entity</th><th class="num">SK count</th><th class="num">SK %</th><th class="num">CZ count</th><th class="num">CZ %</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>VUB Leasing</td><td class="num">132</td><td class="num">45%</td><td class="num">&mdash;</td><td class="num">&mdash;</td></tr>
+    <tr><td>Cofidis</td><td class="num">119</td><td class="num">40%</td><td class="num">235</td><td class="num">29%</td></tr>
+    <tr><td>Ahoj!</td><td class="num">27</td><td class="num">9%</td><td class="num">&mdash;</td><td class="num">&mdash;</td></tr>
+    <tr><td>Moneta</td><td class="num">1</td><td class="num">0.3%</td><td class="num">485</td><td class="num">60%</td></tr>
+    <tr><td>Leasing ČS</td><td class="num">&mdash;</td><td class="num">&mdash;</td><td class="num">79</td><td class="num">10%</td></tr>
+    <tr><td>Other (Essox, Fleet expert)</td><td class="num">&mdash;</td><td class="num">&mdash;</td><td class="num">2</td><td class="num">0.2%</td></tr>
+    <tr style="background:var(--orange-light);"><td><strong>NULL (no bank assigned)</strong></td><td class="num bad"><strong>12</strong></td><td class="num bad"><strong>4%</strong></td><td class="num">9</td><td class="num">1%</td></tr>
+  </tbody>
+</table>
+
+<div class="callout callout-orange" data-i18n-html="s3_finding_banks">
+  <strong>SK has 4&times; more NULL bank assignments than CZ proportionally</strong>
+  12 of 291 SK applications never got a bank assigned, vs 9 of 810 in CZ. Small absolute numbers, but the rate is meaningfully higher. Could be a bank-routing logic issue, missing data, or applications that were lost before assignment. Worth flagging to F&amp;I + tech.
+</div>
+
+<!-- ==================== SECTION 4 ==================== -->
+<h2 id="s4" data-i18n="h_s4">4. Past Hotjar Survey: Where Does SK Sit?</h2>
+
+<p data-i18n-html="s4_intro">Source: <strong>Hotjar Survey Final</strong> &mdash; 2-week pop-up survey across all Carvago markets, ~6,082 total responses (Proposition 4,137 + Why-not-Carvago 1,945). <a href="https://docs.google.com/presentation/d/1sLIqAbxJOtvBDqCOnUmh1FKSBRFFmIyVWPwDugZzvQ0/edit?slide=id.g35f227666f8_0_0#slide=id.g35f227666f8_0_0" target="_blank" data-i18n="s4_link">Full results &rarr;</a></p>
+
+<p data-i18n="s4_summary">Across both surveys, SK sits in the middle of the pack &mdash; not an outlier on price, trust, or proposition awareness. But two SK signals echo what we see in the Salesforce data:</p>
+
+<div class="img-container">
+  <img src="img/hotjar-why-not-carvago.png" alt="Why not Carvago — by country">
+  <div class="img-caption" data-i18n="s4_cap_why">Why-Not-Carvago barriers by country (n=1,945). SK = red bar (second from left in each group).</div>
+</div>
+
+<table>
+  <thead>
+    <tr><th data-i18n="s4_barrier">Barrier</th><th class="num" data-i18n="s4_skapprox">SK (~)</th><th class="num" data-i18n="s4_avg">Avg</th><th data-i18n="s4_skposition">SK position</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Price too high</td><td class="num">~40%</td><td class="num">42%</td><td data-i18n="s4_avg_pos">around average (Kosovo &amp; Romania worst)</td></tr>
+    <tr><td>No trust in online buying</td><td class="num">~12%</td><td class="num">13.5%</td><td data-i18n="s4_avg_pos2">around average (Poland worst at ~25%)</td></tr>
+    <tr style="background:var(--orange-light);"><td><strong>Looking for other financing option</strong></td><td class="num"><strong>~12%</strong></td><td class="num">10.9%</td><td><strong data-i18n="s4_elevated">slightly elevated</strong></td></tr>
+    <tr><td>Don't understand the process</td><td class="num">~9%</td><td class="num">10%</td><td data-i18n="s4_avg_pos3">mid (Poland &amp; Romania at ~15%)</td></tr>
+    <tr><td>Don't trust Carvago brand</td><td class="num">~5%</td><td class="num">4%</td><td data-i18n="s4_slight_elev">slightly above CZ (~3%)</td></tr>
+    <tr style="background:var(--red-light);"><td><strong>Other (free-text)</strong></td><td class="num bad"><strong>~28%</strong></td><td class="num">24%</td><td><strong data-i18n="s4_high_other">high &mdash; matches SF "other-reasons" pattern</strong></td></tr>
+  </tbody>
+</table>
+
+<div class="callout callout-blue" data-i18n-html="s4_finding">
+  <strong>Two SK signals worth carrying forward</strong>
+  <ol style="margin:8px 0 0 20px;">
+    <li><strong>"Other" 28% in Hotjar mirrors "other-reasons" 18% in SF financing-lost.</strong> Both are unclassified-bucket overflows. SK customers and the SK call center alike are reporting reasons that don't fit the predefined options. This is the strongest case for running a SK-specific qualitative survey.</li>
+    <li><strong>"Looking for other financing option" 12% (vs 11% avg, vs CZ ~10%, IT ~9%).</strong> Slight elevation, consistent with the financing-options funnel cliff and the 16.2% approval rate. SK customers may be entering the financing flow speculatively and disengaging when they see actual terms.</li>
+  </ol>
+  Proposition awareness in SK is mid-to-high across all 7 benefits (~78&ndash;85%), so <strong>SK's problem is not a "people don't understand Carvago" problem</strong> &mdash; unlike Romania or Poland.
+</div>
+
+<!-- ==================== SECTION 5 ==================== -->
+<h2 id="s5" data-i18n="h_s5">5. Hypotheses</h2>
+
+<p data-i18n="s5_intro">Listed in rough order of evidentiary support. Each hypothesis lists supporting evidence and how to validate.</p>
+
+<table>
+  <thead>
+    <tr><th>#</th><th data-i18n="s5_hyp">Hypothesis</th><th data-i18n="s5_evidence">Evidence</th><th data-i18n="s5_test">How to validate</th></tr>
+  </thead>
+  <tbody>
+    <tr style="background:var(--red-light);">
+      <td><strong>H1</strong></td>
+      <td><strong data-i18n="s5_h1">SK call center / sales follow-up cadence is slower than CZ &mdash; auto-close hits SK harder.</strong></td>
+      <td data-i18n-html="s5_h1_e">Jul 2025 inflection (&minus;8.5pp) coincides exactly with auto-close-30d rollout. SK has 76% auto-closed-new + 24% NULL = 100% uncategorized lost opps. CZ has same auto-close % but also classifies 12% manually before auto-close kicks in.</td>
+      <td data-i18n="s5_h1_t">Audit SK call center / F&amp;I follow-up cadence; check time-to-first-touch and time-in-stage-New distribution by country.</td>
+    </tr>
+    <tr style="background:var(--red-light);">
+      <td><strong>H2</strong></td>
+      <td><strong data-i18n="s5_h2">There is SK-specific friction the existing reason codes don't capture.</strong></td>
+      <td data-i18n-html="s5_h2_e">"Other-reasons" 18% in SF financing-lost (CZ 1%) + "Other" 28% in Hotjar Why-Not-Carvago. Same pattern in two independent data sources.</td>
+      <td data-i18n="s5_h2_t">Run SK-specific Hotjar survey with open-text follow-up + read all "other-reasons" free text in SF + interview SK call-center agents.</td>
+    </tr>
+    <tr>
+      <td><strong>H3</strong></td>
+      <td><strong data-i18n="s5_h3">Financing-options is a SK-specific entry barrier.</strong></td>
+      <td data-i18n-html="s5_h3_e">purchase-method &rarr; financing-options is 43.2% in SK vs 72.8% in CZ (&minus;30pp). 12% of SK Why-Not-Carvago respondents list "looking for other financing option". 16.2% approval rate compounds the friction.</td>
+      <td data-i18n="s5_h3_t">UX review of SK financing-options screen (terms, banks, copy, calculator). A/B test or hotjar recording session of SK financing-options page.</td>
+    </tr>
+    <tr>
+      <td><strong>H4</strong></td>
+      <td><strong data-i18n="s5_h4">CarAudit-form &rarr; car-check transition has the same friction as IT.</strong></td>
+      <td data-i18n-html="s5_h4_e">52.5% SK vs 83.0% CZ (&minus;30pp). Same pattern Italy showed (different absolute numbers, same relative gap). Likely a global UX issue surfacing in SK because SK has lower funnel volume / less buffer.</td>
+      <td data-i18n="s5_h4_t">Reuse Italy investigation findings + extend the upcoming CarAudit-related A/B test to SK cohort.</td>
+    </tr>
+    <tr>
+      <td><strong>H5</strong></td>
+      <td><strong data-i18n="s5_h5">SK traffic is structurally lower-quality / lower-intent than CZ.</strong></td>
+      <td data-i18n-html="s5_h5_e">SK All-Opps/Sessions ratio is consistently ~half of CZ throughout the 14-month window, even before any 2025 deploys. SK Sessions are ~50% of CZ but New Opps are only ~25&ndash;30% of CZ.</td>
+      <td data-i18n="s5_h5_t">Conversation with marketing about SK traffic sources, channel mix, and intent quality. Compare SK paid-vs-organic conversion rates.</td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- ==================== SECTION 6 ==================== -->
+<h2 id="s6" data-i18n="h_s6">6. Recommendations</h2>
+
+<p data-i18n="s6_intro">Two principles: (1) every recommendation cites a specific number, (2) the chronic structural gap and the acute July 2025 trigger need different responses.</p>
+
+<h3 data-i18n="s6_h_p0">P0 &mdash; Do this week</h3>
+
+<div class="callout callout-red" data-i18n-html="s6_p0_1">
+  <strong>P0.1 &mdash; Run a SK-specific Hotjar survey to fill the "other-reasons" gap</strong>
+  Mirror the Italy survey but with SK-specific question routing. Two main questions: <em>"What stopped you from completing your purchase?"</em> with open-text follow-up, and <em>"What was unclear about the financing options?"</em>. Target the financing-options and caraudit-form pages where the cliffs are. <strong>Why P0:</strong> 18% of SF lost financings + 28% of Hotjar respondents fall into unclassified buckets &mdash; we need this signal before we ship UX changes.
+</div>
+
+<div class="callout callout-red" data-i18n-html="s6_p0_2">
+  <strong>P0.2 &mdash; Audit SK call-center / F&amp;I follow-up cadence with sales ops</strong>
+  Auto-close took out 76% of SK lost opps, vs CZ where the same auto-close still leaves 12% manually classified before timeout. Either SK is contacting customers slower, or contact attempts aren't being logged. <strong>Why P0:</strong> the July 2025 inflection (&minus;8.5pp) maps directly to auto-close, which means faster follow-up would recover meaningful conversion immediately.
+</div>
+
+<h3 data-i18n="s6_h_p1">P1 &mdash; Next 2&ndash;3 weeks</h3>
+
+<div class="callout callout-orange" data-i18n-html="s6_p1_1">
+  <strong>P1.1 &mdash; Investigate the purchase-method &rarr; financing-options cliff</strong>
+  43.2% SK vs 72.8% CZ (&minus;30pp). Start with: localized copy review of the financing-options screen, calculator/bank presentation, language clarity in Slovak. Hotjar session recordings filtered to SK financing-options page would shortcut this.
+</div>
+
+<div class="callout callout-orange" data-i18n-html="s6_p1_2">
+  <strong>P1.2 &mdash; Fix SK lost-reason classification process</strong>
+  100% of SK lost opps are uncategorized (76% auto-closed, 24% NULL). Without manual reasons, we can't separate sales-quality issues from product-fit issues from pricing. Coordinate with SK sales team to start using the existing reason codes (Without Offer, Seller Denied) like CZ does.
+</div>
+
+<div class="callout callout-orange" data-i18n-html="s6_p1_3">
+  <strong>P1.3 &mdash; Financing approval analysis with F&amp;I</strong>
+  Adjusted for opp-loss-upstream, SK financing approval is still meaningfully below CZ. Drill into: bank-routing logic (4% NULL banks in SK), bank-specific approval rates (VUB vs Cofidis vs Ahoj!), and the SK-only "co-guarantor declined" pattern. The 6 co-guarantor cases are small but SK-unique &mdash; bank policy difference?
+</div>
+
+<h3 data-i18n="s6_h_p2">P2 &mdash; Once we have survey results</h3>
+
+<div class="callout callout-blue" data-i18n-html="s6_p2_1">
+  <strong>P2.1 &mdash; Extend Italy's CarAudit-related A/B tests to SK cohort</strong>
+  The caraudit-form &rarr; car-check cliff (52.5% SK vs 83.0% CZ) is the same pattern Italy already has tests planned for. No reason to design SK-specific tests &mdash; reuse the IT cohort design with SK as a parallel arm.
+</div>
+
+<div class="callout callout-blue" data-i18n-html="s6_p2_2">
+  <strong>P2.2 &mdash; Marketing conversation about SK traffic quality</strong>
+  Sessions are ~50% of CZ but New Opps are ~25&ndash;30% &mdash; SK traffic converts top-of-funnel at half the rate of CZ. This is a structural finding independent of any UX fix; it warrants a channel-mix audit.
+</div>
+
+<h3 data-i18n="s6_h_timeline">Suggested timeline</h3>
+
+<div class="timeline">
+  <div class="timeline-item">
+    <div class="tl-label" data-i18n="s6_t_w0">Week 0 (now)</div>
+    <div class="tl-text" data-i18n="s6_t_w0_text">Share this document with sales ops, F&amp;I, and SK country manager. Confirm survey design + classification audit.</div>
+  </div>
+  <div class="timeline-item">
+    <div class="tl-label" data-i18n="s6_t_w1">Week 1</div>
+    <div class="tl-text" data-i18n="s6_t_w1_text">Launch SK Hotjar survey. Kick off call-center cadence audit. Read all "other-reasons" free-text in SF.</div>
+  </div>
+  <div class="timeline-item">
+    <div class="tl-label" data-i18n="s6_t_w2">Weeks 2&ndash;3</div>
+    <div class="tl-text" data-i18n="s6_t_w2_text">Survey collects responses. UX review of SK financing-options page in parallel. F&amp;I meeting on bank pipeline + co-guarantor pattern.</div>
+  </div>
+  <div class="timeline-item">
+    <div class="tl-label" data-i18n="s6_t_w4">Week 4</div>
+    <div class="tl-text" data-i18n="s6_t_w4_text">Synthesize survey + audit findings. Decide on A/B tests (SK-specific vs join IT cohort). Update this document with results.</div>
+  </div>
+</div>
+
+<!-- ==================== METHODOLOGY ==================== -->
+<h2 id="s7" data-i18n="h_s7">Methodology &amp; Data Sources</h2>
+
+<table>
+  <thead>
+    <tr><th data-i18n="s7_source">Source</th><th data-i18n="s7_what">What</th><th data-i18n="s7_how">How</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>[PROD] KPI sheet</strong></td>
+      <td data-i18n="s7_kpi_what">New Registrations, New Opportunities, Paid Unique Per Customer, CA Delivered, Contracts Paid, Paid/New Opp %</td>
+      <td data-i18n="s7_kpi_how">Google Sheets, countries SK + CZ, monthly data Mar 2025 &ndash; Apr 2026. Source of truth for the conversion trend.</td>
+    </tr>
+    <tr>
+      <td>Salesforce (Opportunity)</td>
+      <td data-i18n="s7_opp_what">Lost opportunity reason codes, stage distribution</td>
+      <td data-i18n-html="s7_opp_how">SOQL on <code>Opportunity</code>, field <code>Opportunity_Reason_Code__c</code>, filtered by <code>Customer_Country_Origin__c</code>. Window: 2025-11-01 to 2026-05-01.</td>
+    </tr>
+    <tr>
+      <td><strong>Salesforce (Financing__c)</strong></td>
+      <td data-i18n="s7_fin_what">Financing approval rate, status breakdown, reason codes, bank assignment</td>
+      <td data-i18n-html="s7_fin_how">SOQL on <code>Financing__c</code>: <code>Final_Status__c</code>, <code>Reason_Code__c</code>, <code>Financing_Entity__c</code>. Filter <code>Customer_Country_Origin_Picklist__c</code>, <code>Application_Date__c &gt;= 2025-11-01</code>, <code>Is_TEST_Financing__c = false</code>.</td>
+    </tr>
+    <tr>
+      <td>Google Analytics 4</td>
+      <td data-i18n="s7_ga_what">Transaction funnel step-to-step rates</td>
+      <td data-i18n-html="s7_ga_how"><a href="https://lookerstudio.google.com/u/0/reporting/171bb951-df2a-415e-a76c-fc3921031329/page/5oysF" target="_blank">Looker Studio Transaction Funnel Carvago</a>. Reporting period: 1&ndash;30 April 2026 (full month). Markets: SK, CZ. No cohort filtering.</td>
+    </tr>
+    <tr>
+      <td>Prior Hotjar Survey</td>
+      <td data-i18n="s7_hot_what">"Why not Carvago" barriers + Proposition awareness, by market</td>
+      <td data-i18n-html="s7_hot_how">Hotjar pop-up survey across all Carvago markets, 2 weeks, 6,082 total responses. <a href="https://docs.google.com/presentation/d/1sLIqAbxJOtvBDqCOnUmh1FKSBRFFmIyVWPwDugZzvQ0/edit?slide=id.g35f227666f8_0_0#slide=id.g35f227666f8_0_0" target="_blank">Full results &rarr;</a></td>
+    </tr>
+  </tbody>
+</table>
+
+<hr>
+
+<div class="footer">
+  <p data-i18n="footer_meta">Created 6 May 2026 &mdash; Marie Michalova</p>
+  <p data-i18n-html="footer_links">SK Hotjar Survey: <em>to be set up</em> &nbsp;|&nbsp; Sales-ops cadence audit: <em>to be scheduled</em> &nbsp;|&nbsp; Compare with: <a href="https://littlemeat.github.io/work-pages/italy-investigation/" target="_blank">Italy investigation</a></p>
+</div>
+
+
+<button class="back-to-top" onclick="window.scrollTo({top:0, behavior:'smooth'})" title="Back to top" aria-label="Back to top">↑</button>
+
+<script>
+// Multi-language dictionary: T[lang][englishKey] = translation (text-node strings)
+const T = {
+  cs: {
+    // Title & meta
+    "Slovakia Conversion Investigation": "Investigace konverze pro Slovensko",
+    "Opportunity → Paid CarAudit Drop-off Analysis": "Analýza poklesu konverze: Opportunity → zaplacený CarAudit",
+    "Author: Marie Michalova": "Autor: Marie Michalová",
+    "Created: 6 May 2026": "Vytvořeno: 6. května 2026",
+    "Last updated: 6 May 2026": "Naposledy aktualizováno: 6. května 2026",
+    "Draft": "Pracovní verze",
+    "Status:": "Stav:",
+    "Language:": "Jazyk:",
+
+    // TOC
+    "Table of Contents": "Obsah",
+    "KPI Data: Conversion Trend": "KPI data: Trend konverze",
+    "GA Funnel: Where Users Drop Off": "GA Funnel: Kde uživatelé odpadají",
+    "Financing & Lost-Reason Classification Gap": "Financování a nedostatky v klasifikaci ztrát",
+    "Past Hotjar Survey: Where Does SK Sit?": "Předchozí Hotjar průzkum: Kde si stojí SK?",
+    "Hypotheses": "Hypotézy",
+    "Recommendations": "Doporučení",
+    "Methodology & Data Sources": "Metodika a zdroje dat",
+
+    // Section headings
+    "1. KPI Data: Conversion Trend": "1. KPI data: Trend konverze",
+    "2. GA Funnel: Where Users Drop Off": "2. GA Funnel: Kde uživatelé odpadají",
+    "3. Financing & Lost-Reason Classification Gap": "3. Financování a nedostatky v klasifikaci ztrát",
+    "4. Past Hotjar Survey: Where Does SK Sit?": "4. Předchozí Hotjar průzkum: Kde si stojí SK?",
+    "5. Hypotheses": "5. Hypotézy",
+    "6. Recommendations": "6. Doporučení",
+
+    // Section 1
+    "Slovakia vs Czechia: Monthly Funnel (Mar 2025 – Apr 2026)": "Slovensko vs Česko: Měsíční funnel (březen 2025 – duben 2026)",
+    "SK-specific deploy timeline": "Časová osa deploymentů specifických pro SK",
+
+    // Section 2
+    "Wizard path structure": "Struktura wizardu",
+    "Side-by-side: SK vs CZ funnel (April 2026)": "Porovnání: SK vs CZ funnel (duben 2026)",
+    "Without-Financing path: SK vs CZ": "Cesta bez financování: SK vs CZ",
+    "Financing path: SK vs CZ": "Cesta s financováním: SK vs CZ",
+    "Step transition": "Krok",
+    "Gap (pp)": "Rozdíl (pp)",
+    "Note": "Pozn.",
+    "Minor SK gap": "Mírný SK rozdíl",
+    "SK on par": "SK srovnatelné",
+    "Cliff #1 — SK loses 30pp here": "Cliff #1 — SK zde ztrácí 30 pp",
+    "SK actually better here": "SK je zde dokonce lepší",
+    "Cliff #2 — financing entry barrier": "Cliff #2 — bariéra při vstupu do financování",
+    "Path mixing — not directly comparable": "Mixování cest — přímo nesrovnatelné",
+    "Small gap, both markets drop hard here": "Malý rozdíl, oba trhy zde výrazně padají",
+
+    // Section 3
+    "Financing approval rate: SK 16.2% vs CZ 40.3%": "Schvalovací poměr financování: SK 16,2 % vs CZ 40,3 %",
+    "Final status": "Finální status",
+    "Total approved+ (any positive final state)": "Celkem schváleno+ (jakýkoli pozitivní finální stav)",
+    "Approval rate (approved+ / approved+ + lost)": "Schvalovací poměr (schváleno+ / schváleno+ + ztraceno)",
+    "Lost financing reason codes": "Důvody ztracených financování",
+    "Reason": "Důvod",
+    "Category": "Kategorie",
+    "upstream": "upstream",
+    "process": "proces",
+    "unclassified": "neklasifikováno",
+    "customer": "zákazník",
+    "bank": "banka",
+    "SK-only": "pouze SK",
+    "Lost opportunity reason codes — SK classification is essentially blank": "Důvody ztracených Opportunit — SK klasifikace je v podstatě prázdná",
+    "Bank pipeline": "Bankovní pipeline",
+    "Bank / financing entity": "Banka / poskytovatel financování",
+    "SK count": "SK počet",
+    "SK %": "SK %",
+    "CZ count": "CZ počet",
+    "CZ %": "CZ %",
+
+    // Section 4
+    "Barrier": "Bariéra",
+    "SK (~)": "SK (~)",
+    "Avg": "Průměr",
+    "SK position": "Pozice SK",
+    "around average (Kosovo & Romania worst)": "kolem průměru (nejhorší Kosovo a Rumunsko)",
+    "around average (Poland worst at ~25%)": "kolem průměru (nejhorší Polsko ~25 %)",
+    "slightly elevated": "mírně zvýšené",
+    "mid (Poland & Romania at ~15%)": "průměr (Polsko a Rumunsko ~15 %)",
+    "slightly above CZ (~3%)": "mírně nad CZ (~3 %)",
+    "high — matches SF \"other-reasons\" pattern": "vysoké — odpovídá vzorci „other-reasons“ v SF",
+
+    // Section 5 — table headers
+    "Hypothesis": "Hypotéza",
+    "Evidence": "Evidence",
+    "How to validate": "Jak ověřit",
+
+    // Section 6 timeline
+    "Week 0 (now)": "Týden 0 (teď)",
+    "Week 1": "Týden 1",
+    "Weeks 2–3": "Týden 2–3",
+    "Week 4": "Týden 4",
+    "P0 — Do this week": "P0 — udělat tento týden",
+    "P1 — Next 2–3 weeks": "P1 — příští 2–3 týdny",
+    "P2 — Once we have survey results": "P2 — až budeme mít výsledky průzkumu",
+    "Suggested timeline": "Navrhovaná časová osa",
+
+    // Methodology
+    "Source": "Zdroj",
+    "What": "Co",
+    "How": "Jak",
+  },
+};
+
+// Capture the pristine English state ONCE at first toggle.
+// All subsequent toggles restore from this baseline before applying a new
+// language. Avoids the bug where text-node walking dirties innerHTML before
+// data-i18n-html elements snapshot it (which froze content into "EN").
+let baseline = null;
+let currentLang = 'en';
+
+function captureBaseline() {
+  baseline = {
+    htmlEls: new Map(),  // data-i18n-html element -> original innerHTML
+    textNodes: new Map() // text node -> original textContent
+  };
+  // Snapshot data-i18n-html elements (and skip their text nodes below)
+  document.querySelectorAll('[data-i18n-html]').forEach(el => {
+    baseline.htmlEls.set(el, el.innerHTML);
+  });
+  // Snapshot all text nodes that are NOT inside a data-i18n-html element
+  const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
+    acceptNode: (node) => {
+      let p = node.parentElement;
+      while (p) {
+        if (p.hasAttribute && p.hasAttribute('data-i18n-html')) return NodeFilter.FILTER_REJECT;
+        p = p.parentElement;
+      }
+      return NodeFilter.FILTER_ACCEPT;
+    }
+  }, false);
+  while (walker.nextNode()) {
+    baseline.textNodes.set(walker.currentNode, walker.currentNode.textContent);
+  }
+}
+
+function restoreBaseline() {
+  // Restore innerHTML for data-i18n-html elements first (this also restores
+  // their child text nodes implicitly).
+  baseline.htmlEls.forEach((html, el) => { el.innerHTML = html; });
+  // Restore stand-alone text nodes
+  baseline.textNodes.forEach((text, node) => {
+    if (node.isConnected) node.textContent = text;
+  });
+}
+
+const I18N_HTML = {
+  problem_statement: {
+    cs: '<strong>Definice problému</strong>Konverze z nové Opportunity na zaplacený CarAudit (unikátní za zákazníka) na Slovensku je strukturálně asi poloviční oproti CZ napříč celým 14měsíčním obdobím (SK 14–34 % vs CZ 24–42 %). Dva klíčové zlomy: prudký pokles v <strong>červenci 2025</strong> po nasazení auto-close po 30 dnech, a pokračující dno kolem prosince 2025 (13,84 %). Na rozdíl od Itálie nejde o náhlý cliff — jde o chronický strukturální rozdíl s jedním akutním spouštěčem.'
+  }
+};
+
+function setLang(lang) {
+  if (!baseline) captureBaseline();
+  currentLang = lang;
+
+  document.querySelectorAll('.lang-toggle button').forEach(b => b.classList.remove('active'));
+  document.querySelector(`.lang-toggle button[onclick="setLang('${lang}')"]`).classList.add('active');
+
+  // Always start from the pristine English baseline
+  restoreBaseline();
+
+  if (lang === 'en') return;
+
+  const dict = T[lang];
+  if (!dict) return;
+
+  // Apply data-i18n-html overrides first (replaces the whole innerHTML chunk)
+  document.querySelectorAll('[data-i18n-html]').forEach(el => {
+    const key = el.getAttribute('data-i18n-html');
+    if (I18N_HTML[key] && I18N_HTML[key][lang]) {
+      el.innerHTML = I18N_HTML[key][lang];
+    }
+  });
+
+  // Then translate text nodes that match dictionary keys.
+  // Skip text nodes inside data-i18n-html elements (already handled above).
+  const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
+    acceptNode: (node) => {
+      let p = node.parentElement;
+      while (p) {
+        if (p.hasAttribute && p.hasAttribute('data-i18n-html')) return NodeFilter.FILTER_REJECT;
+        p = p.parentElement;
+      }
+      return NodeFilter.FILTER_ACCEPT;
+    }
+  }, false);
+
+  while (walker.nextNode()) {
+    const node = walker.currentNode;
+    const trimmed = node.textContent.trim();
+    if (trimmed && dict[trimmed]) {
+      node.textContent = node.textContent.replace(trimmed, dict[trimmed]);
+    }
+  }
+}
+</script>
+
+</body>
+</html>
