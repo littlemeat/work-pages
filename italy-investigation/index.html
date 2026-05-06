@@ -301,7 +301,7 @@
 <div class="callout callout-blue">
   <strong>TL;DR &mdash; Top findings</strong>
   <ol style="margin:8px 0 0 20px;">
-    <li><strong>Italian financing pipeline is essentially broken</strong> &mdash; only 3.24% approval rate vs CZ 40.98% (12&times; worse), 99.7% never reach a bank. <a href="#s3a" style="color:var(--blue);">Section 3a</a></li>
+    <li><strong>Italian financing pipeline is essentially broken</strong> &mdash; only 5.62% approval rate vs CZ 65.31% (12&times; worse), 99.7% never reach a bank. <a href="#s3a" style="color:var(--blue);">Section 3a</a></li>
     <li><strong>The biggest funnel drop is purchase-method &rarr; caraudit-form: 27.63% IT vs 58.57% CZ.</strong> The first wizard step is now matched with CZ; the cash-path commitment is where IT users bail. <a href="#s3" style="color:var(--blue);">Section 3</a></li>
     <li><strong>F&amp;I follow-up process is failing IT customers</strong> &mdash; 32% of lost financings are "no answer from customer" (3.5&times; CZ). Italy has its own call center, so it's a channel/timing issue. <a href="#s3a" style="color:var(--blue);">Section 3a</a></li>
     <li><strong>Conversion timing matches August 2025 transaction-flow deploy</strong> (multi-car cart, single active opportunity), end-of-September radio-button CTA change, and Feb&ndash;May 2026 influencer campaigns. Opportunity volume keeps growing (+160%) while conversion drops &mdash; suggests a mix of UX friction + lower-quality traffic. <a href="#s1" style="color:var(--blue);">Section 1</a></li>
@@ -551,19 +551,38 @@ car-selection<br>
 </div>
 
 <div class="callout callout-red">
-  <strong>CONFIRMED: Italy's financing approval rate is catastrophic &mdash; 3.24% vs CZ 40.98%</strong>
-  Salesforce data (<code>Financing__c</code>, Nov 2025 &ndash; Apr 2026) shows Italy's financing pipeline is essentially non-functional. <a href="#s3a">See section 3a below for full breakdown.</a>
+  <strong>CONFIRMED: Italy's financing approval rate is catastrophic &mdash; 5.62% vs CZ 65.31%</strong>
+  Salesforce data (<code>Financing__c</code>, Nov 2025 &ndash; Apr 2026) shows Italy's financing pipeline is essentially non-functional. Approval is measured by <code>Approved_Date__c</code> (timestamp) &mdash; this captures financings that were approved at any point, even if later marked fin-lost (e.g. when the parent opportunity dies). <a href="#s3a">See section 3a below for full breakdown.</a>
 </div>
 
 <h3 id="s3a">3a. Salesforce Financing Data: IT vs CZ</h3>
 
 <p>Source: Salesforce <code>Financing__c</code> object, Nov 2025 &ndash; Apr 2026, filtered by <code>Customer_Country_Origin_Picklist__c</code>, excluding test records.</p>
 
-<h4>Status breakdown</h4>
+<div class="callout callout-blue">
+  <strong>Methodology note:</strong> Approval is measured by <strong><code>Approved_Date__c</code> being non-null</strong>, not by current <code>Final_Status__c</code>. A financing can be approved by the bank and then later marked <code>fin-lost</code> (e.g. customer changed their mind, car got sold elsewhere, opportunity closed for unrelated reasons). Such cases ARE approvals from a banking-pipeline perspective &mdash; what matters is whether the bank ever said "yes". Using the timestamp captures the true approval rate; using only <code>Final_Status__c</code> would understate it (especially for CZ, where ~25pp of approvals later flip to fin-lost).
+</div>
+
+<h4>Approval rate (timestamp-based, accurate)</h4>
 
 <table>
   <thead>
-    <tr><th>Status</th><th class="num">🇮🇹 Italy</th><th class="num">🇨🇿 Czech</th></tr>
+    <tr><th>Metric</th><th class="num">🇮🇹 Italy</th><th class="num">🇨🇿 Czech</th><th>Difference</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Total applications (Nov 2025 &ndash; Apr 2026)</td><td class="num">736</td><td class="num">849</td><td class="num">&mdash;</td></tr>
+    <tr><td>Ever approved <em>(Approved_Date__c not null)</em></td><td class="num">37</td><td class="num">531</td><td class="num">&mdash;</td></tr>
+    <tr><td>Lost without ever being approved</td><td class="num bad">621</td><td class="num">282</td><td class="num">&mdash;</td></tr>
+    <tr><td>Still in progress</td><td class="num">78</td><td class="num">36</td><td class="num">&mdash;</td></tr>
+    <tr style="background:var(--red-light);"><td><strong>Approval rate</strong> <em>(ever approved ÷ ever approved + lost-without-approval)</em></td><td class="num bad"><strong>5.62%</strong></td><td class="num good"><strong>65.31%</strong></td><td class="num bad">-59.7 pp (12&times; worse)</td></tr>
+  </tbody>
+</table>
+
+<h4>Status breakdown (snapshot of current Final_Status__c)</h4>
+
+<table>
+  <thead>
+    <tr><th>Final status (now)</th><th class="num">🇮🇹 Italy</th><th class="num">🇨🇿 Czech</th></tr>
   </thead>
   <tbody>
     <tr><td>fin-requested</td><td class="num">1</td><td class="num">5</td></tr>
@@ -573,26 +592,37 @@ car-selection<br>
     <tr><td>fin-contract-signed</td><td class="num">0</td><td class="num">39</td></tr>
     <tr><td>fin-final-documents-sent-to-bank</td><td class="num">0</td><td class="num">9</td></tr>
     <tr><td><strong>fin-completed</strong></td><td class="num">10</td><td class="num">128</td></tr>
-    <tr><td><strong>fin-lost</strong></td><td class="num bad">627 (87%)</td><td class="num">471 (56%)</td></tr>
+    <tr><td><strong>fin-lost</strong></td><td class="num">627</td><td class="num">471</td></tr>
     <tr style="background:var(--blue-light);"><td><strong>Total</strong></td><td class="num"><strong>720</strong></td><td class="num"><strong>839</strong></td></tr>
   </tbody>
 </table>
 
-<h4>Approval rate</h4>
+<p style="font-size:12px; color:var(--gray);"><strong>Note on totals:</strong> The 736 / 849 figure above (timestamp method) is from a fresher query and includes a few records added since this status snapshot. The conclusions are unaffected.</p>
+
+<p style="font-size:12px; color:var(--gray);"><strong>How to read:</strong> The status snapshot shows where each financing <em>currently</em> sits. Many CZ records are now <code>fin-lost</code> even though they were approved at some point (~250 such cases) &mdash; that's why the timestamp-based approval rate (65.31%) is much higher than what the status snapshot alone would suggest (~41%).</p>
+
+<h4>Italy approval rate is declining month-over-month (timestamp-based)</h4>
 
 <table>
   <thead>
-    <tr><th>Metric</th><th class="num">🇮🇹 Italy</th><th class="num">🇨🇿 Czech</th><th>Difference</th></tr>
+    <tr><th>Month</th><th class="num">Total applications</th><th class="num">Ever approved</th><th class="num">Approval rate</th></tr>
   </thead>
   <tbody>
-    <tr><td>Approval rate <em>(approved+ ÷ approved+ + lost)</em></td><td class="num bad">3.24%</td><td class="num good">40.98%</td><td class="num bad">-37.7 pp (12&times; worse)</td></tr>
-    <tr><td>fin-completed share</td><td class="num bad">1.4%</td><td class="num good">15.3%</td><td class="num bad">-13.9 pp</td></tr>
-    <tr><td>fin-lost share</td><td class="num bad">87.1%</td><td class="num">56.1%</td><td class="num bad">+31 pp</td></tr>
+    <tr><td>Nov 2025</td><td class="num">80</td><td class="num">6</td><td class="num">7.5%</td></tr>
+    <tr><td>Dec 2025</td><td class="num">71</td><td class="num">5</td><td class="num">7.0%</td></tr>
+    <tr><td>Jan 2026</td><td class="num">62</td><td class="num">6</td><td class="num">9.7%</td></tr>
+    <tr><td>Feb 2026</td><td class="num">109</td><td class="num">8</td><td class="num">7.3%</td></tr>
+    <tr><td>Mar 2026</td><td class="num">159</td><td class="num">6</td><td class="num bad">3.8%</td></tr>
+    <tr><td>Apr 2026</td><td class="num">210</td><td class="num">6</td><td class="num bad">2.9%</td></tr>
   </tbody>
 </table>
 
-<h4>Italy approval rate is consistently low &mdash; not a short-term anomaly</h4>
+<p style="font-size:12px; color:var(--gray);">May 2026 excluded (not enough time elapsed for all applications to reach a verdict). Approval measured by <code>Approved_Date__c</code> not null. Note: <strong>Volume is growing rapidly</strong> (80 &rarr; 210 applications/month, +163%) while approval rate is <strong>declining</strong> (7.5% &rarr; 2.9%). Consistent with the influencer-campaign + lower-intent-traffic story in Section 1.</p>
 
+<h4>Status-based monthly breakdown (older view, kept for reference)</h4>
+
+<details>
+<summary style="cursor:pointer; font-size:13px; color:var(--gray);">Show table</summary>
 <table>
   <thead>
     <tr><th>Month</th><th class="num">Approved/Completed</th><th class="num">Lost</th><th class="num">Approval rate</th></tr>
@@ -606,6 +636,7 @@ car-selection<br>
     <tr><td>Apr 2026</td><td class="num">5</td><td class="num">160</td><td class="num bad">3.0%</td></tr>
   </tbody>
 </table>
+</details>
 
 <h4>Bank pipeline comparison</h4>
 
@@ -965,7 +996,7 @@ Note: the GA "Full Funnel" view includes both cash and financing users. The 31.1
     <tr style="background:var(--red-light);">
       <td>H7 🔥</td>
       <td><strong>Italian financing pipeline is broken</strong><br>Customer chooses financing &rarr; F&amp;I never submits to bank or fails to reach customer &rarr; 87% lost</td>
-      <td><strong>CONFIRMED.</strong> 3.24% IT approval rate vs 40.98% CZ; 99.7% of IT financings never get a bank assigned (only 2 of 720 linked to Agos); 32% lost as "no answer from customer".</td>
+      <td><strong>CONFIRMED.</strong> 5.62% IT approval rate vs 65.31% CZ (measured by <code>Approved_Date__c</code>); 99.7% of IT financings never get a bank assigned (only 2 of 720 linked to Agos); 32% lost as "no answer from customer".</td>
       <td><span class="tag tag-red">F&amp;I team review</span> + Survey B Q2 (channel)</td>
     </tr>
     <tr style="background:var(--orange-light);">
@@ -1172,7 +1203,7 @@ Note: the GA "Full Funnel" view includes both cash and financing users. The 31.1
 <div class="callout callout-red">
   <strong>Hard numbers backing P0 priority (Section 3a):</strong>
   <ul style="margin:8px 0 0 20px;">
-    <li>IT financing approval rate: <strong>3.24% vs CZ 40.98%</strong> (12&times; worse)</li>
+    <li>IT financing approval rate: <strong>5.62% vs CZ 65.31%</strong> (12&times; worse) &mdash; measured via <code>Approved_Date__c</code> timestamp to capture all approved financings, even those later marked fin-lost</li>
     <li><strong>87% of IT financings end up fin-lost</strong> (vs 56% CZ)</li>
     <li><strong>99.7% of IT financings never get a bank assigned</strong> (only 2 of 720 records linked to Agos; CZ has 13 of 839 with no bank = 1.5%)</li>
     <li><strong>68% of IT losses are customer-driven</strong> (no answer 32%, lost interest 22%, only testing 6%, etc.)</li>
@@ -1532,7 +1563,7 @@ const T = {
     "The financing path is NOT the problem — IT is actually better than CZ": "Il percorso di finanziamento NON è il problema — IT è in realtà migliore di CZ",
     "The two critical drop-off points:": "I due punti critici di abbandono:",
     "Italy's #1 unique barrier: distrust of online car purchasing (19% — highest of all markets)": "La barriera unica #1 dell'Italia: sfiducia nell'acquisto online di auto (19% — la più alta di tutti i mercati)",
-    "CONFIRMED: Italy's financing approval rate is catastrophic — 3.24% vs CZ 40.98%": "CONFERMATO: il tasso di approvazione del finanziamento in Italia è catastrofico — 3.24% vs CZ 40.98%",
+    "CONFIRMED: Italy's financing approval rate is catastrophic — 5.62% vs CZ 65.31%": "CONFERMATO: il tasso di approvazione del finanziamento in Italia è catastrofico — 5.62% vs CZ 65.31%",
     "The Italian financing pipeline is essentially non-functional": "La pipeline di finanziamento italiana è essenzialmente non funzionale",
     "This is NOT a bank rejection problem — it's a customer follow-up problem": "Questo NON è un problema di rifiuto bancario — è un problema di follow-up del cliente",
     "How this connects to the conversion problem": "Come questo si collega al problema di conversione",
@@ -1822,7 +1853,7 @@ const T = {
     "The financing path is NOT the problem — IT is actually better than CZ": "Financing path NENÍ problém — IT je v něm dokonce lepší než CZ",
     "The two critical drop-off points:": "Dva kritické body propadu:",
     "Italy's #1 unique barrier: distrust of online car purchasing (19% — highest of all markets)": "Bariéra #1 v Itálii: nedůvěra v online nákup auta (19 % — nejvyšší ze všech trhů)",
-    "CONFIRMED: Italy's financing approval rate is catastrophic — 3.24% vs CZ 40.98%": "POTVRZENO: Italský approval rate financingu je katastrofální — 3.24 % vs CZ 40.98 %",
+    "CONFIRMED: Italy's financing approval rate is catastrophic — 5.62% vs CZ 65.31%": "POTVRZENO: Italský approval rate financingu je katastrofální — 5.62 % vs CZ 65.31 %",
     "The Italian financing pipeline is essentially non-functional": "Italská financing pipeline v podstatě nefunguje",
     "This is NOT a bank rejection problem — it's a customer follow-up problem": "Tohle NENÍ problém s odmítnutím banky — je to problém s follow-up zákazníka",
     "How this connects to the conversion problem": "Jak to souvisí s problémem konverze",
