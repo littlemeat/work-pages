@@ -118,21 +118,30 @@
   h2[id^="s"] {
     cursor: pointer;
     user-select: none;
+    display: flex;
+    align-items: center;
+    gap: 12px;
   }
   h2[id^="s"]::before {
-    content: '▾';
-    display: inline-block;
-    width: 18px;
-    margin-right: 4px;
-    font-size: 13px;
-    color: var(--gray);
-    transition: transform 0.15s;
+    content: '▼';
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    flex-shrink: 0;
+    font-size: 14px;
+    color: var(--blue);
+    background: var(--blue-light);
+    border-radius: 6px;
+    transition: transform 0.15s, background 0.15s;
   }
   h2[id^="s"].collapsed::before {
     transform: rotate(-90deg);
   }
   h2[id^="s"]:hover::before {
-    color: var(--blue);
+    background: var(--blue);
+    color: #fff;
   }
   .collapse-controls {
     margin: -16px 0 24px;
