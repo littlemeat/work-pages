@@ -143,21 +143,65 @@
     background: var(--blue);
     color: #fff;
   }
+  /* TOC */
+  .toc {
+    background: var(--gray-light);
+    border-radius: 8px;
+    padding: 20px 24px;
+    margin-bottom: 32px;
+  }
+  .toc-title {
+    display: block;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--gray);
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+  .toc ol {
+    margin: 0 0 0 22px;
+    padding: 0;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  .toc ol > li { margin-bottom: 6px; }
+  .toc ol ul {
+    list-style: none;
+    margin: 4px 0 4px 12px;
+    padding: 0;
+    font-size: 12px;
+  }
+  .toc ol ul li { margin-bottom: 2px; }
+  .toc a {
+    color: var(--blue);
+    text-decoration: none;
+    transition: all 0.1s;
+    display: inline-block;
+    padding: 1px 0;
+  }
+  .toc a:hover { font-weight: 600; text-decoration: underline; }
+  .toc ol ul a { color: var(--gray); }
+  .toc ol ul a:hover { color: var(--blue); }
+
   .collapse-controls {
-    margin: -16px 0 24px;
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
     font-size: 12px;
     color: var(--gray);
+    display: flex;
+    gap: 4px;
   }
   .collapse-controls button {
     background: none;
     border: none;
     color: var(--blue);
     cursor: pointer;
-    padding: 4px 8px;
+    padding: 2px 8px;
     font-size: 12px;
-    text-decoration: underline;
   }
-  .collapse-controls button:hover { color: #15314e; }
+  .collapse-controls button:hover { font-weight: 600; text-decoration: underline; }
 
   .back-to-top {
     position: fixed;
@@ -204,26 +248,27 @@
   <span>Status: <span class="tag tag-orange" data-i18n="status">In Progress</span></span>
 </div>
 
-<nav style="background:var(--gray-light); border-radius:8px; padding:20px 24px; margin-bottom:32px;">
-  <strong style="font-size:14px; color:var(--blue);" data-i18n="toc_title">Table of Contents</strong>
-  <ol style="margin:10px 0 0 20px; font-size:13px; line-height:2;">
-    <li><a href="#s1" style="color:var(--blue); text-decoration:none;" data-i18n="toc_1">KPI Data: Conversion Trend</a></li>
-    <li><a href="#s2" style="color:var(--blue); text-decoration:none;" data-i18n="toc_2">Lost Reason Analysis (Salesforce)</a></li>
-    <li><a href="#s3" style="color:var(--blue); text-decoration:none;" data-i18n="toc_3">GA Funnel: Where Users Drop Off</a>
-      <ul style="list-style:none; padding-left:16px; line-height:1.8;">
-        <li><a href="#s3a" style="color:var(--gray); text-decoration:none; font-size:12px;" data-i18n="toc_3a">3a. Salesforce Financing Data: IT vs CZ 🔥</a></li>
+<nav class="toc">
+  <strong class="toc-title" data-i18n="toc_title">Table of Contents</strong>
+  <ol>
+    <li><a href="#s1" data-i18n="toc_1">KPI Data: Conversion Trend</a></li>
+    <li><a href="#s2" data-i18n="toc_2">Lost Reason Analysis (Salesforce)</a></li>
+    <li><a href="#s3" data-i18n="toc_3">GA Funnel: Where Users Drop Off</a>
+      <ul>
+        <li><a href="#s3a" data-i18n="toc_3a">3a. Salesforce Financing Data: IT vs CZ 🔥</a></li>
       </ul>
     </li>
-    <li><a href="#s4" style="color:var(--blue); text-decoration:none;" data-i18n="toc_4">UX Review: The Car-Selection Page</a></li>
-    <li><a href="#s5" style="color:var(--blue); text-decoration:none;" data-i18n="toc_5">Prior Survey Data: "Why Not Carvago"</a></li>
-    <li><a href="#s6" style="color:var(--blue); text-decoration:none;" data-i18n="toc_6">Hypotheses</a></li>
-    <li><a href="#s7" style="color:var(--blue); text-decoration:none;" data-i18n="toc_7">Proposed Approach: Two Tracks</a></li>
-    <li><a href="#s8" style="color:var(--blue); text-decoration:none;" data-i18n="toc_8">Recommendations &amp; Action Items</a></li>
-    <li><a href="#s9" style="color:var(--blue); text-decoration:none;" data-i18n="toc_9">Broader Context: Continuous Survey Tool</a></li>
-    <li><a href="#s10" style="color:var(--blue); text-decoration:none;" data-i18n="toc_10">Methodology &amp; Data Sources</a></li>
+    <li><a href="#s4" data-i18n="toc_4">UX Review: The Car-Selection Page</a></li>
+    <li><a href="#s5" data-i18n="toc_5">Prior Survey Data: "Why Not Carvago"</a></li>
+    <li><a href="#s6" data-i18n="toc_6">Hypotheses</a></li>
+    <li><a href="#s7" data-i18n="toc_7">Proposed Approach: Two Tracks</a></li>
+    <li><a href="#s8" data-i18n="toc_8">Recommendations &amp; Action Items</a></li>
+    <li><a href="#s9" data-i18n="toc_9">Broader Context: Continuous Survey Tool</a></li>
+    <li><a href="#s10" data-i18n="toc_10">Methodology &amp; Data Sources</a></li>
   </ol>
   <div class="collapse-controls">
     <button onclick="toggleAllSections(true)">Collapse all</button>
+    <span>&middot;</span>
     <button onclick="toggleAllSections(false)">Expand all</button>
   </div>
 </nav>
