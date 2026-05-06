@@ -114,13 +114,13 @@
   }
   .lang-toggle button:hover:not(.active) { background: var(--gray-light); }
 
-  /* Action checkboxes */
+  /* Action checkboxes (read-only — hardcoded in HTML) */
   .action-check {
-    cursor: pointer;
     width: 18px;
     height: 18px;
     accent-color: var(--green);
     margin: 0;
+    cursor: not-allowed;
   }
   th.col-check, td.col-check {
     text-align: center;
@@ -128,13 +128,10 @@
     padding-left: 8px;
     padding-right: 8px;
   }
-  tr.action-done {
-    opacity: 0.45;
-  }
-  tr.action-done td:not(.col-check) {
-    text-decoration: line-through;
-  }
-  tr.action-done td:not(.col-check) strong { font-weight: 500; }
+  /* Auto-style rows with checked checkbox as "done" */
+  tr:has(.action-check:checked) { opacity: 0.45; }
+  tr:has(.action-check:checked) td:not(.col-check) { text-decoration: line-through; }
+  tr:has(.action-check:checked) td:not(.col-check) strong { font-weight: 500; }
 
   /* Collapsible sections */
   h2[id^="s"] {
@@ -1189,55 +1186,55 @@ Note: the GA "Full Funnel" view includes both cash and financing users. The 31.1
   </thead>
   <tbody>
     <tr>
-      <td class="col-check"><input type="checkbox" class="action-check" data-action="p0-fi-meeting"></td>
+      <td class="col-check"><input type="checkbox" class="action-check" disabled data-action="p0-fi-meeting"></td>
       <td><strong>Meeting with F&amp;I team</strong> &mdash; review Italian financing process end-to-end</td>
       <td>Product + F&amp;I lead</td>
       <td>720 IT financing applications in 6 months &rarr; only 11 approved, 10 completed. Need to understand the funnel inside F&amp;I.</td>
     </tr>
     <tr>
-      <td class="col-check"><input type="checkbox" class="action-check" data-action="p0-agos-integration"></td>
+      <td class="col-check"><input type="checkbox" class="action-check" disabled data-action="p0-agos-integration"></td>
       <td><strong>Verify Agos integration / submission process</strong></td>
       <td>Tech / F&amp;I</td>
       <td><strong>Only 2 of 720 IT records (0.3%)</strong> linked to Agos. <strong>All 720 have NULL <code>Final_Type_Of_Financing__c</code></strong>. Either integration is broken or submission never happens.</td>
     </tr>
     <tr>
-      <td class="col-check"><input type="checkbox" class="action-check" data-action="p0-audit-fi"></td>
+      <td class="col-check"><input type="checkbox" class="action-check" disabled data-action="p0-audit-fi"></td>
       <td><strong>Audit F&amp;I follow-up process for IT</strong> (speed, channel, call timing, capacity)</td>
       <td>F&amp;I + Italy country manager</td>
       <td><strong>"no-answer-from-customer": 199 cases (32%) in IT vs 44 (9%) in CZ &mdash; 3.5&times; gap.</strong> "customer-lost-interest": 140 (22%) IT vs 19 (4%) CZ &mdash; 5.5&times; gap. Italy has its own call center so language is not the issue &mdash; the question is <em>when</em>, <em>how often</em>, and <em>through which channel</em>.</td>
     </tr>
     <tr>
-      <td class="col-check"><input type="checkbox" class="action-check" data-action="p0-sales-frequency"></td>
+      <td class="col-check"><input type="checkbox" class="action-check" disabled data-action="p0-sales-frequency"></td>
       <td><strong>Sales team contact frequency &amp; channel audit for IT</strong> &mdash; how many times do they try to reach a customer before giving up? what time of day? voicemail? SMS fallback?</td>
       <td>Sales lead + F&amp;I</td>
       <td>The 32% no-answer rate could be solved either by reaching customers more times or via different channel. Survey B Q2 will tell us preferred channel; sales team needs to confirm current attempt count and timing for IT specifically.</td>
     </tr>
     <tr>
-      <td class="col-check"><input type="checkbox" class="action-check" data-action="p0-bank-partners"></td>
+      <td class="col-check"><input type="checkbox" class="action-check" disabled data-action="p0-bank-partners"></td>
       <td><strong>Investigate alternative IT bank partners</strong> (Cofidis Italy, Findomestic, Compass)</td>
       <td>F&amp;I + BizDev</td>
       <td>CZ runs <strong>4 active banks</strong> (Moneta 505, Cofidis 239, Leasing ČS 80, Essox 1). IT has <strong>only Agos</strong> with 2 records. More partners = more chance of fit.</td>
     </tr>
     <tr style="background:var(--red-light);">
-      <td class="col-check"><input type="checkbox" class="action-check" data-action="p0-data-collection"></td>
+      <td class="col-check"><input type="checkbox" class="action-check" disabled data-action="p0-data-collection"></td>
       <td><strong>Improve the post-form data-collection phase</strong> &mdash; reduce dependency on phone callback success</td>
       <td>Product + Tech + F&amp;I + Italy CM</td>
       <td>Italy uses an intentionally manual process: short form &rarr; CS calls &rarr; gathers info + documents &rarr; submits to Agos. The 32% no-answer + 22% lost-interest loss happens in the data-collection phase. <strong>Concrete options:</strong> (a) Send customer a self-serve link after form submission to fill in missing info async (income, employer, etc.), (b) Add WhatsApp/email channel for document upload, (c) Allow customer to schedule the call themselves to a time that suits them. Goal: keep the lead-capture form short (matches IT preference), but make the data-collection phase resilient to the customer not answering an unscheduled call.</td>
     </tr>
     <tr>
-      <td class="col-check"><input type="checkbox" class="action-check" data-action="p0-async-upload"></td>
+      <td class="col-check"><input type="checkbox" class="action-check" disabled data-action="p0-async-upload"></td>
       <td><strong>Allow customers to upload documents async</strong> (ID, payslip, etc.) without waiting for a call</td>
       <td>Product + Tech</td>
       <td>Some lost cases are due to customer not delivering documents after the call. Async upload (link sent via SMS/email after form) lets the customer act on their own time, especially relevant for the 32% who don't pick up the phone but might respond to an asynchronous prompt.</td>
     </tr>
     <tr>
-      <td class="col-check"><input type="checkbox" class="action-check" data-action="p0-eligibility-precheck"></td>
+      <td class="col-check"><input type="checkbox" class="action-check" disabled data-action="p0-eligibility-precheck"></td>
       <td><strong>Self-service eligibility pre-check</strong> on platform (optional, before manual outreach)</td>
       <td>Product + Tech</td>
       <td>16% of IT losses are "low-creditworthiness". A short, optional eligibility quiz between form submission and the F&amp;I call would let obviously-ineligible customers self-disqualify (saving F&amp;I time) while preserving the short-form lead-capture model.</td>
     </tr>
     <tr>
-      <td class="col-check"><input type="checkbox" class="action-check" data-action="p0-async-channels"></td>
+      <td class="col-check"><input type="checkbox" class="action-check" disabled data-action="p0-async-channels"></td>
       <td><strong>Add async F&amp;I outreach channels for IT</strong> (WhatsApp / chat / async forms)</td>
       <td>F&amp;I + Marketing</td>
       <td>Hypothesis: 32% no-answer rate suggests phone alone isn't enough. The Italian call center exists but Italian customers may prefer async channels. Survey B Q2 will quantify channel preference. Add WhatsApp/chat as fallback when phone goes unanswered.</td>
@@ -1253,37 +1250,37 @@ Note: the GA "Full Funnel" view includes both cash and financing users. The 31.1
   </thead>
   <tbody>
     <tr>
-      <td class="col-check"><input type="checkbox" class="action-check" data-action="p1-local-cars"></td>
+      <td class="col-check"><input type="checkbox" class="action-check" disabled data-action="p1-local-cars"></td>
       <td><strong>A/B test: promote local IT cars on SRP</strong> (filter or promo banner "Auto in Italia") &mdash; <span class="tag tag-red">Track 1 P1</span></td>
       <td>PM + Tech + Marketing</td>
       <td>Inventory: <strong>~82k IT cars of 1,050k total (~8%)</strong> &mdash; enough to support a meaningful filter. Directly addresses H2 (19% IT distrust online cross-border purchase) and H8 (cash-path trust gap, 22.73% caraudit-form &rarr; car-check). Caveat: customers buying local cars may use Carvago only for the CarAudit (lower margin), but brand awareness &amp; trust gains likely outweigh this for IT market.</td>
     </tr>
     <tr>
-      <td class="col-check"><input type="checkbox" class="action-check" data-action="p1-survey-b"></td>
+      <td class="col-check"><input type="checkbox" class="action-check" disabled data-action="p1-survey-b"></td>
       <td><strong>Hotjar Survey B</strong> on <code>orderWizard:purchase-method</code>, IT locale &mdash; <span class="tag tag-green">Track 2 priority</span></td>
       <td>PM (this week)</td>
       <td>This is the page where the IT-specific drop happens: <strong>27.63% IT vs 58.57% CZ</strong> step-to-step. IT users spend 35s here (vs 51s CZ) before bouncing. Trigger: <strong>10s timer OR exit-intent (whichever first)</strong>. Need to know <em>why</em> users hesitate and their preferred contact channel.</td>
     </tr>
     <tr>
-      <td class="col-check"><input type="checkbox" class="action-check" data-action="p1-aug-cohort"></td>
+      <td class="col-check"><input type="checkbox" class="action-check" disabled data-action="p1-aug-cohort"></td>
       <td><strong>Review August 2025 transaction change impact</strong> on conversion</td>
       <td>PM + Data</td>
       <td>Conversion dropped from <strong>~11% (mid-2025) to ~2% (Apr 2026)</strong> &mdash; the Aug 2025 change (multi-car cart + single-active-opportunity) is the most plausible trigger by timing. Run pre/post cohort analysis on Aug 2025.</td>
     </tr>
     <tr>
-      <td class="col-check"><input type="checkbox" class="action-check" data-action="p1-marketing-traffic" checked></td>
+      <td class="col-check"><input type="checkbox" class="action-check" disabled data-action="p1-marketing-traffic" checked></td>
       <td><strong>Conversation with marketing about IT traffic quality</strong></td>
       <td>PM + Marketing</td>
       <td>IT opportunity volume keeps <strong>growing</strong> (333 in Oct 2025 &rarr; 872 in Mar 2026 = +160%) while conversion drops. Combined with the Sep 2025 radio-button CTA change which increased opp volume across markets, this points to <strong>lower-quality traffic / over-broad targeting</strong>. Worth tightening intent signals (audience, keywords, messaging).</td>
     </tr>
     <tr>
-      <td class="col-check"><input type="checkbox" class="action-check" data-action="p1-country-manager"></td>
+      <td class="col-check"><input type="checkbox" class="action-check" disabled data-action="p1-country-manager"></td>
       <td><strong>Discuss findings with Italy country manager</strong></td>
       <td>PM (this week)</td>
       <td>Doc has EN / IT / CS language toggle for easy review. Get qualitative input on F&amp;I process, customer expectations, and competitor activity in IT.</td>
     </tr>
     <tr>
-      <td class="col-check"><input type="checkbox" class="action-check" data-action="p1-nps-it"></td>
+      <td class="col-check"><input type="checkbox" class="action-check" disabled data-action="p1-nps-it"></td>
       <td><strong>Add IT-specific section to post-purchase NPS</strong></td>
       <td>PM + Marketing</td>
       <td>Low effort. Email NPS already runs. Validate trust hypothesis for users who DID complete purchase &mdash; what made them trust?</td>
@@ -1299,37 +1296,37 @@ Note: the GA "Full Funnel" view includes both cash and financing users. The 31.1
   </thead>
   <tbody>
     <tr>
-      <td class="col-check"><input type="checkbox" class="action-check" data-action="p2-trust-signals"></td>
+      <td class="col-check"><input type="checkbox" class="action-check" disabled data-action="p2-trust-signals"></td>
       <td><strong>Trust signals on car detail page</strong> (Carvago guarantee, 14-day return, customer reviews)</td>
       <td>PM + Marketing</td>
       <td>Prior Hotjar survey: <strong>57% IT</strong> believe Carvago is "safest way to buy" vs <strong>65% avg</strong> (lowest of all markets). <strong>19% IT cite "no trust in online car purchase"</strong> as their main barrier (highest of all markets).</td>
     </tr>
     <tr>
-      <td class="col-check"><input type="checkbox" class="action-check" data-action="p2-survey-a"></td>
+      <td class="col-check"><input type="checkbox" class="action-check" disabled data-action="p2-survey-a"></td>
       <td><strong>Hotjar Survey A</strong> on car detail page, IT locale (after Survey B concludes)</td>
       <td>PM</td>
       <td>Catch users <em>before</em> wizard entry. Avg engagement on car-selection is only 7s (IT) / 9s (CZ) &mdash; users don't have time for an in-wizard survey.</td>
     </tr>
     <tr>
-      <td class="col-check"><input type="checkbox" class="action-check" data-action="p2-bounce-email"></td>
+      <td class="col-check"><input type="checkbox" class="action-check" disabled data-action="p2-bounce-email"></td>
       <td><strong>Post-bounce email survey</strong> for 7+ day old opportunities still in "New"</td>
       <td>PM + CRM</td>
       <td><strong>78% of lost IT opportunities</strong> are auto-closed after 30 days in "New" stage (Q1 2026). These users entered the wizard and never came back &mdash; email may be the only channel left.</td>
     </tr>
     <tr>
-      <td class="col-check"><input type="checkbox" class="action-check" data-action="p2-multicar"></td>
+      <td class="col-check"><input type="checkbox" class="action-check" disabled data-action="p2-multicar"></td>
       <td><strong>Multi-car cart engagement</strong> &mdash; review "Scegli fino a 3 auto" prompt visibility</td>
       <td>PM + UX</td>
       <td>Avg time on car-selection is <strong>7&ndash;9 seconds</strong> &mdash; not enough to read the multi-car prompt. Users likely don't know they can add up to 3 cars. Test prominence of this option.</td>
     </tr>
     <tr>
-      <td class="col-check"><input type="checkbox" class="action-check" data-action="p2-self-close"></td>
+      <td class="col-check"><input type="checkbox" class="action-check" disabled data-action="p2-self-close"></td>
       <td><strong>Allow customers to close their own opportunity</strong> and start a new one</td>
       <td>PM + Tech</td>
       <td>Aug 2025 change made "single active opportunity" the rule. If a customer is stuck (e.g. financing got rejected, or they want a different car), they currently have to wait for the 30-day auto-close or call sales. Self-service close would unblock them &mdash; especially valuable given <strong>78% of IT opps die in "New" stage</strong>. Reduces sunk-cost loops cited in Section 1 hypothesis.</td>
     </tr>
     <tr>
-      <td class="col-check"><input type="checkbox" class="action-check" data-action="p2-softer-cta"></td>
+      <td class="col-check"><input type="checkbox" class="action-check" disabled data-action="p2-softer-cta"></td>
       <td><strong>A/B test: softer CTA copy</strong> ("Conferma e Procedi" &rarr; less committal wording) &mdash; <span class="tag tag-blue">Track 1 P2</span></td>
       <td>PM + Copy + Tech</td>
       <td>Easy to ship via GrowthBook. CZ uses the same CTA and converts well at this step (CZ 64.07% vs IT 62.03% &mdash; matched), so unlikely to be root cause. Worth testing because IT-specific copy variants ("Continua a esplorare", "Vai al passaggio successivo", etc.) are cheap.</td>
@@ -1345,25 +1342,25 @@ Note: the GA "Full Funnel" view includes both cash and financing users. The 31.1
   </thead>
   <tbody>
     <tr>
-      <td class="col-check"><input type="checkbox" class="action-check" data-action="p3-cart-rework"></td>
+      <td class="col-check"><input type="checkbox" class="action-check" disabled data-action="p3-cart-rework"></td>
       <td><strong>Full cart / wizard rework</strong></td>
       <td>Product + UX</td>
       <td>Trigger only if Section 7 surveys + A/B tests don't lift the IT 27.63% purchase-method &rarr; caraudit-form rate above 50% (CZ baseline 58.57%).</td>
     </tr>
     <tr>
-      <td class="col-check"><input type="checkbox" class="action-check" data-action="p3-cash-fin-split"></td>
+      <td class="col-check"><input type="checkbox" class="action-check" disabled data-action="p3-cash-fin-split"></td>
       <td><strong>Cash/financing split tracking</strong> in Salesforce (in progress)</td>
       <td>Tech / Data</td>
       <td>Currently the GA "Full Funnel" mixes both paths. With the SF split we could measure cash path conversion in isolation and compare to IT 87% financing-lost rate.</td>
     </tr>
     <tr>
-      <td class="col-check"><input type="checkbox" class="action-check" data-action="p3-it-localization"></td>
+      <td class="col-check"><input type="checkbox" class="action-check" disabled data-action="p3-it-localization"></td>
       <td><strong>Italian-market localization</strong> beyond translation</td>
       <td>Marketing + Product</td>
       <td>Prior survey: 19% IT distrust online purchase (highest of all markets), 15% don't understand the process (nearly 2&times; avg). Needs strategic work, not just copy fixes.</td>
     </tr>
     <tr>
-      <td class="col-check"><input type="checkbox" class="action-check" data-action="p3-survey-tool"></td>
+      <td class="col-check"><input type="checkbox" class="action-check" disabled data-action="p3-survey-tool"></td>
       <td><strong>Continuous Survey Tool project</strong> (Section 9)</td>
       <td>Product + Data</td>
       <td>Build vs buy decision still open. Hotjar covers immediate needs (this investigation alone leverages 2 Hotjar surveys).</td>
@@ -2055,34 +2052,6 @@ const T = {
   },
 };
 
-// ----- Action checkboxes (with localStorage persistence) -----
-function setupActionCheckboxes() {
-  const KEY = 'italy-investigation-actions-done';
-  const stored = JSON.parse(localStorage.getItem(KEY) || 'null');
-  const done = new Set(stored || []);
-
-  // First visit: seed from HTML 'checked' attributes (pre-marked items)
-  if (stored === null) {
-    document.querySelectorAll('.action-check').forEach(cb => {
-      if (cb.hasAttribute('checked')) done.add(cb.dataset.action);
-    });
-    localStorage.setItem(KEY, JSON.stringify([...done]));
-  }
-
-  // Apply state and bind change handlers
-  document.querySelectorAll('.action-check').forEach(cb => {
-    const id = cb.dataset.action;
-    cb.checked = done.has(id);
-    cb.closest('tr').classList.toggle('action-done', cb.checked);
-    cb.addEventListener('change', () => {
-      const row = cb.closest('tr');
-      if (cb.checked) { row.classList.add('action-done'); done.add(id); }
-      else { row.classList.remove('action-done'); done.delete(id); }
-      localStorage.setItem(KEY, JSON.stringify([...done]));
-    });
-  });
-}
-
 // ----- Collapsible sections -----
 function setSectionCollapsed(h2, collapsed) {
   h2.classList.toggle('collapsed', collapsed);
@@ -2127,10 +2096,7 @@ function setupCollapsibleSections() {
   }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  setupCollapsibleSections();
-  setupActionCheckboxes();
-});
+document.addEventListener('DOMContentLoaded', setupCollapsibleSections);
 
 // ----- Language toggle -----
 
